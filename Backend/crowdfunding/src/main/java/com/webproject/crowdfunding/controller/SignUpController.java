@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webproject.crowdfunding.dto.SignUpReqDto;
 
 @RestController
-@RequestMapping("/auth")
 public class SignUpController {
 
 	@PostMapping("/signup")
