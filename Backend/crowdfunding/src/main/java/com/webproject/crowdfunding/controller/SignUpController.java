@@ -12,7 +12,7 @@ public class SignUpController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(SignUpReqDto signUpReqDto) {
-		return ResponseEntity.ok().body(null);
+		return ResponseEntity.ok().body();
 	}
 	
 }
