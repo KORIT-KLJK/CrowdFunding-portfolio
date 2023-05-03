@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginService {
 
-	private AuthenticationManagerBuilder authenticationManagerBuilder;
-	private JwtTokenProvider jwtTokenProvider;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final JwtTokenProvider jwtTokenProvider;
 	
 	public JwtRespDto login(LoginReqDto loginReqDto) {
 		UsernamePasswordAuthenticationToken authenticationToken = 
