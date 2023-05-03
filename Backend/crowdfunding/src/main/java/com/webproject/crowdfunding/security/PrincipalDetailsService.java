@@ -4,12 +4,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.webproject.crowdfunding.entity.User;
+import com.webproject.crowdfunding.exception.CustomException;
+import com.webproject.crowdfunding.exception.ErrorMap;
+import com.webproject.crowdfunding.repository.SignUpRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
 
+	public final SignUpRepository signUpRepository;
+	
+	// iuejeong: 로그인 정보를 담고 있는 부분
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		User userEntity = signUpRepository.findUserByEmail(email);
 		
-		return null;
+		if(userEntity == null) {
+			throw new CustomException("로그인 실패", ErrorMap.builder().put("email", "사용자 정보를 확인하세요").build());
+		}
+		
+		return userEntity.toPrincipal();
 	}
 
 }

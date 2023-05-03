@@ -10,9 +10,9 @@ public class ErrorMap {
 	private ErrorMap() {
 		errorMap = new HashMap<>();
 	}	
-	//builder 메소드가 호출이되면 errorMap을 new로 생성 -> 생성자에서 비어있는 new Map이 생성
-	// 비어있는 메소드에 put으로 key, value를 넣을 수 있음 , this는 errorMap 자기자신 
-	//map을 만들지 않고도 맵을 생성가능
+	// code8144: builder 메소드가 호출이되면 errorMap을 new로 생성 -> 생성자에서 비어있는 new Map이 생성
+	// code8144: 비어있는 메소드에 put으로 key, value를 넣을 수 있음 , this는 errorMap 자기자신 
+	// code8144: map을 만들지 않고도 맵을 생성가능
 	public static ErrorMap builder(){
 		return new ErrorMap();
 	}

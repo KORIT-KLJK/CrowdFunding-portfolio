@@ -23,13 +23,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
 		
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);	// (application/json)과 동일
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());	// 401
 		ErrorResponseDto<?> errorResponseDto = 
 				new ErrorResponseDto<AuthenticationException>("토큰 인증 실패", authException);
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		String responseJson = objectMapper.writeValueAsString(errorResponseDto);
+		String responseJson = objectMapper.writeValueAsString(errorResponseDto);	// Json으로 변환
 		
 		PrintWriter out = response.getWriter();
 		out.println(responseJson);

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class CustomException extends RuntimeException {
-	// runtimeexception은 unchecked exception 예외처리, 프로그램이 잘 돌다가 서버중단  
+	// code8144: runtimeexception은 unchecked exception 예외처리, 프로그램이 잘 돌다가 서버중단  
 	private Map<String, String> errorMap;
 
 	public CustomException(String message) {
