@@ -23,8 +23,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String accessToken = httpRequest.getHeader("Authorization");
+		HttpServletRequest httpRequest = (HttpServletRequest) request; 
+		String accessToken = httpRequest.getHeader("Authorization");// 생성된 토큰은 HTTP 통신을 할 때 Authorization이라는 key의 value로 사용된다. 일반적으로 value에는 Bearer이 앞에 붙여진다.
 		accessToken = jwtTokenProvider.getToken(accessToken);
 		boolean validationFlag = jwtTokenProvider.validateToken(accessToken);
 		

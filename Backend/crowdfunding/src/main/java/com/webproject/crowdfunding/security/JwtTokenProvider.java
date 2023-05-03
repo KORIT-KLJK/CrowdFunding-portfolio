@@ -51,7 +51,10 @@ public class JwtTokenProvider {
 		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60 * 24)); // 현재시간 + 하루
 
 		String accessToken = Jwts.builder().setSubject(authentication.getName()) // 토큰의 제목(큰이름), getName() = email
-				.claim("auth", authorities) // auth
+				.claim("auth", authorities) // claim은 토큰 정보를 표현하기 위해 이미 정해진 종류의 데이터들로
+											// 모두 선택적으로 작성이 가능하며 사용할 것을 권장한다.
+											// 또한 JWT를 간결하게 하기 위해 key는 모두 길이 3의 String이다. 여기서 subject로는 unique한 값을 사용하는데, 사용자 이메일을 주로 사용한다.
+				
 				.setExpiration(tokenExpiresDate) // 토큰의 만료기간
 				.signWith(key, SignatureAlgorithm.HS256) // 토큰 암호화
 				.compact();
