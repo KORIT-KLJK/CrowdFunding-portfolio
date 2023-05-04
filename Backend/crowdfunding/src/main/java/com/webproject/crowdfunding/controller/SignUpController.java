@@ -26,8 +26,8 @@ public class SignUpController {
 	@PostMapping("/auth/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
 		System.out.println(signUpReqDto);
-		signUpService.duplicatedEmail(signUpReqDto.getEmail());
 		signUpService.signUp(signUpReqDto);
+		signUpService.duplicatedEmail(signUpReqDto.getEmail());
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.
 		return ResponseEntity.ok().body(true);
 	}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webproject.crowdfunding.repository.SignUpRepository">
+
 	<resultMap type="com.webproject.crowdfunding.entity.User" id="userMap">
 		<id property="userId" column="user_id"/>
 		<result property="email" column="email"/>
@@ -9,6 +10,7 @@
 		<result property="birthday" column="birth_day"/>
 		<result property="gender" column="gender"/>
 		<result property="address" column="address"/>
+		<collection property="authorities" resultMap="authorityMap" javaType="list"></collection>
 	</resultMap>
 	
 	<resultMap type="com.webproject.crowdfunding.entity.Authority" id="authorityMap">
@@ -23,7 +25,7 @@
 		<result property="roleName" column="role_name"/>
 	</resultMap>
 	
-		<insert id="signUpUser"
+	<insert id="signUpUser"
 		parameterType="com.webproject.crowdfunding.entity.User"
 		useGeneratedKeys="true"
 		keyProperty="userId">
@@ -37,7 +39,7 @@
 			(0, #{userId}, #{roleId})
 	</insert>
 	
-		<select id="findUserByEmail" resultMap="userMap">
+	<select id="findUserByEmail" resultMap="userMap">
 		select
 			ut.user_id,
 			ut.email,
@@ -60,6 +62,7 @@
 		where
 			ut.email = #{email}
 	</select>
+		 
 	
 </mapper>
 

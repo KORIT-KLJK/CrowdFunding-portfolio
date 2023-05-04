@@ -15,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SignUpService {
 	
-	private SignUpRepository signUpRepository;
+	private final SignUpRepository signUpRepository;
 	
-	public void duplicatedEmail(String email) {
+	 public void duplicatedEmail(String email) {
 		if(signUpRepository.findUserByEmail(email) != null) {
 			throw new CustomException("Duplicated Email", 
 					ErrorMap.builder()
