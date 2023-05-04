@@ -6,6 +6,10 @@ import Main from './pages/Main/Main';
 import { Reset } from './styles/Global/reset';
 // import Slide from './pages/Bannder/swiper/Slide';
 import Recommend from './components/Recommend/Recommend';
+import Login from './pages/Login/Login';
+import SignUp from './pages/SignUp/SignUp';
+import Test from './pages/SignUp/Test';
+import PopupPostCode from './pages/SignUp/PopupPostCode';
 
 function App() {
   return(
@@ -15,6 +19,9 @@ function App() {
         <Route path="/" element={ <Main /> } />
 
         <Route path="/recommend" element={ <Recommend /> } />
+        <Route path="/login"element={<Login />} />
+        <Route path="/signup"element={<SignUp />} />
+        <Route path="/test"element={<Test />} />
       </Routes>
     </>
   );

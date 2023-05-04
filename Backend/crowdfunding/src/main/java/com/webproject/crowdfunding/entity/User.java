@@ -1,18 +1,36 @@
 package com.webproject.crowdfunding.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.webproject.crowdfunding.security.PrincipalUserDetails;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-	private String name;
-	private String password;
+	private int userId;
 	private String email;
-	private LocalDate birthDate;
+	private String password;
+	private String name;
+	private String birthday;
 	private String gender;
 	private String address;
-	private int roleId;
+	
+	private List<Authority> authorities;
+	
+	public PrincipalUserDetails toPrincipal() {
+		return PrincipalUserDetails.builder()
+				.userId(userId)
+				.email(email)
+				.password(password)
+				.roles(authorities)
+				.build();
+	}
 }
