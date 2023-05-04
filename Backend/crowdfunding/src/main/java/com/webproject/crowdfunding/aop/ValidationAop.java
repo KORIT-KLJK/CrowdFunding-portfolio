@@ -21,7 +21,7 @@ public class ValidationAop {
 	// iuejeong: 접근지정자 public은 생략 가능
 	// iuejeong: com 앞에 *이 붙는다면 return 반환 type이 됨, com부터는 쭉 경로임
 	// iuejeong: ..을 찍어버리면 하위의 모든 것을 의미함.
-	@Pointcut("@annotation(com.toyproject.bookmanagement.aop.annotation.ValidAspect)")
+	@Pointcut("@annotation(com.webproject.crowdfunding.aop.ValidAspect)")
 	private void pointCut() {}
 	
 	@Around("pointCut()")

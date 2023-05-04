@@ -23,8 +23,9 @@ public class SignUpController {
 	// iuejeong: @Valid를 달아주면 dto 안에 있는 email(), Pattern()을 검사해준다
 	// iuejeong: @Valid와 BindingResult는 세트임. signUpReqDto의 오류를 BindingResult에게 모두 넘겨준다.
 	@ValidAspect
-	@PostMapping("/signup")
+	@PostMapping("/auth/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
+		System.out.println(signUpReqDto);
 		signUpService.duplicatedEmail(signUpReqDto.getEmail());
 		signUpService.signUp(signUpReqDto);
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.

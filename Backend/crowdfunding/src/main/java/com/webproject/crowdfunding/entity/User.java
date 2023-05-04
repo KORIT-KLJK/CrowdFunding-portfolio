@@ -12,10 +12,10 @@ import lombok.Data;
 @Data
 public class User {
 	private int userId;
-	private String name;
-	private String password;
 	private String email;
-	private LocalDate birthDate;
+	private String password;
+	private String name;
+	private String birthday;
 	private String gender;
 	private String address;
 	
