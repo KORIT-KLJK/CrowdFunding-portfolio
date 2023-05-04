@@ -103,7 +103,7 @@ const SignUp = () => {
                     </div>
                     <input css={inputAddress} type="text" placeholder="주소" ref={addressRef} onChange={onChangeHandler} name="address"/>
                     <input css={inputAddress} type="text" placeholder="상세주소" onChange={onChangeHandler} name="address"/>
-                    <button onClick={signUpSubmit}>가입하기</button>
+                    <button onClick={signUpSubmit}>가입하기aa</button>
                 </div>
             </main>
             <footer>
