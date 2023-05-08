@@ -8,20 +8,24 @@ import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
 import Test from './pages/SignUp/Test';
 import MainDonationList from './components/MainCard/MainDonationList/MainDonationList';
+import PopupPostCode from './pages/SignUp/PopupPostCode';
+import HeaderMain from './components/Header/HeaderMain/HeaderMain';
+import Search from './pages/Search/Search';
+import Recommend from './components/Recommend/Recommend';
 
 function App() {
   return(
     <>
       <Global styles={ Reset }></Global>
-      <Routes>
-        <Route path="/" element={ <Main /> } />
-
-        <Route path="/login"element={<Login />} />
-        <Route path="/signup"element={<SignUp />} />
-        <Route path="/test"element={<Test />} />
-        <Route path="/maindonation"element={<MainDonationList />} />
-        
-      </Routes>
+      <HeaderMain/>
+        <Routes>
+          <Route path="/" element={ <Main /> } />
+          <Route path="/recommend" element={ <Recommend/> } />
+          <Route path="/login"element={<Login />} />
+          <Route path="/signup"element={<SignUp />} />
+          <Route path="/test"element={<Test />} />
+          <Route path="/search" element={<Search/>} />
+        </Routes>
     </>
   );
 }

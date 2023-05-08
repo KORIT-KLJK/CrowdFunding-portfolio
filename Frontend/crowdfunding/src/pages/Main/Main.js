@@ -10,7 +10,9 @@ const mainContainer = css`
 `;
 
 
-const mainBody = css``;
+const mainBody = css`
+
+`;
 
 const mainBanner = css`
 
@@ -26,7 +28,7 @@ const Main = () => {
 
     return (
         <div mainContainer={mainContainer}>
-            <HeaderMain></HeaderMain>
+            
             <body css={mainBody}>
                 <Slide></Slide>
                 <Recommend></Recommend>

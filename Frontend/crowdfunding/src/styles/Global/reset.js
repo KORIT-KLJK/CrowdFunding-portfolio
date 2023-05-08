@@ -53,7 +53,7 @@ body {
 	line-height: 19px;
 	color: #202020;
 	line-height: 1;
-	background:var(--body-background-color);
+	/* background:var(--body-background-color); */
 }
 ol, ul {
 	list-style: none;
