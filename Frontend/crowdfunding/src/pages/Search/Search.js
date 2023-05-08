@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import React, { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
+import { HiHome } from 'react-icons/hi';
 
 const searchMainContainer = css`
     width: 900px;
@@ -173,7 +174,7 @@ const searchSortButton = css`
     border: none;
     font-size: 15px;
     background-color: white;
-`
+`;
 const direction = css`
     display: flex;
     justify-content: center;
@@ -183,7 +184,7 @@ const direction = css`
 
     font-size: 20px;
     border: none;
-`
+`;
 
 const sortCategoryList = css`
     width: 100%;
@@ -191,7 +192,7 @@ const sortCategoryList = css`
     border: 1px solid black;
     border-top: none;
     cursor: pointer;
-`
+`;
 
 const sortCategory = css`
     display: flex;
@@ -200,8 +201,81 @@ const sortCategory = css`
 
     margin-top: 15px;
     margin-bottom: 10px;
+`;
+
+const searchResultPanel = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px 0px;
+    width: 100%;
+    height: 130px;
+
+    border-bottom: 1px solid #dbdbdb;
+`;
+
+const panelImgContainer = css`
+    width: 15%;
+`;
+
+const panelImg = css`
+    width: 100%;
 `
 
+const panelInfo = css`
+    display: flex;
+    flex-direction: column;
+
+    padding-left: 20px;
+    width: 65%;
+`;
+
+const panelTitle = css`
+    display: flex;
+`;
+
+const progress = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 5px;
+    width: 50px;
+    background-color: green;
+    color: white;
+
+    font-size: 12px;
+`;
+
+const panelTitleText = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 5px;
+    font-size: 15px;
+`;
+
+const centerName = css`
+    display: flex;
+    
+    padding-top: 10px;
+    font-size: 14px;
+`;
+
+const panelTotalAmount = css`
+    display: flex;
+   
+    width:20%;
+
+    font-size: 20px;
+`;
+
+const Amount = css`
+    margin: 0px 10px;
+    color: green;
+`;
 
 const Search = () => {
     const [giveflage, setGiveflage] = useState(false);
@@ -264,9 +338,92 @@ const Search = () => {
                                     <li css={sortCategory} onClick={sortWordChange}>진행중</li>
                                     <li css={sortCategory} onClick={sortWordChange}>종료</li>
                                     </ul>) : ""}
-                                
                            </div>
                         </div>
+                    </div>
+                    <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
+                    </div>
+                     <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
+                    </div>
+                     <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
+                    </div>
+                     <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
+                    </div>
+                     <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
+                    </div>
+                     <div css={searchResultPanel}>
+                        <div css={panelImgContainer}>
+                            <img css={panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
+                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
+                        </div>
+                        <div css={panelInfo}>
+                            <div css={panelTitle}>
+                                <div css={progress}>진행중</div>
+                                <div css={panelTitleText}> 행복한 어린이 날</div>    
+                            </div>
+                            <div css={centerName}> <HiHome/> 모두의 마블</div>
+                        </div>
+                        <div css={panelTotalAmount}>총 <div css={Amount}>5,555,000</div> 원</div>
                     </div>
                 </div>
             </div>
