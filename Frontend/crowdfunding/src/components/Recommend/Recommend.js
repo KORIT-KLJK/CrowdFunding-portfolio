@@ -1,6 +1,19 @@
-/** @jsxImportSource @emotion/react */
+    /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
+
+const mainKeywordContainer = css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    padding-inline-start: 40px;
+
+`;
 
 const keywordContainer = css`
     display: flex;
@@ -26,11 +39,13 @@ const keywordItem = css`
 
 const Recommend = () => {
     return (
-        <ul css={keywordContainer}>
-            <li css={keywordItem}>#어린이날</li>
-            <li css={keywordItem}>#어버이날</li>
-            <li css={keywordItem}>#기업이랑 기부</li>
-        </ul>
+        <div css={mainKeywordContainer}>
+            <ul css={keywordContainer}>
+                <li css={keywordItem}>#어린이날</li>
+                <li css={keywordItem}>#어버이날</li>
+                <li css={keywordItem}>#기업이랑 기부</li>
+            </ul>
+        </div>
     );
 };
 
