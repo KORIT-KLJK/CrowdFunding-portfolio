@@ -29,10 +29,6 @@ public class SignUpService {
 		}
 	}
 	 
-	public void address(AddressReqDto addressReqDto) {
-		Address addressEntity = addressReqDto.toEntity();
-		signUpRepository.saveAddress(addressEntity);
-	}
 	
 	public void signUp(SignUpReqDto signUpReqDto) {
 		// iuejeong: dto에서 받은 정보들을 User 객체로 값을 넘겨야 하기 때문에 변환을 해서 저장소로 넘긴다.
@@ -45,6 +41,13 @@ public class SignUpService {
 				.userId(userEntity.getUserId())
 				.roleId(1)
 				.build());
+		signUpRepository.saveAddress(Address.builder().userId(userEntity.getUserId()).build());
+	}
+	
+	public void address(AddressReqDto addressReqDto) {
+		System.out.println(addressReqDto);
+		Address addressEntity = addressReqDto.toEntity();
+		signUpRepository.saveAddress(addressEntity);
 	}
 	
 }

@@ -26,18 +26,12 @@ public class SignUpController {
 	
 	@ValidAspect
 	@PostMapping("/auth/checkemail")
-	public ResponseEntity<?> signup(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
+	public ResponseEntity<?> duplicatedEmail(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
 		System.out.println(email);
 		signUpService.duplicatedEmail(email.getEmail());
 		return ResponseEntity.ok().body(true);
 	}
 	
-	@ValidAspect
-	@PostMapping("/auth/address")
-	public ResponseEntity<?> signup(@Valid @RequestBody AddressReqDto addressReqDto, BindingResult bindingResult) {
-		System.out.println(addressReqDto);
-		return ResponseEntity.ok().body(true);
-	}
 	// iuejeong: Post요청의 데이터 처리
 	// iuejeong: @Valid를 달아주면 dto 안에 있는 email(), Pattern()을 검사해준다
 	// iuejeong: @Valid와 BindingResult는 세트임. signUpReqDto의 오류를 BindingResult에게 모두 넘겨준다.
@@ -47,6 +41,14 @@ public class SignUpController {
 		System.out.println(signUpReqDto);
 		signUpService.signUp(signUpReqDto);
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.
+		return ResponseEntity.ok().body(true);
+	}
+	
+	@ValidAspect
+	@PostMapping("/auth/address")
+	public ResponseEntity<?> address(@Valid @RequestBody AddressReqDto addressReqDto, BindingResult bindingResult) {
+		System.out.println(addressReqDto);
+		signUpService.address(addressReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
