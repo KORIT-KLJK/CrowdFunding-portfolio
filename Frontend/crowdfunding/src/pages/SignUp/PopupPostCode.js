@@ -9,8 +9,8 @@ export const ModalContainer = css`
   left: 0;
   z-index: 99;
   width: 100%;
-  height: 100%;
-  background-color: #00000077;    
+  height: 1000px;
+  background-color: #00000077;
 `;
 
 export const buttonHeader = css`
@@ -39,8 +39,16 @@ export const mainAddress = css`
 
 
 const PopupPostCode = (props) => {
-	// 우편번호 검색 후 주소 클릭 시 실행될 함수, data callback 용
+
     const handlePostCode = (data) => {
+      const { zonecode, address, buildingName, bname, addressType } = data;
+      props.setAddress({
+        zonecode,
+        address,
+        buildingName,
+        bname,
+        addressType,
+      });
         let fullAddress = data.address;
         let extraAddress = ''; 
         
@@ -53,8 +61,9 @@ const PopupPostCode = (props) => {
           }
           fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
         }
-        props.postcodeRef.current.value = data.zonecode;
-        props.addressRef.current.value = fullAddress;
+        console.log(data)
+        console.log(fullAddress)
+        console.log(data.zonecode)
         props.onClose()
     }
  

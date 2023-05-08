@@ -2,6 +2,7 @@ package com.webproject.crowdfunding.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.webproject.crowdfunding.entity.Address;
 import com.webproject.crowdfunding.entity.Authority;
 import com.webproject.crowdfunding.entity.User;
 
@@ -10,6 +11,7 @@ import com.webproject.crowdfunding.entity.User;
 @Mapper
 public interface SignUpRepository {
 	public User findUserByEmail(String email);
+	public int saveAddress(Address address);
 	public int signUpUser(User user);
 	public int saveAuthority(Authority authority);
 }

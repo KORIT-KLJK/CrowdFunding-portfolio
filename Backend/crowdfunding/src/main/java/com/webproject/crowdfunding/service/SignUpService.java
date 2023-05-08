@@ -2,7 +2,9 @@ package com.webproject.crowdfunding.service;
 
 import org.springframework.stereotype.Service;
 
+import com.webproject.crowdfunding.dto.AddressReqDto;
 import com.webproject.crowdfunding.dto.SignUpReqDto;
+import com.webproject.crowdfunding.entity.Address;
 import com.webproject.crowdfunding.entity.Authority;
 import com.webproject.crowdfunding.entity.User;
 import com.webproject.crowdfunding.exception.CustomException;
@@ -18,12 +20,18 @@ public class SignUpService {
 	private final SignUpRepository signUpRepository;
 	
 	 public void duplicatedEmail(String email) {
+		System.out.println(email);
 		if(signUpRepository.findUserByEmail(email) != null) {
 			throw new CustomException("Duplicated Email", 
 					ErrorMap.builder()
 					.put("email", "사용 중인 email입니다.")
 					.build());
 		}
+	}
+	 
+	public void address(AddressReqDto addressReqDto) {
+		Address addressEntity = addressReqDto.toEntity();
+		signUpRepository.saveAddress(addressEntity);
 	}
 	
 	public void signUp(SignUpReqDto signUpReqDto) {
