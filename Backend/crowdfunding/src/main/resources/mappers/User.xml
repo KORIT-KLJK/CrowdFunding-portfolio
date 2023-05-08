@@ -9,7 +9,6 @@
 		<result property="name" column="name"/>
 		<result property="birthday" column="birth_day"/>
 		<result property="gender" column="gender"/>
-		<result property="address" column="address"/>
 		<collection property="authorities" resultMap="authorityMap" javaType="list"></collection>
 	</resultMap>
 	
@@ -25,12 +24,23 @@
 		<result property="roleName" column="role_name"/>
 	</resultMap>
 	
+	<resultMap type="com.webproject.crowdfunding.entity.Address" id="addressMap">
+		<id property="addressId" column="address_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="zonecode" column="zonecode"/>
+		<result property="address" column="address"/>
+		<result property="buildingName" column="building_name"/>
+		<result property="bname" column="bname"/>
+		<result property="detailAddress" column="detail_address"/>
+		<result property="addressType" column="address_type"/>
+	</resultMap>
+	
 	<insert id="signUpUser"
 		parameterType="com.webproject.crowdfunding.entity.User"
 		useGeneratedKeys="true"
 		keyProperty="userId">
 		insert into user_tb
-		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, #{address})
+		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender})
 	</insert>
 	
 	<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">
@@ -47,7 +57,6 @@
 			ut.name,
 			ut.birth_day,
 			ut.gender,
-			ut.address,
 			
 			at.authority_id,
 			at.user_id,
@@ -62,6 +71,14 @@
 		where
 			ut.email = #{email}
 	</select>
+	
+	<insert id="saveAddress" 
+				parameterType="com.webproject.crowdfunding.entity.Address"
+				useGeneratedKeys="true"
+				keyProperty="addressId">
+		insert into address_tb
+		values(0, #{userId}, #{zonecode}, #{address}, #{buildingName}, #{bname}, #{detailAddress}, #{addressType})
+	</insert>
 		 
 	
 </mapper>
