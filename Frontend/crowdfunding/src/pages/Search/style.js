@@ -3,7 +3,7 @@ import {css} from "@emotion/react";
 
 export const searchMainContainer = css`
     width: 900px;
-    height: 2000px;
+    height: 1999px;
     margin: auto;
     margin-top: 10px;
 `;
