@@ -9,13 +9,6 @@ export const Reset = css`
 * {
 	box-sizing: border-box;
 }
-:root{
-	--body-background-color: #f5f6f7;
-	--font-color: #4e4e4e;
-	--border-gray-color : #dadada;
-	--naver-green-color: #04c75a;
-	--naver-green-border-color: #06b350;
-}
 
 *{
 	margin:0;

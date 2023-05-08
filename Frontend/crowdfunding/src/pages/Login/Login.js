@@ -2,7 +2,6 @@
 import { css } from '@emotion/react'
 import React from 'react';
 import axios from 'axios';
-import img from '../images/logo.png'
 
 const mainContainer = css`
     width:100%;
