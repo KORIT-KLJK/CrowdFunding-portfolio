@@ -4,6 +4,7 @@ import React from 'react';
 import HeaderMain from '../../components/Header/HeaderMain/HeaderMain';
 import Slide from '../../components/Bannder/swiper/Slide';
 import Recommend from '../../components/Recommend/Recommend';
+import MainDonationList from '../../components/MainCard/MainDonationList/MainDonationList';
 
 const mainContainer = css`
     padding: 10px;
@@ -12,6 +13,10 @@ const mainContainer = css`
 
 const mainBody = css`
 
+`;
+
+const mainBodyDetails = css`
+    margin-top: 71px;
 `;
 
 const mainBanner = css`
@@ -30,11 +35,13 @@ const Main = () => {
         <div mainContainer={mainContainer}>
             
             <body css={mainBody}>
-                <Slide></Slide>
-                <Recommend></Recommend>
-                <div>
-                    
-                </div>
+                <HeaderMain></HeaderMain>
+                <main css={mainBodyDetails}>
+                    <Slide></Slide>
+                    <Recommend></Recommend>
+                    <MainDonationList></MainDonationList>
+
+                </main>
             </body>
             <footer>
 

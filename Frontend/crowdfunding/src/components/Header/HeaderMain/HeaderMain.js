@@ -1,30 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const mainHeader = css`
-    border-bottom: 1px solid #f0f0f0;
-    border-color: #fff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 30;
+    border-bottom: 1px solid #e8e8e8;
+
+    background-color: #fff;
     text-align: right;
+
 `;
 
 const header = css`
     position: relative;
     width: 1140px;
     height: 70px;
+
     margin: 0 auto;
-`;
-
-const headerMenu = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 23px;
-    right: 100px;
-    left: 100px;
-    text-align: center;
 `;
 
 const headerLogo = css`
@@ -33,8 +30,11 @@ const headerLogo = css`
 `;
 
 const headerMenuList = css`
-    display: flex;
-    align-items: center;
+    position: absolute;
+    top: 23px;
+    right: 100px;
+    left: 100px;
+    text-align: center;
     
 `;
 
@@ -65,7 +65,6 @@ const loginButton = css`
     position: relative;
     z-index: 1;
     margin-top: 26px;
-    vertical-align: top;
     color: #333;
 `;
 
@@ -89,23 +88,21 @@ const headerUserBar = css`
 
 const HeaderMain = () => {
     return (
-        <div>
-            <header css={mainHeader}>
+        <div css={mainHeader}>
+            <div>
                 <div css={header}>
                     <div css={headerLogo}>LOGO</div>
-                    <div css={headerMenu}>
-                        <div css={headerMenuList}>
-                            <div css={menuDonation}>기부</div>
-                            <div css={menuFunding}>펀딩</div>
-                        </div>
+                    <div css={headerMenuList}>
+                        <div css={menuDonation}><Link to="/donation">기부</Link></div>
+                        <div css={menuFunding}>펀딩</div>
                     </div>
-                        <div css={headerRight}>
-                            <div css={loginButton}>로그인</div>
-                            <span css={headerUserBar}></span>
-                            <button css={searchButton}>검색</button>
-                        </div>
+                    <div css={headerRight}>
+                        <div css={loginButton}><Link to="/login">로그인</Link></div>
+                        <span css={headerUserBar}></span>
+                        <button css={searchButton}><Link to="/search">검색</Link></button>
+                    </div>
                 </div>
-            </header>
+            </div>
         </div>
     );
 };
