@@ -12,7 +12,7 @@ import axios from 'axios';
 const Search = () => {
     const queryClient = useQueryClient();
 
-    const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"전체", searchSort:"최신순", searchTema:"전체"});
+    const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"전체", searchSort:"전체", searchTema:"최신순"});
     const [refresh, setRefresh] = useState(true);
     const [findGivingData, setFindGivingDate] = useState({
         img_url: "",
@@ -75,6 +75,56 @@ const Search = () => {
     const searchValueChange = (e) => {
         setSearchParam({...searchParam, searchValue: e.target.value})
     }
+
+    // const pageNation = () => {
+    //     if(getBooks.isLoading) {
+    //         return <></>;
+    //     }
+
+    //     const nowPage = searchParams.page
+
+    //     const lastPage = getBooks.data.data.totalCount % 20 === 0 
+    //         ? getBooks.data.data.totalCount / 20 
+    //         : Math.floor(getBooks.data.data.totalCount / 20) + 1;
+
+    //     const startIndex = searchParam.page % 5 === 0 ? nowPage - 4 : nowPage - (nowPage % 5) + 1;
+    //     const endIndex = startIndex + 4 <= lastPage ? startIndex + 4 : lastPage;
+
+    //     const pageNumbers = [];
+
+    //     for(let i = startIndex; i <= endIndex; i++) {
+    //         pageNumbers.push(i);
+    //     }
+
+    //     return (
+    //         <>
+    //              <button disabled={nowPage === 1} onClick={() => {
+    //                 setSearchParam({...searchParam, page: 1});
+    //                 setRefresh(true);
+    //             }}>&#60;&#60;</button>
+
+    //             <button disabled={nowPage === 1} onClick={() => {
+    //                 setSearchParam({...searchParam, page: nowPage-1});
+    //                 setRefresh(true);
+    //             }}>&#60;</button>
+
+    //             {pageNumbers.map(page => (<button key={page} onClick={() =>{
+    //                 setSearchParam({...searchParam, page});
+    //                 setRefresh(true);
+    //             }}disabled={page === nowPage}>{page}</button>))}
+
+    //             <button disabled={nowPage === lastPage} onClick={() => {
+    //                 setSearchParam({...searchParam, page: nowPage+1});
+    //                 setRefresh(true);
+    //             }}>&#62;</button>
+
+    //             <button disabled={nowPage === lastPage} onClick={() => {
+    //                 setSearchParam({...searchParam, page: lastPage});
+    //                 setRefresh(true);
+    //             }}>&#62;&#62;</button>
+    //         </>
+    //     )
+    // }
 
     return (
         <div css={S.searchMainContainer}>
