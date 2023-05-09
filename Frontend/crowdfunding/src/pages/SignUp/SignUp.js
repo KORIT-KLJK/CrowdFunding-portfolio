@@ -48,26 +48,15 @@ const SignUp = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const postcodeRef = useRef(null);
     const addressRef = useRef(null);
-    const [signUp, setSignUp] = useState({email: "", password: "", confirmPassword: "", name: "", birthday: "", gender: ""});
+    const [signUp, setSignUp] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: ""});
     const [address, setAddress] = useState({zonecode: "", address: "", buildingName: "", bname: "", detailAddress: "", addressType: ""});
-    const [errorMessage, setErrorMessages] = useState({email: "", password: "", name: ""});
+    const [errorMessage, setErrorMessages] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""});
+    const [emailSubmitDisabled, setEmailSubmitDisabled] = useState(true);
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
         setSignUp({...signUp, [name]: value})
-        if (name === "confirmPassword") {
-            if (value !== signUp.password) {
-            setErrorMessages({
-                ...errorMessage,
-                confirmPassword: "비밀번호와 일치하지 않습니다."
-            });
-            } else {
-            setErrorMessages({
-                ...errorMessage,
-                confirmPassword: ""
-            });
-            }
-        }
+        setErrorMessages({...errorMessage, email: ""});
     }
 
     const onChangeAddressHandler = (e) => {
@@ -75,7 +64,6 @@ const SignUp = () => {
         setAddress({...address, [name]: value})
     }
     
-    console.log(setAddress)
     const checkDuplicateEmail = async () => {
         const data = {
             email: signUp.email
@@ -85,15 +73,22 @@ const SignUp = () => {
                 "Content-Type": "application/json"
             }
         }
+
         try {
             await axios.post("http://localhost:8080/auth/checkemail", JSON.stringify(data), option)
             setErrorMessages({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
         }catch(error) {
             setErrorMessages({email: error.response.data.errorData.email})
         }
+        setEmailSubmitDisabled(false);
     }
 
     const signUpSubmit = async () => {
+        if (emailSubmitDisabled) {
+            setErrorMessages({email: "이메일 중복확인을 해주세요."})
+            return;
+        }
+        
         const data = {
             ...signUp, ...address
         }
@@ -106,11 +101,19 @@ const SignUp = () => {
         try {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
             await axios.post("http://localhost:8080/auth/address", JSON.stringify(data), option)
-            setErrorMessages({password: "", name: ""});
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""})
+            
         }catch(error) {
-            setErrorMessages({password: "", name: "", ...error.response.data.errorData})
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
+            console.log(error)
         }
-    }
+
+        if (signUp.password !== signUp.confirmPassword) {
+            setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."})
+            return;
+        }
+
+    };
 
     // 팝업창 열기
     const openPostCode = () => {
@@ -146,14 +149,26 @@ const SignUp = () => {
                     <div css={errorMsg}>{errorMessage.name}</div>
 
                     <label css={inputLabel}>성별</label>
-                    <input css={inputValue} type="text" placeholder="성별 입력" onChange={onChangeHandler} name="gender"/>
-                    
+                    <div css={inputValue}>
+                        <label>
+                            <input type="radio" name="gender" value="male" onChange={onChangeHandler} />
+                            남성
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" value="female" onChange={onChangeHandler} />
+                            여성
+                        </label>
+                    </div>
+                    <div css={errorMsg}>{errorMessage.gender}</div>
+
                     <label css={inputLabel}>생년월일</label>
-                    <input css={inputValue} type="text" placeholder="생년월일 8자리 입력" onChange={onChangeHandler} name="birthday"/>
+                    <input css={inputValue} type="text" placeholder="yyyy-MM-dd 형식으로 작성" onChange={onChangeHandler} name="birthday"/>
+                    <div css={errorMsg}>{errorMessage.birthday}</div>
 
                     <label css={inputLabel}>주소</label>
                     <input type="text" placeholder="우편번호" ref={postcodeRef} onChange={onChangeAddressHandler} name="zonecode" value={address.zonecode}/>
                     <button css={checkedEmailAndAddress} onClick={openPostCode}>우편번호 검색</button>
+                    <div css={errorMsg}>{errorMessage.zonecode}</div>
                     <div id='popupDom'>
                     {isPopupOpen && (
                         <PopupDom>
@@ -166,7 +181,9 @@ const SignUp = () => {
                     )}
                     </div>
                     <input css={inputAddress} type="text" placeholder="주소" ref={addressRef} onChange={onChangeAddressHandler} name="address" value={address.address  + address.buildingName}/>
+                    <div css={errorMsg}>{errorMessage.address}</div>
                     <input css={inputAddress} type="text" placeholder="상세주소" onChange={onChangeAddressHandler} name="detailAddress" />
+                    <div css={errorMsg}>{errorMessage.detailAddress}</div>
                     <button css={signUpButton} onClick={signUpSubmit}>가입하기</button>
                 </div>
             </main>
