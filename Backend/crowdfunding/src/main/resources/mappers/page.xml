@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.PageRepository">
+
+<resultMap type="com.webproject.crowdfunding.entity.Page" id="PageMap">
+	<id property="pageId" column="page_id"/>
+	<result property="pageTitle" column="page_title"/>
+	<result property="username" column="user_name"/>
+	<result property="eventStatus" column="event_status"/>
+	<result property="pageTotalAmount" column="page_total_amount"/>
+	<result property="imgUrl" column="img_url"/>
+</resultMap>
+
+	<select id="getTotalCount" parameterType="hashMap" resultType="Integer">
+		<if test="searchCategory == '전체'">
+			select count(*) as total_count from(
+				select 
+					*
+				from 
+					giving_page_tb
+				where 
+					1 = 1
+				<if test="searchValue != null">
+					and where giving_name like concat("%", #{searchValue},"%")
+				</if>
+				
+				union all
+				
+				select
+					*
+				from funding_tb
+					where 
+					1 = 1
+				<if test="searchValue != null">
+					and where giving_name like concat("%", #{searchValue},"%")
+				</if>) as combined_tables;
+		</if>
+		<if test="searchCategory == '기부'">
+			select 
+				count(*) as total_count
+			from 
+				giving_page_tb
+			where 
+					1 = 1
+			<if test="searchValue != null">
+				and where giving_name like concat("%", #{searchValue},"%")
+			</if>
+		</if>
+		<if test="searchCategory == '펀드'">
+			select
+				count(*) as total_count
+			from
+				funding_tb
+			where 
+				1 = 1
+			<if test="searchValue != null">
+			and where giving_name like concat("%", #{searchValue},"%")
+			</if>
+		</if>
+	</select>
+	
+	<select id="searchPageInfo" parameterType="hashMap" resultMap="PageMap">
+		<if test="searchCategory == '전체' AND searchTema == '최신순'">
+		
+		</if>
+		
+	</select>
+	
+	
+
+</mapper>
