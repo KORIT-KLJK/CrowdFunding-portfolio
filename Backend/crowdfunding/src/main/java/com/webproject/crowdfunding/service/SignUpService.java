@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class SignUpService {
 	
 	private final SignUpRepository signUpRepository;
+	private User userEntity;
 	
 	 public void duplicatedEmail(String email) {
 		System.out.println(email);
@@ -32,7 +33,8 @@ public class SignUpService {
 	
 	public void signUp(SignUpReqDto signUpReqDto) {
 		// iuejeong: dto에서 받은 정보들을 User 객체로 값을 넘겨야 하기 때문에 변환을 해서 저장소로 넘긴다.
-		User userEntity = signUpReqDto.toEntity();
+		userEntity = signUpReqDto.toEntity();
+		Address address = new Address();
 		signUpRepository.signUpUser(userEntity);
 		
 		// iuejeong: 회원가입과 동시에 권한까지 저장소로 넘긴다.
@@ -41,12 +43,13 @@ public class SignUpService {
 				.userId(userEntity.getUserId())
 				.roleId(1)
 				.build());
-		signUpRepository.saveAddress(Address.builder().userId(userEntity.getUserId()).build());
 	}
 	
 	public void address(AddressReqDto addressReqDto) {
 		System.out.println(addressReqDto);
+		System.out.println(userEntity.getUserId());
 		Address addressEntity = addressReqDto.toEntity();
+		addressEntity.setUserId(userEntity.getUserId());
 		signUpRepository.saveAddress(addressEntity);
 	}
 	

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class AddressReqDto {
-	private int zonecode;
+	private String zonecode;
 	private String address;
 	private String buildingName;
 	private String bname;
