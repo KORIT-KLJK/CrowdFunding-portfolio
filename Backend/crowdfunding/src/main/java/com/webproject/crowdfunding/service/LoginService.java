@@ -25,12 +25,12 @@ public class LoginService {
 		// iuejeong: 우리는 email과 password로 로그인을 할 것이기 때문에 email을 받는 것
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword());
-		
 		// iuejeong: authenticationManagerBuilder가 인증 체계를 관리하기 때문에 이메일과 비밀번호를 넘겨준다.
 		// iuejeong: authenticationManagerBuilder가 만들어진 순간에 PrincipalDetailsService 안에 있는 loadUserByUsername이 실행이 되고 인증 과정에 들어간다.
 		// iuejeong: 인증이 성공을 하게 되면 Authentication 객체가 생성이 된다.
 		// iuejeong: 토큰의 대한 정보를 넣고, 생성을 하기 위해 인증 성공한 정보를 return값에 넣어준다.
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		System.out.println(authentication);
 		return jwtTokenProvider.generateToken(authentication);
 	}
 	

@@ -102,7 +102,6 @@ const SignUp = () => {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
             await axios.post("http://localhost:8080/auth/address", JSON.stringify(data), option)
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""})
-            
         }catch(error) {
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
             console.log(error)

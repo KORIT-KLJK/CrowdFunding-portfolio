@@ -21,9 +21,9 @@ public class LoginController {
 	private final LoginService loginService;
 	
 	@ValidAspect
-	@PostMapping("/login")
+	@PostMapping("/auth/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
-		
+		System.out.println(loginReqDto);
 		// iuejeong: 값을 ok 안에 넣거나, body 안에 넣거나 똑같다. 하지만 badRequest는 안 됨. ok만 가능
 		return ResponseEntity.ok(loginService.login(loginReqDto));
 	}

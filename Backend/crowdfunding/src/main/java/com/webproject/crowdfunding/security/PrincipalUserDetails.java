@@ -27,6 +27,7 @@ public class PrincipalUserDetails implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		System.out.println(roles);
 		roles.forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role.getRole().getRoleName()));	// iuejeong: 권한 객체를 생성
 		});

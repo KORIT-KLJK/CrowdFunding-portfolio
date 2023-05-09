@@ -37,7 +37,7 @@ public class JwtTokenProvider {
 	}
 
 	public JwtRespDto generateToken(Authentication authentication) {
-
+		System.out.println(authentication);
 		StringBuilder builder = new StringBuilder();
 		authentication.getAuthorities().forEach(authority -> {
 			builder.append(authority.getAuthority() + ","); // code8144, iuejeong: 문자열 사용가능, role이 하나씩 나온다.
