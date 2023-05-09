@@ -4,38 +4,51 @@ import React, { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { HiHome } from 'react-icons/hi';
 import * as S from './style'
-import { useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
+import axios from 'axios';
 
 
 
 const Search = () => {
     const queryClient = useQueryClient();
-    
-    const [searchParam, setSearchParam] = useState();
-    const [refresh, setRefresh] = useState();
-    const [findGivingData, setFindGivingDate] = useState({})
 
-    const [giveflage, setGiveflage] = useState(false);
-    const [fundflage, setFundflage] = useState(false);
+    const [searchParam, setSearchParam] = useState({page:1, searchCategory:{categoryName}, searchSort:{sortWord}, searchTema:{sortTemaWord}});
+    const [refresh, setRefresh] = useState(true);
+    const [findGivingData, setFindGivingDate] = useState({
+        img_url: "",
+        givingPageTitle:"",
+        centerName:"",
+        givingAmount:"",
+        endDate:""
+    });
+
+    const [findFundingData, setFundingData] = useState({
+        img_url: "",
+        fundingPageTitle:"",
+        userName:"",
+        fundingAmount:"",
+        endDate:""
+    });
+
+    const getPageData = useQuery(["registerSearchPage"], async () => {
+        const option = {
+            params: {
+                ...searchParam
+            }
+        }
+        return await axios.get('http://localhost:8080/get/search/page')
+    },{
+        enabled:refresh,
+        onSuccess: () => {
+            setRefresh(false);
+        }
+    }
+    )
 
     const [sortHidenFlage, setSortHidenFlage] = useState(false);
     const [sortTemaWord, setSortTemaWord] = useState("최신순")
     const [sortWord, setSortWord] = useState("전체");
-
-
-    const giveSateChange = () => {
-        if(!giveflage) {
-            setGiveflage(true)
-            setFundflage(false)
-        }
-    }
-
-    const fundSateChange = () => {
-        if(!fundflage) {
-            setFundflage(true)
-            setGiveflage(false)
-        }
-    }
+    const [categoryName, setCategoryName] = useState("전체");
 
     const sortTemaWordChange = (e) => {
         setSortTemaWord(e.target.textContent);
@@ -53,6 +66,9 @@ const Search = () => {
         setSortWord(e.target.textContent);
     }
 
+    const categoryChange = (e) => {
+        setCategoryName(e.target.textContent);
+    }
 
     return (
         <div css={S.searchMainContainer}>
@@ -62,8 +78,8 @@ const Search = () => {
             </div>
             <div css={S.searchResultBox}>
                 <div css={S.searchResultCategory}>
-                    <button onClick={giveSateChange} css={giveflage ? S.trueCategoryButton : S.falseCategoryButton}>기부</button>
-                    <button onClick={fundSateChange} css={fundflage ? S.trueCategoryButton : S.falseCategoryButton}>펀딩</button>
+                    <button onClick={categoryChange} css={categoryName === "기부" ? S.trueCategoryButton : S.falseCategoryButton}>기부</button>
+                    <button onClick={categoryChange} css={categoryName === "펀딩" ? S.trueCategoryButton : S.falseCategoryButton}>펀딩</button>
                 </div>
                 <div css={S.searchResultContainer}>
                     <div css={S.searchResultTop}>
