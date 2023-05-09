@@ -21,18 +21,18 @@
 				where 
 					1 = 1
 				<if test="searchValue != null">
-					and where giving_name like concat("%", #{searchValue},"%")
+					and giving_name like concat("%", #{searchValue},"%")
 				</if>
 				
 				union all
 				
 				select
 					*
-				from funding_tb
+				from funding_page_tb
 					where 
 					1 = 1
 				<if test="searchValue != null">
-					and where giving_name like concat("%", #{searchValue},"%")
+					and funding_name like concat("%", #{searchValue},"%")
 				</if>) as combined_tables;
 		</if>
 		<if test="searchCategory == '기부'">
@@ -43,27 +43,253 @@
 			where 
 					1 = 1
 			<if test="searchValue != null">
-				and where giving_name like concat("%", #{searchValue},"%")
+				and giving_name like concat("%", #{searchValue},"%")
 			</if>
 		</if>
 		<if test="searchCategory == '펀드'">
 			select
 				count(*) as total_count
 			from
-				funding_tb
+				funding_page_tb
 			where 
 				1 = 1
 			<if test="searchValue != null">
-			and where giving_name like concat("%", #{searchValue},"%")
+			and funding_name like concat("%", #{searchValue},"%")
 			</if>
 		</if>
 	</select>
 	
 	<select id="searchPageInfo" parameterType="hashMap" resultMap="PageMap">
-		<if test="searchCategory == '전체' AND searchTema == '최신순'">
-		
+		<if test="searchCategory == '전체' &amp;&amp; searchTema == '최신순'">
+			select 
+				gpt.giving_page_id as page_id,
+			    gpt.register_date,
+			    gpt.giving_name as page_title,
+			    ct.center_name as user_name,
+			    if(Now() &lt; end_date, '진행중','종료') as event_status,
+			    sum(gt.giving_total) as page_total_amount,
+			    gpt.main_img_url as img_url
+			from
+				giving_page_tb gpt 
+			    left outer join center_tb ct on (ct.center_id = gpt.center_id)
+			    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
+			group by
+				gpt.giving_page_id
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and giving_name like concat("%", #{searchValue},"%")
+			</if>
+			union all
+			select
+				ft.funding_id AS page_id,
+			    ft.register_date,
+			    ft.funding_name AS page_title,
+			    ut.name AS user_name,
+			    IF(NOW() &lt; ft.register_date, '진행중', '종료') AS event_status,
+			    sum(fdt.reward_price)as page_total_amount,
+			    ft.main_img_url AS img_url
+			from
+				funding_page_tb ft
+			    left outer join user_tb ut on(ut.user_id = ft.user_id)
+				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
+			    left outer join (select 
+						rt.reward_id, 
+						rt.reward_price 
+					from 
+						funder_tb ft 
+						left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+					) fdt on(fdt.reward_id = rwt.reward_id)
+			group by
+				ft.funding_id,
+			    ft.funding_name,
+			    ut.name,
+			    event_status,
+			    ft.main_img_url
+			  Having
+				1 = 1
+			<if test="searchValue != null">
+				and funding_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				register_date desc
+			limit #{index}, 20;
 		</if>
 		
+		<if test="searchCategory == '기부' &amp;&amp; searchTema == '최신순'">
+			select 
+				gpt.giving_page_id as page_id,
+			    gpt.register_date,
+			    gpt.giving_name as page_title,
+			    ct.center_name as user_name,
+			    if(Now() &lt; end_date, '진행중','종료') as event_status,
+			    sum(gt.giving_total) as page_total_amount,
+			    gpt.main_img_url as img_url
+			from
+				giving_page_tb gpt 
+			    left outer join center_tb ct on (ct.center_id = gpt.center_id)
+			    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
+			group by
+				gpt.giving_page_id
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and giving_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				register_date desc
+			limit #{index}, 20;
+		</if>
+		<if test="searchCategory == '펀드' &amp;&amp; searchTema == '최신순'">
+			select
+				ft.funding_id AS page_id,
+			    ft.register_date,
+			    ft.funding_name AS page_title,
+			    ut.name AS user_name,
+			    IF(NOW() &lt; ft.register_date, '진행중', '종료') AS event_status,
+			    sum(fdt.reward_price)as page_total_amount,
+			    ft.main_img_url AS img_url
+			from
+				funding_page_tb ft
+			    left outer join user_tb ut on(ut.user_id = ft.user_id)
+				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
+			    left outer join (select 
+						rt.reward_id, 
+						rt.reward_price 
+					from 
+						funder_tb ft 
+						left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+					) fdt on(fdt.reward_id = rwt.reward_id)
+			group by
+				ft.funding_id,
+			    ft.funding_name,
+			    ut.name,
+			    event_status,
+			    ft.main_img_url
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and funding_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				register_date desc
+			limit #{index}, 20;
+		</if>
+		
+		<if test="searchCategory == '전체' &amp;&amp; searchTema == '금액순'">
+			select 
+				gpt.giving_page_id as page_id,
+			    gpt.register_date,
+			    gpt.giving_name as page_title,
+			    ct.center_name as user_name,
+			    if(Now() &lt; end_date, '진행중','종료') as event_status,
+			    sum(gt.giving_total) as page_total_amount,
+			    gpt.main_img_url as img_url
+			from
+				giving_page_tb gpt 
+			    left outer join center_tb ct on (ct.center_id = gpt.center_id)
+			    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
+			group by
+				gpt.giving_page_id
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and giving_name like concat("%", #{searchValue},"%")
+			</if>
+			union all
+			select
+				ft.funding_id AS page_id,
+			    ft.register_date,
+			    ft.funding_name AS page_title,
+			    ut.name AS user_name,
+			    IF(NOW() &lt; ft.register_date, '진행중', '종료') AS event_status,
+			    sum(fdt.reward_price)as page_total_amount,
+			    ft.main_img_url AS img_url
+			from
+				funding_page_tb ft
+			    left outer join user_tb ut on(ut.user_id = ft.user_id)
+				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
+			    left outer join (select 
+						rt.reward_id, 
+						rt.reward_price 
+					from 
+						funder_tb ft 
+						left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+					) fdt on(fdt.reward_id = rwt.reward_id)
+			group by
+				ft.funding_id,
+			    ft.funding_name,
+			    ut.name,
+			    event_status,
+			    ft.main_img_url
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and funding_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				page_total_amount desc
+			limit #{index}, 20;
+		</if>
+		<if test="searchCategory == '기부' &amp;&amp; searchTema == '금액순'">
+			select 
+				gpt.giving_page_id as page_id,
+			    gpt.register_date,
+			    gpt.giving_name as page_title,
+			    ct.center_name as user_name,
+			    if(Now() &lt; end_date, '진행중','종료') as event_status,
+			    sum(gt.giving_total) as page_total_amount,
+			    gpt.main_img_url as img_url
+			from
+				giving_page_tb gpt 
+			    left outer join center_tb ct on (ct.center_id = gpt.center_id)
+			    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
+			group by
+				gpt.giving_page_id
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and giving_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				page_total_amount desc
+			limit #{index}, 20;
+		</if>
+		<if test="searchCategory == '펀드' &amp;&amp; searchTema == '금액순'">
+			select
+				ft.funding_id AS page_id,
+			    ft.register_date,
+			    ft.funding_name AS page_title,
+			    ut.name AS user_name,
+			    IF(NOW() &lt; ft.register_date, '진행중', '종료') AS event_status,
+			    sum(fdt.reward_price)as page_total_amount,
+			    ft.main_img_url AS img_url
+			from
+				funding_page_tb ft
+			    left outer join user_tb ut on(ut.user_id = ft.user_id)
+				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
+			    left outer join (select 
+						rt.reward_id, 
+						rt.reward_price 
+					from 
+						funder_tb ft 
+						left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+					) fdt on(fdt.reward_id = rwt.reward_id)
+			group by
+				ft.funding_id,
+			    ft.funding_name,
+			    ut.name,
+			    event_status,
+			    ft.main_img_url
+			Having
+				1 = 1
+			<if test="searchValue != null">
+				and funding_name like concat("%", #{searchValue},"%")
+			</if>
+			order by 
+				page_total_amount desc
+			limit #{index}, 20;
+		</if>
 	</select>
 	
 	

@@ -2,10 +2,11 @@
 import {css} from "@emotion/react";
 
 export const searchMainContainer = css`
+
     width: 900px;
     height: 2000px;
     margin: auto;
-    margin-top: 10px;
+    margin-top: 100px;
 `;
 
 export const searchBox = css`

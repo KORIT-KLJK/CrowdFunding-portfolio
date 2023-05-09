@@ -30,6 +30,7 @@ public class PageService {
 		map.put("searchSort", searchPageReqDto.getSearchSort());
 		map.put("searchTema", searchPageReqDto.getSearchTema());
 		map.put("searchValue", searchPageReqDto.getSearchValue());
+		System.out.println(map);
 		
 		pageRepository.searchPageInfo(map).forEach(book-> {
 			list.add(book.toDto());

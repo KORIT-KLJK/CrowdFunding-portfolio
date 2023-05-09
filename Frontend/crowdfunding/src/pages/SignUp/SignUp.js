@@ -9,6 +9,7 @@ import axios from 'axios';
 export const mainContainer = css`
     width: 700px;
     margin: auto;
+    margin-top: 100px;
 `;
 
 export const inputLabel = css`

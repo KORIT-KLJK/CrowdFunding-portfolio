@@ -36,7 +36,7 @@ const Search = () => {
                 ...searchParam
             }
         }
-        return await axios.get('http://localhost:8080/get/search/page')
+        return await axios.get('http://localhost:8080/get/search/page',option)
     },{
         enabled:refresh,
         onSuccess: () => {
@@ -76,55 +76,55 @@ const Search = () => {
         setSearchParam({...searchParam, searchValue: e.target.value})
     }
 
-    // const pageNation = () => {
-    //     if(getBooks.isLoading) {
-    //         return <></>;
-    //     }
+    const pageNation = () => {
+        if(getPageData.isLoading) {
+            return <></>;
+        }
 
-    //     const nowPage = searchParams.page
+        const nowPage = searchParam.page
 
-    //     const lastPage = getBooks.data.data.totalCount % 20 === 0 
-    //         ? getBooks.data.data.totalCount / 20 
-    //         : Math.floor(getBooks.data.data.totalCount / 20) + 1;
+        const lastPage = getPageData.data.data.totalCount % 20 === 0 
+            ? getPageData.data.data.totalCount / 20 
+            : Math.floor(getPageData.data.data.totalCount / 20) + 1;
 
-    //     const startIndex = searchParam.page % 5 === 0 ? nowPage - 4 : nowPage - (nowPage % 5) + 1;
-    //     const endIndex = startIndex + 4 <= lastPage ? startIndex + 4 : lastPage;
+        const startIndex = searchParam.page % 5 === 0 ? nowPage - 4 : nowPage - (nowPage % 5) + 1;
+        const endIndex = startIndex + 4 <= lastPage ? startIndex + 4 : lastPage;
 
-    //     const pageNumbers = [];
+        const pageNumbers = [];
 
-    //     for(let i = startIndex; i <= endIndex; i++) {
-    //         pageNumbers.push(i);
-    //     }
+        for(let i = startIndex; i <= endIndex; i++) {
+            pageNumbers.push(i);
+        }
 
-    //     return (
-    //         <>
-    //              <button disabled={nowPage === 1} onClick={() => {
-    //                 setSearchParam({...searchParam, page: 1});
-    //                 setRefresh(true);
-    //             }}>&#60;&#60;</button>
+        return (
+            <>
+                 <button disabled={nowPage === 1} onClick={() => {
+                    setSearchParam({...searchParam, page: 1});
+                    setRefresh(true);
+                }}>&#60;&#60;</button>
 
-    //             <button disabled={nowPage === 1} onClick={() => {
-    //                 setSearchParam({...searchParam, page: nowPage-1});
-    //                 setRefresh(true);
-    //             }}>&#60;</button>
+                <button disabled={nowPage === 1} onClick={() => {
+                    setSearchParam({...searchParam, page: nowPage-1});
+                    setRefresh(true);
+                }}>&#60;</button>
 
-    //             {pageNumbers.map(page => (<button key={page} onClick={() =>{
-    //                 setSearchParam({...searchParam, page});
-    //                 setRefresh(true);
-    //             }}disabled={page === nowPage}>{page}</button>))}
+                {pageNumbers.map(page => (<button key={page} onClick={() =>{
+                    setSearchParam({...searchParam, page});
+                    setRefresh(true);
+                }}disabled={page === nowPage}>{page}</button>))}
 
-    //             <button disabled={nowPage === lastPage} onClick={() => {
-    //                 setSearchParam({...searchParam, page: nowPage+1});
-    //                 setRefresh(true);
-    //             }}>&#62;</button>
+                <button disabled={nowPage === lastPage} onClick={() => {
+                    setSearchParam({...searchParam, page: nowPage+1});
+                    setRefresh(true);
+                }}>&#62;</button>
 
-    //             <button disabled={nowPage === lastPage} onClick={() => {
-    //                 setSearchParam({...searchParam, page: lastPage});
-    //                 setRefresh(true);
-    //             }}>&#62;&#62;</button>
-    //         </>
-    //     )
-    // }
+                <button disabled={nowPage === lastPage} onClick={() => {
+                    setSearchParam({...searchParam, page: lastPage});
+                    setRefresh(true);
+                }}>&#62;&#62;</button>
+            </>
+        )
+    }
 
     return (
         <div css={S.searchMainContainer}>
@@ -156,90 +156,23 @@ const Search = () => {
                            </div>
                         </div>
                     </div>
-                    <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
-                     <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
-                     <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
-                     <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
-                     <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
-                     <div css={S.searchResultPanel}>
-                        <div css={S.panelImgContainer}>
-                            <img css={S.panelImg} src="https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720"
-                            alt='https://happybean-phinf.pstatic.net/20230428_23/1682638883837QfVjU_JPEG/KakaoTalk_20230427_201547249_01jpg?type=w720'/>
-                        </div>
-                        <div css={S.panelInfo}>
-                            <div css={S.panelTitle}>
-                                <div css={S.progress}>진행중</div>
-                                <div css={S.panelTitleText}> 행복한 어린이 날</div>    
-                            </div>
-                            <div css={S.centerName}> <HiHome/> 모두의 마블</div>
-                        </div>
-                        <div css={S.panelTotalAmount}>총 <div css={S.Amount}>5,555,000</div> 원</div>
-                    </div>
+                    {getPageData.isLoading ? "" : getPageData.data.data.pageList.map(page=> (
+                             <div key={page.pageId} css={S.searchResultPanel}>
+                             <div css={S.panelImgContainer}>
+                                 <img css={S.panelImg} src={page.imgUrl} alt={page.imgUrl}/>
+                             </div>
+                             <div css={S.panelInfo}>
+                                 <div css={S.panelTitle}>
+                                     <div css={S.progress}>{page.eventStatus}</div>
+                                     <div css={S.panelTitleText}>{page.pageTitle}</div>    
+                                 </div>
+                                 <div css={S.centerName}> <HiHome/> {page.userName}</div>
+                             </div>
+                             <div css={S.panelTotalAmount}>총 <div css={S.Amount}>{page.pageTotalAmount}</div> 원</div>
+                         </div>
+                    ))}
+                   
+                     
                 </div>
             </div>
 
