@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.SignUpRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.User" id="userMap">
+		<id property="userId" column="user_id"/>
+		<result property="email" column="email"/>
+		<result property="password" column="password"/>
+		<result property="name" column="name"/>
+		<result property="birthday" column="birth_day"/>
+		<result property="gender" column="gender"/>
+		<collection property="authorities" resultMap="authorityMap" javaType="list"></collection>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Authority" id="authorityMap">
+		<id property="authorityId" column="authority_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="roleId" column="role_id"/>
+		<association property="role" resultMap="roleMap" />
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Role" id="roleMap">
+		<id property="roleId" column="role_id"/>
+		<result property="roleName" column="role_name"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Address" id="addressMap">
+		<id property="addressId" column="address_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="zonecode" column="zonecode"/>
+		<result property="address" column="address"/>
+		<result property="buildingName" column="building_name"/>
+		<result property="bname" column="bname"/>
+		<result property="detailAddress" column="detail_address"/>
+		<result property="addressType" column="address_type"/>
+	</resultMap>
+	
+	<insert id="signUpUser"
+		parameterType="com.webproject.crowdfunding.entity.User"
+		useGeneratedKeys="true"
+		keyProperty="userId">
+		insert into user_tb
+		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender})
+	</insert>
+	
+	<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">
+		insert into authority_tb
+		values
+			(0, #{userId}, #{roleId})
+	</insert>
+	
+	<select id="findUserByEmail" resultMap="userMap">
+		select
+			ut.user_id,
+			ut.email,
+			ut.password,
+			ut.name,
+			ut.birth_day,
+			ut.gender,
+			
+			at.authority_id,
+			at.user_id,
+			at.role_id,
+			
+			rt.role_id,
+			rt.role_name
+		from
+			user_tb ut
+			left outer join authority_tb at on(at.user_id = ut.user_id)
+			left outer join role_tb rt on(rt.role_id = at.role_id)
+		where
+			ut.email = #{email}
+	</select>
+	
+	<insert id="saveAddress" 
+				parameterType="com.webproject.crowdfunding.entity.Address"
+				useGeneratedKeys="true"
+				keyProperty="addressId">
+		insert into address_tb
+		values(0, #{userId}, #{zonecode}, #{address}, #{buildingName}, #{bname}, #{detailAddress}, #{addressType})
+	</insert>
+		 
+	
+</mapper>
+
+
+
+
+
+
+
