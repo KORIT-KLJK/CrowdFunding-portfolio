@@ -12,7 +12,7 @@ import axios from 'axios';
 const Search = () => {
     const queryClient = useQueryClient();
 
-    const [searchParam, setSearchParam] = useState({page:1, searchCategory:{categoryName}, searchSort:{sortWord}, searchTema:{sortTemaWord}});
+    const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"전체", searchSort:"최신순", searchTema:"전체"});
     const [refresh, setRefresh] = useState(true);
     const [findGivingData, setFindGivingDate] = useState({
         img_url: "",
@@ -50,10 +50,6 @@ const Search = () => {
     const [sortWord, setSortWord] = useState("전체");
     const [categoryName, setCategoryName] = useState("전체");
 
-    const sortTemaWordChange = (e) => {
-        setSortTemaWord(e.target.textContent);
-    }
-
     const sortHiden = () => {
         if(sortHidenFlage) {
             setSortHidenFlage(false)
@@ -62,18 +58,28 @@ const Search = () => {
         }
     }
 
+    const sortTemaWordChange = (e) => {
+        setSortTemaWord(e.target.textContent);
+        setSearchParam({...searchParam, searchTema:e.target.textContent})
+    }
     const sortWordChange = (e) => {
         setSortWord(e.target.textContent);
+        setSearchParam({...searchParam, searchSort:e.target.textContent})
     }
 
     const categoryChange = (e) => {
         setCategoryName(e.target.textContent);
+        setSearchParam({...searchParam, searchCategory:e.target.textContent})
+    }
+
+    const searchValueChange = (e) => {
+        setSearchParam({...searchParam, searchValue: e.target.value})
     }
 
     return (
         <div css={S.searchMainContainer}>
             <div css={S.searchBox}>
-                <input type="text" css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
+                <input type="text" onChange={searchValueChange} css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
                 <button css={S.searchButton}><FiSearch/></button>
             </div>
             <div css={S.searchResultBox}>
