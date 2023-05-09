@@ -19,8 +19,8 @@ const donationContainer = css`
 `;
 const mainCardText = css`
     display: flex;
-    align-items: flex-start;
     justify-content: flex-start;
+    align-items: flex-start;
     width: 1140px;
     height: 30px;
 

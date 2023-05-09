@@ -11,6 +11,7 @@ import SignUp from "./pages/SignUp/SignUp";
 import Test from "./pages/SignUp/Test";
 import PopupPostCode from "./pages/SignUp/PopupPostCode";
 import Donation from "./pages/Donation/Donation";
+import Search from "./pages/Search/Search";
 
 function App() {
   return (
@@ -19,9 +20,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
 
-        <Route path="/recommend" element={<Recommend />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/test" element={<Test />} />
         <Route path="/donation" element={<Donation />} />
       </Routes>
