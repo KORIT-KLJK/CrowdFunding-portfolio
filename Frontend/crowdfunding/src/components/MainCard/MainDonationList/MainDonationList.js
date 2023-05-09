@@ -39,6 +39,7 @@ const mainDonationList = () => {
         <div css={donationContainer}>
             <h3 css={mainCardText}>100%전달하는 기부<div css={greaterThenIcon}><FaGreaterThan /></div></h3>
                 <CardItem></CardItem>
+                <div></div>
         </div>
     );
 };
