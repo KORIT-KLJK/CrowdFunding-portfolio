@@ -30,7 +30,6 @@ const mainFooter = css``;
 const Main = () => {
 
 
-
     return (
         <div mainContainer={mainContainer}>
             

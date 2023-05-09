@@ -20,7 +20,7 @@ const bannerColor = css`
   position: relative;
   width: 100%;
   height: 300px;
-  background-color: yellowgreen;
+  background-color: #10c838;
 
 `;
 
