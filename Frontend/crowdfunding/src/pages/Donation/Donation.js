@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import React from "react";
 import HeaderMain from "../../components/Header/HeaderMain/HeaderMain";
 import home from "../../assets/images/home.png";
 import child from "../../assets/images/child.png";
@@ -8,7 +7,8 @@ import old from "../../assets/images/old.png";
 import disable from "../../assets/images/disable.png";
 import multi from "../../assets/images/multi.png";
 import globe from "../../assets/images/globe.png";
-
+import { useState } from "react";
+import { IoIosArrowDown } from "react-icons/io"
 const mainContainer = css`
   min-width: 1140px;
 `;
@@ -21,7 +21,7 @@ const header = css`
 const menubarMain = css`
   position: relative;
   margin-bottom: -1px;
-  border-top: 1px solid rgba(0,0,0,.12);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 `;
 
 const menubar = css`
@@ -32,12 +32,12 @@ const menubar = css`
 `;
 
 const menubarItem = css`
-    display: inline-block;
-    height: 50px;
-    padding: 16px 35px;
-    font-size: 17px;
-    text-align: center;
-    vertical-align: middle;
+  display: inline-block;
+  height: 50px;
+  padding: 16px 35px;
+  font-size: 17px;
+  text-align: center;
+  vertical-align: middle;
 `;
 
 const categoryName = css`
@@ -50,7 +50,7 @@ const categoryName = css`
 `;
 
 const categoryArea = css`
-  background-color: #10C838;
+  background-color: #10c838;
 `;
 
 const categoryInner = css`
@@ -89,10 +89,10 @@ const fundBank = css`
   font-size: 19px;
   font-weight: 400;
   line-height: 22px;
-  letter-spacing: -.5px;
+  letter-spacing: -0.5px;
   color: #333;
   width: 1164px;
-  margin: 12px 0 -24px -24px;
+  margin: 12px 0 -24px 0;
   clear: both;
 `;
 
@@ -107,18 +107,22 @@ const fundMainCardContainer = css`
   margin: 60px auto 0;
 `;
 
+const fundBankBox = css`
+  text-align: right;
+`;
+
 const fundBankArea = css`
-  padding: 2PX 39px 0 13px;
-  background-color: #fff;
-  line-height: 32px;
-  text-align: left;
-  white-space: nowrap;
-  color: #333;
+  display: block;
+  padding: 9px 14px;
+  outline: 0;
+  line-height: 17px;
 `;
 
 const fundBankButton = css`
   position: relative;
-  padding: 2PX 39px 0 13px;
+  width: 140px;
+  height: 35px;
+  padding: 2px 39px 0 13px;
   border: 1px solid #e3e3e3;
   background-color: #fff;
   line-height: 32px;
@@ -134,20 +138,144 @@ const fundBankButtonItem = css`
   outline: 0;
   line-height: 17px;
   cursor: pointer;
+  text-align: -webkit-match-parent;
+`;
+
+const ulListBox = css`
+  position: absolute;
+  top: 35px;
+  right: -1px;
+  z-index: 20;
+  padding: 12px 0;
+  border: 1px solid #e3e3e3;
+  width: 140px;
+  background-color: #fff;
+  text-align: left;
+  color: #333;
+`;
+
+const liBox = css`
+  display: block;
+  padding: 9px 14px;
+  outline: 0;
+  line-height: 17px;
+  cursor: pointer;
+  :hover {
+    color: orange;
+  }
+`;
+
+const arrowIcon = css`
+  margin-left: 65px;
+`;
+
+const donationCardList = css`
+  width: 1164px;
+  margin: 12px 0 -24px -24px;
+  clear: both;
+`;
+
+const cardToday = css`
+  border: 1px solid rgba(0,0,0,.09);
+  float: left;
+  position: relative;
+  width: 267px;
+  height: 363px;
+  margin: 0 0 24px 24px;
+  display: table;
+  background-color: #10c838;
+  font-family: NanumSquareWebFont,dotum,Sans-serif;
+  text-align: center;
+  color: #fff;
+`;
+
+const cardTodayInner = css`
+  display: table-cell;
+  vertical-align: middle;
+`;
+
+const labelToday = css`
+  display: block;
+  width: 70px;
+  margin: 0 auto;
+  padding: 6px 0 5px;
+  background-clip: padding-box;
+  background-color: #0da82f;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: #fff;
+`;
+
+const cardTodayTitle = css`
+  display: block;
+  margin-top: 17px;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 29px;
+  letter-spacing: -1px;
+  color: #fff;
+`;
+
+const cardTodayText = css`
+  display: inline-block;
+  margin-top: 34px;
+  padding: 0 5px;
+  font-size: 20px;
+  line-height: 30px;
+`;
+
+const point = css`
+  font-weight: 700;
+  color: #fff;
+`;
+
+const scrollNumber = css`
+  font-weight: bold;
+  color: #fff;
+`;
+
+const donationCard = css`
+  float: left;
+  position: relative;
+  width: 267px;
+  height: 363px;
+  margin: 0 0 24px 24px;
+  background-color: #fff;
+  font-family: NanumSquareWebFont,dotum,Sans-serif;
+`;
+
+const cardImg = css`
+  vertical-align: top;
 `;
 
 const Donation = () => {
+  const [showList, setShowList] = useState(false);
+
+  const ClickView = (e) => {
+    if (e.type !== "click") {
+      if (e.keyCode !== 13) {
+        return;
+      }
+    }
+    setShowList(!showList);
+  };
   return (
     <div css={mainContainer}>
       <header css={header}>
         <HeaderMain />
-      </header>  
+      </header>
       <body>
         <div css={menubarMain}>
           <div css={menubar}>
-            <a css={menubarItem} href="/donation">진행중 모금함</a>
-            <a css={menubarItem} href="/donation">더블 모금함</a>
-            <a css={menubarItem} href="/donation">모금후기</a>
+            <a css={menubarItem} href="/donation">
+              진행중 모금함
+            </a>
+            <a css={menubarItem} href="/donation">
+              더블 모금함
+            </a>
+            <a css={menubarItem} href="/donation">
+              모금후기
+            </a>
           </div>
         </div>
         <div css={categoryArea}>
@@ -180,28 +308,105 @@ const Donation = () => {
           </ul>
         </div>
         <div role="main" css={fundMainCardContainer}>
-          <h4 css={fundBank}>모금함 <span css={fundPoint}>922</span>개</h4>
-          <div css={fundBankArea}>
-            <button css={fundBankButton} 
-            aria-label="정렬 순 선택" 
-            aria-owns="wa_listbox" 
-            aria-haspopup="listbox" 
-            aria-expanded="false" 
-            role="listbox">추천 순</button>
-            <ul role="listbox" aria-hidden="true">
-              <li css={fundBankButtonItem} role="option" tabindex="0" data-order="" data-sorttype="desc" aria-selected="true">
-                <span></span>
-              </li>
-              <li css={fundBankButtonItem} role="option" ></li>
-            </ul>
+          <h4 css={fundBank}>
+            모금함 <span css={fundPoint}>922</span>개
+          </h4>
+          <div css={fundBankBox}>
+            <div css={fundBankArea}>
+              <button css={fundBankButton} onClick={ClickView}>
+                추천 순<IoIosArrowDown css={arrowIcon} />
+                {showList && (
+                  <ul css={ulListBox} role="listbox" aria-hidden="false">
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>추천 순서</span>
+                    </li>
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>최신 순서</span>
+                    </li>
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>모금액 많은 순서</span>
+                    </li>
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>모금액 적은 순서</span>
+                    </li>
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>모금액 높은 순서</span>
+                    </li>
+                    <li
+                      role="option"
+                      css={liBox}
+                      tabindex="0"
+                      data-order=""
+                      data-sorttype="desc"
+                      aria-selected="true"
+                    >
+                      <span>종료임박 순서</span>
+                    </li>
+                  </ul>
+                )}
+              </button>
+            </div>
+          </div>
+          <div css={donationCardList}>
+            <div css={cardToday}>
+              <a href="https://happybean.naver.com/statistics" css={cardTodayInner}>
+                <span css={labelToday}>Today</span>
+                <strong css={cardTodayTitle}>오늘 함께한 기부금</strong>
+                <span css={cardTodayText}>
+                  <strong css={point}>
+                    <span css={scrollNumber}>3,320</span>
+                    <span css={scrollNumber}>명</span>
+                  </strong>
+                  <span css={scrollNumber}>이</span>
+                  <br />
+                  <strong css={point}>
+                  <span css={scrollNumber}>10,827,900</span>
+                  원
+                  </strong>
+                  <span css={scrollNumber}>을</span>
+                  <br />
+                  <span css={scrollNumber}>기부하였습니다.</span>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
-          
       </body>
-        
-
-      
-      
     </div>
   );
 };

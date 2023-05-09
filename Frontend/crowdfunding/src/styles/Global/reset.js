@@ -48,6 +48,10 @@ body {
 	line-height: 1;
 	/* background:var(--body-background-color); */
 }
+
+a {
+	text-decoration: none;
+}
 ol, ul {
 	list-style: none;
 }
