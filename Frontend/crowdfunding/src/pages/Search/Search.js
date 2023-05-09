@@ -4,17 +4,24 @@ import React, { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { HiHome } from 'react-icons/hi';
 import * as S from './style'
+import { useQueryClient } from 'react-query';
+
 
 
 const Search = () => {
+    const queryClient = useQueryClient();
+    
+    const [searchParam, setSearchParam] = useState();
+    const [refresh, setRefresh] = useState();
+    const [findGivingData, setFindGivingDate] = useState({})
+
     const [giveflage, setGiveflage] = useState(false);
     const [fundflage, setFundflage] = useState(false);
 
     const [sortHidenFlage, setSortHidenFlage] = useState(false);
-
     const [sortTemaWord, setSortTemaWord] = useState("최신순")
-
     const [sortWord, setSortWord] = useState("전체");
+
 
     const giveSateChange = () => {
         if(!giveflage) {
@@ -45,6 +52,7 @@ const Search = () => {
     const sortWordChange = (e) => {
         setSortWord(e.target.textContent);
     }
+
 
     return (
         <div css={S.searchMainContainer}>
