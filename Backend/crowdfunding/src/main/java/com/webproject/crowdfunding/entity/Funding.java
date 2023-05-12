@@ -28,6 +28,7 @@ public class Funding {
 	private int userId;
 	private int rewardId;
 	private String rewardName;
+	private int fundingCategoryId;
 	
 	public FundingMainRespDto toSaveFunding() {
 		return FundingMainRespDto.builder()
@@ -38,6 +39,7 @@ public class Funding {
 				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)
 				.imgUrl(imgUrl)
+				.fundingCategoryId(fundingCategoryId)
 				.build();
 	}
 }

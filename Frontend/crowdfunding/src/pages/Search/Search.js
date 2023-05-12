@@ -160,7 +160,7 @@ const Search = () => {
                            <div css={S.searchSortContainer}>
                                 <div css={S.searchSortButtonContainer} onClick={sortHiden}>
                                     <button css={S.searchSortButton} >{sortWord}</button>
-                                    <div css={S.direction}>{sortHidenFlage ? "∧" : "∨"} </div>
+                                    <div css={S.direction}>{sortHidenFlage ? "" : "∨"} </div>
                                 </div>
                                 {sortHidenFlage ? (<ul css={S.sortCategoryList}>
                                     <li css={S.sortCategory} onClick={sortWordChange}>전체</li>

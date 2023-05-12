@@ -8,7 +8,7 @@ export const welcomeFunding = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2000px;
+    width: 100%;
     height: 250px;
     background-color: red;
     margin-top: 70px;
@@ -46,6 +46,7 @@ export const fundingCategoryMainButton = css`
     margin-right: 5px;
     background-color: white;
     cursor: pointer;
+    font-size: 15px;
     &:focus {
         border: 1px solid #047ff1;
         color: #047ff1;
@@ -59,33 +60,33 @@ export const fundingCategoryButton = css`
     border-radius: 5px;
     background-color: white;
     cursor: pointer;
+    font-size: 15px;
     &:focus {
         border: 1px solid #047ff1;
         color: #047ff1;
     }
 `;
 
-export const fundingStatusButtonContainer = css`
+export const fundingStatusContainer = css`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width: 93%;
+    width: 1210px;
 `;
 
-export const fundingStatusButton = css`
+export const fundingStatusDetail = css`
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    width: 120px;
-    height: 40px;
     border: 1px solid #dbdbdb;
-    padding-left: 10px;
+    width: 125px;
+    padding: 10px;
     margin-left: 10px;
-    background-color: white;
     cursor: pointer;
-    &:focus {
-        border: 1px solid black;
-    }
+`;
+
+export const fundingStatus = css`
+    font-size: 13px;
 `;
 
 export const fundingMainConatiner = css`
@@ -112,6 +113,7 @@ export const fundingContainer = css`
     }
 `;
 export const imgBox = css`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,10 +123,31 @@ export const imgBox = css`
 `;
 
 export const img = css`
+    position: relative;
     width: 100%;
     height: 100%;
 `;
 
+export const checkFunding = css`
+    border: 1px solid #37b343;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 14.5%;
+    left: 89.5%;
+    width: 60px;
+    height: 60px;
+    background-color: #38d247cc;
+    color: white;
+    font-size: 14px;
+`;
+
+export const fundingTxt = css`
+    margin-bottom: 8px;
+`;
 
 export const fundingContainerMainTitlePrice = css`
     display: flex;
@@ -178,7 +201,9 @@ export const fundingContainerFooterPrice = css`
 
 
 const Funding = () => {
+    const [hiddenFlag, setHiddenFlag] = useState(false);
     const [searchParam, setSearchParam] = useState({page:1, searchStatus: "전체", searchCategory:"최신순"});
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
     const fundingData = useQuery(["fundingData"], async () => {
         const option= {
@@ -194,45 +219,65 @@ const Funding = () => {
         return await axios.get("http://localhost:8080/funding/category");
     })
 
+    const handleCategoryClick = (categoryId) => {
+        setSelectedCategoryId(categoryId);
+      };
+
     return (
         <div>
             <div css={welcomeFunding}>펀딩 페이지에 오신 것을 환영합니다 ^_^(나중에 수정할 부분)</div>
             <div css={fundingMain}>
                 <header css={fundingHeader}>
-                    <button css={fundingCategoryMainButton}>전체</button>
+                    <button css={fundingCategoryMainButton}onClick={() =>handleCategoryClick(null)}>전체</button>
                     {fundingCategorys.isLoading ? <div>...불러오는 중</div> : fundingCategorys.data.data.map(fundingCategory => (
                         <div css={fundingCategoryContainer}>
-                            <button css={fundingCategoryButton} key={fundingCategory.fundingCategoryId}>
+                            <button css={fundingCategoryButton} 
+                                    onClick={() =>handleCategoryClick(fundingCategory.fundingCategoryId)} 
+                                    key={fundingCategory.fundingCategoryId}>
                                 {fundingCategory.categoryName}
                             </button>
                         </div>
                     ))}
                 </header>
-                <div css={fundingStatusButtonContainer}>
-                    <button css={fundingStatusButton}>전체V</button>
-                    <button css={fundingStatusButton}>최신순V</button>
-                </div>
+                    <div css={fundingStatusContainer}>
+                        <div css={fundingStatusDetail}>
+                            <div css={fundingStatus}>전체</div>
+                            <div>{hiddenFlag ? "△" : "▽"}</div>
+                        </div>
+                        <div css={fundingStatusDetail}>
+                            <div css={fundingStatus}>최신 순</div>
+                            <div>{hiddenFlag ? "△" : "▽"}</div>
+                        </div>
+                    </div>
                 <main css={fundingMainConatiner}>
-                    {fundingData.isLoading ? <div>... 불러오는 중</div> : fundingData.data.data.fundingList.map(funding => (
+                    {fundingData.isLoading 
+                    ? <div>... 불러오는 중</div> 
+                    : fundingData.data.data.fundingList.filter(
+                    (funding) => selectedCategoryId === null ||
+                    funding.fundingCategoryId === selectedCategoryId).map(funding => (
                         <div css={fundingContainer}>
-                                <header>
-                                    <div css={imgBox}>
-                                        <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
+                            <header>
+                                <div css={imgBox}>
+                                    <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
+                                    <div css={checkFunding}>
+                                        <div css={fundingTxt}>펀딩</div>
+                                        <div>성공</div>
                                     </div>
-                                </header>
-                                    <main key={funding.pageId}>
-                                        <div css={fundingContainerMainTitlePrice}>
-                                            <div css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</div>
-                                            <div css={fundingContainerMainPricePadding}>
-                                                <div css={fundingContainerMainPrice}>{(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal))}%</div>
-                                            </div>
+                                </div>
+                            </header>
+                                <main key={funding.pageId}>
+                                    <div css={fundingContainerMainTitlePrice}>
+                                        <div css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</div>
+                                        <div css={fundingContainerMainPricePadding}>
+                                            <div css={fundingContainerMainPrice}>{(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal))}%</div>
                                         </div>
-                                        <div css={fundingContainerMainUsername}>{funding.username}</div>
-                                    </main>
-                                    <footer css={fundingContainerFooter}>
-                                            <div css={fundingContainerFooterEventStatus}>{funding.eventStatus} 남음</div>
-                                            <div css={fundingContainerFooterPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
-                                    </footer>
+                                    </div>
+                                    <div css={fundingContainerMainUsername}>{funding.username}</div>
+                                </main>
+                            <footer css={fundingContainerFooter}>
+                                    <div css={fundingContainerFooterEventStatus}>{funding.eventStatus} 남음</div>
+                                    <div css={fundingContainerFooterPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
+                            </footer>
                         </div>
                     ))}
                 </main>
