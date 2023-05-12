@@ -118,28 +118,32 @@ export const searchResultRight = css`
     display: flex;
     justify-content: space-between;
     width: 250px;
-    height: 50px;
+    height: 50px
 
 `;
 
-export const newestButton = css`
+export const newestButton = ({sortTemaWord}) => css`
     margin-top: 10px;
     
     width: 30%;
     height: 20px;
 
     border: none;
-    background-color: white;
+    background-color: ${sortTemaWord==='최신순' ? '#dbdbdb' : 'white'};
+
+    cursor: pointer;
 `;
 
-export const amountButton = css`
+export const amountButton = ({sortTemaWord}) => css`
     margin-top: 10px;
     margin-right: 25px;
     width: 30%;
     height: 20px;
 
     border: none;
-    background-color: white;
+    background-color: ${sortTemaWord==='금액순' ? '#dbdbdb' : 'white'};
+
+    cursor: pointer;
 `;
 
 export const searchSortContainer = css`
@@ -222,10 +226,12 @@ export const searchResultPanel = css`
 
 export const panelImgContainer = css`
     width: 15%;
+    height: 100%;
 `;
 
 export const panelImg = css`
     width: 100%;
+    height: 100%;
 `
 
 export const panelInfo = css`

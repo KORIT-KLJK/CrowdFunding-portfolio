@@ -30,17 +30,20 @@ public class PageService {
 		map.put("searchSort", searchPageReqDto.getSearchSort());
 		map.put("searchTema", searchPageReqDto.getSearchTema());
 		map.put("searchValue", searchPageReqDto.getSearchValue());
+		
+		int totalCount = pageRepository.getTotalCount(map);
+		
 		System.out.println(map);
 		
+		map.put("totalCount", totalCount);
 		pageRepository.searchPageInfo(map).forEach(book-> {
 			list.add(book.toDto());
 		});
-		int totalCount = pageRepository.getTotalCount(map);
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("totalCount", totalCount);
 		responseMap.put("pageList", list);
-		
+		System.out.println(responseMap);
 		return responseMap;
 	}
 }
