@@ -35,6 +35,7 @@ public class Funding {
 				.pageTitle(pageTitle)
 				.username(username)
 				.eventStatus(eventStatus)
+				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)
 				.imgUrl(imgUrl)
 				.build();

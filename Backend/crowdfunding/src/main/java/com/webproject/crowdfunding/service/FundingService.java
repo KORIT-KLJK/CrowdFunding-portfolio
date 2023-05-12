@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.SearchFundingReqDto;
+import com.webproject.crowdfunding.dto.resp.FundingCategoryRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
 import com.webproject.crowdfunding.repository.FundingRepository;
 
@@ -36,4 +37,22 @@ public class FundingService {
 		return responseMap;
 	}
 	
+	public List<FundingCategoryRespDto> fundingCategory() {
+		List<FundingCategoryRespDto> fundingCategorys = new ArrayList<>();
+		
+		fundingRepository.getFundingCategory().forEach(fundingCategory -> {
+			fundingCategorys.add(fundingCategory.fundingCategoryToDto());
+		});
+		return fundingCategorys;
+	}
+	
 }
+
+
+
+
+
+
+
+
+

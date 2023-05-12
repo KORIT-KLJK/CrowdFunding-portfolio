@@ -12,6 +12,7 @@ public class FundingMainRespDto {
 	private String pageTitle;
 	private String username;
 	private String eventStatus;
+	private int goalTotal;
 	private String totalRewardPrice;
 	private String imgUrl;
 }

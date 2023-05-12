@@ -19,6 +19,11 @@
 		<result property="rewardName" column="reward_name"/>
 	</resultMap>
 	
+	<resultMap type="com.webproject.crowdfunding.entity.FundingCategory" id="FundingCategoryMap">
+		<id property="fundingCategoryId" column="funding_category_id"/>
+		<result property="categoryName" column="category_name"/>
+	</resultMap>
+	
 	
 	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
 		select 
@@ -29,6 +34,7 @@
 		    IF(NOW() &lt; fpt.end_date, TIMESTAMPDIFF(DAY, NOW(), fpt.end_date), '종료'), 
 		    '일'
 		  ) AS event_status,
+		  	fpt.goal_total,
 		    sum(if(ft.funder_id is null, null, rt.reward_price)) as total_reward_price,
 		    fpt.main_img_url AS img_url
 		from
@@ -41,6 +47,14 @@
 		    page_title,
 		    user_name,
 		    event_status
+	</select>
+	
+	<select id="getFundingCategory" resultMap="FundingCategoryMap">
+		select
+			ft.funding_category_id,
+			ft.category_name
+		from
+			funding_category_tb ft
 	</select>
 
 
