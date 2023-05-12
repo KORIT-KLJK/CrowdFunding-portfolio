@@ -189,6 +189,7 @@ export const direction = css`
 `;
 
 export const sortCategoryList = css`
+    z-index: 99;
     width: 100%;
     
     border: 1px solid black;
@@ -246,14 +247,14 @@ export const panelTitle = css`
     display: flex;
 `;
 
-export const progress = css`
+export const progress = (eventStatus) => css`
     display: flex;
     justify-content: center;
     align-items: center;
 
     padding: 5px;
     width: 50px;
-    background-color: green;
+    background-color: ${eventStatus==='진행중' ? 'green' : 'gray'};
     color: white;
 
     font-size: 12px;

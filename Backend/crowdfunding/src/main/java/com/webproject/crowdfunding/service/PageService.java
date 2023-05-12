@@ -31,14 +31,13 @@ public class PageService {
 		map.put("searchTema", searchPageReqDto.getSearchTema());
 		map.put("searchValue", searchPageReqDto.getSearchValue());
 		
-		int totalCount = pageRepository.getTotalCount(map);
-		
 		System.out.println(map);
 		
-		map.put("totalCount", totalCount);
-		pageRepository.searchPageInfo(map).forEach(book-> {
-			list.add(book.toDto());
+		pageRepository.searchPageInfo(map).forEach(page-> {
+			list.add(page.toDto());
 		});
+		
+		int totalCount = pageRepository.getTotalCount(map);
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("totalCount", totalCount);

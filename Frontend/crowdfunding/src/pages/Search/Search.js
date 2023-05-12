@@ -44,6 +44,7 @@ const Search = () => {
         }
     }
     );
+    console.log(getPageData)
 
     const [sortHidenFlage, setSortHidenFlage] = useState(false);
     const [sortTemaWord, setSortTemaWord] = useState("최신순")
@@ -79,9 +80,15 @@ const Search = () => {
         setSearchParam({...searchParam, searchValue: e.target.value})
     }
 
-    const searchValueSubmit = (e) => {
+    const searchValueSubmitEnter = (e) => {
+        if(e.keyCode === 13) {
+            searchValueSubmit()
+        }
+    }
+    const searchValueSubmit = () => {
         setRefresh(true);
     }
+
 
     const pageNation = () => {
         if(getPageData.isLoading) {
@@ -136,7 +143,7 @@ const Search = () => {
     return (
         <div css={S.searchMainContainer}>
             <div css={S.searchBox}>
-                <input type="text" onChange={searchValueChange} css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
+                <input type="text" onChange={searchValueChange} onKeyUp={searchValueSubmitEnter} css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
                 <button css={S.searchButton} onClick={searchValueSubmit}><FiSearch/></button>
             </div>
             <div css={S.searchResultBox}>
@@ -170,7 +177,7 @@ const Search = () => {
                              </div>
                              <div css={S.panelInfo}>
                                  <div css={S.panelTitle}>
-                                     <div css={S.progress}>{page.eventStatus}</div>
+                                     <div css={S.progress(page.eventStatus)}>{page.eventStatus}</div>
                                      <div css={S.panelTitleText}>{page.pageTitle}</div>    
                                  </div>
                                  <div css={S.centerName}> <HiHome/> {page.userName}</div>
