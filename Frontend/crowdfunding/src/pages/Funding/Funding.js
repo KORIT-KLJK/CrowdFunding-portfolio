@@ -1,18 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
-import React from 'react';
+import axios from "axios";
+import React, { useState } from 'react';
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
+export const fundingMain = css`
+    position: relative;
+    width: 1140px;
+    height: 70px;
+
+    margin: 0 auto;
+`;
 
 export const fundingHeader = css`
-    width: 1000px;
+    width: 1140px;
     height: 100px;
     margin-top: 100px;
 `;
 
 export const fundingMainConatiner = css`
-    width: 1000px;
-    height: 100%;
-    margin: 0px auto;
-    padding-bottom: 50px;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 export const fundingContainer = css`
@@ -28,23 +36,41 @@ export const fundingContainer = css`
 `;
 
 const Funding = () => {
+    const [searchParam, setSearchParam] = useState({page:1, searchStatus: "전체", searchCategory:"최신순"});
+
+    const fundingData = useQuery(["fundingData"], async () => {
+        const option= {
+            params: {
+                ...searchParam
+            }
+        }
+        const response = await axios.get("http://localhost:8080/funding/main", option)
+        return response;
+    })
+    console.log(fundingData);
+
     return (
-        <div>
+        <div css={fundingMain}>
             <header css={fundingHeader}>
                 카테고리
             </header>
             <main css={fundingMainConatiner}>
-                <div css={fundingContainer}>
-                    <header>
-                        이미지
-                    </header>
-                    <main>
-                        내용
-                    </main>
-                    <footer>
-                        가격 정보
-                    </footer>
-                </div>
+                {fundingData.isLoading ? <div>... 불러오는 중</div> : fundingData.data.data.fundingList.map(funding => (
+                    <div css={fundingContainer}>
+                        <header>
+                            이미지
+                        </header>
+                            <main key={funding.pageId}>
+                                    <div>{funding.pageTitle}</div>
+                                    <div>{funding.username}</div>
+                                    <div>{funding.eventStatus}</div>
+                                    <div>{funding.totalRewardPrice}</div>
+                            </main>
+                        <footer>
+                            가격 정보
+                        </footer>
+                    </div>
+                ))}
             </main>
             <footer>
                 웹페이지 정보

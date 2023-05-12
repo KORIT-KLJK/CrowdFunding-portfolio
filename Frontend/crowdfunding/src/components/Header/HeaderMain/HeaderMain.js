@@ -13,7 +13,6 @@ const mainHeader = css`
 
     background-color: #fff;
     text-align: right;
-
 `;
 
 const header = css`

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.FundingRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingMap">
+		<id property="pageId" column="page_id"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="username" column="user_name"/>
+		<result property="eventStatus" column="event_status"/>
+		<result property="registerDate" column="register_date"/>
+		<result property="endDate" column="end_date"/>
+		<result property="totalRewardPrice" column="total_reward_price"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="storyContent" column="story_content"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="userId" column="user_id"/>
+		<result property="rewardId" column="reward_id"/>
+		<result property="rewardName" column="reward_name"/>
+	</resultMap>
+	
+	
+	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
+		select 
+		   	fpt.funding_id AS page_id,
+		    fpt.funding_name AS page_title,
+		    ut.name AS user_name,
+		  CONCAT(
+		    IF(NOW() &lt; fpt.end_date, TIMESTAMPDIFF(DAY, NOW(), fpt.end_date), '종료'), 
+		    '일'
+		  ) AS event_status,
+		    sum(if(ft.funder_id is null, null, rt.reward_price)) as total_reward_price,
+		    fpt.main_img_url AS img_url
+		from
+		   funding_page_tb fpt
+		    left outer join user_tb ut on(ut.user_id = fpt.user_id)
+		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		group by
+		   page_id,
+		    page_title,
+		    user_name,
+		    event_status
+	</select>
+
+
+</mapper>
