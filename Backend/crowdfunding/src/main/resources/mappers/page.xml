@@ -313,10 +313,11 @@
 				giving_page_tb gpt 
 			    left outer join center_tb ct on (ct.center_id = gpt.center_id)
 			    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
-			where
-				event_status = '진행중'
+				
 			group by
 				gpt.giving_page_id
+			HAVING
+				event_status = '진행중'
 			<if test="searchValue != null">
 				and giving_name like concat("%", #{searchValue},"%")
 			</if>
@@ -443,8 +444,7 @@
 						funder_tb ft 
 						left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
 					) fdt on(fdt.reward_id = rwt.reward_id)
-			where
-				event_status = '종료'
+				
 			group by
 				ft.funding_id,
 			    ft.funding_name,
@@ -452,7 +452,7 @@
 			    event_status,
 			    ft.main_img_url
 			Having
-				1=1
+				event_status = '종료'
 			<if test="searchValue != null">
 				and funding_name like concat("%", #{searchValue},"%")
 			</if>
