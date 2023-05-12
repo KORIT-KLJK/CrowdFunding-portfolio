@@ -261,7 +261,7 @@ const RegisterPage = () => {
     return (
         <div css={mainContainer}>
             <div css={mainTitleContainer}>
-                <h1 css={mainTitle}>페이지 등록</h1>
+                <h1 css={mainTitle}>페이지 등록1</h1>
             </div>
             
             <div css={infoInputContainer}>
