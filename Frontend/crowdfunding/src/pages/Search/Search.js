@@ -12,7 +12,7 @@ import axios from 'axios';
 const Search = () => {
     const queryClient = useQueryClient();
 
-    const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"전체", searchSort:"전체", searchTema:"최신순"});
+    const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"기부", searchSort:"전체", searchTema:"최신순"});
     const [refresh, setRefresh] = useState(true);
     const [findGivingData, setFindGivingDate] = useState({
         img_url: "",
@@ -43,12 +43,13 @@ const Search = () => {
             setRefresh(false);
         }
     }
-    )
+    );
+    console.log(getPageData)
 
     const [sortHidenFlage, setSortHidenFlage] = useState(false);
     const [sortTemaWord, setSortTemaWord] = useState("최신순")
     const [sortWord, setSortWord] = useState("전체");
-    const [categoryName, setCategoryName] = useState("전체");
+    const [categoryName, setCategoryName] = useState("기부");
 
     const sortHiden = () => {
         if(sortHidenFlage) {
@@ -61,20 +62,33 @@ const Search = () => {
     const sortTemaWordChange = (e) => {
         setSortTemaWord(e.target.textContent);
         setSearchParam({...searchParam, searchTema:e.target.textContent})
+        setRefresh(true);
     }
     const sortWordChange = (e) => {
         setSortWord(e.target.textContent);
         setSearchParam({...searchParam, searchSort:e.target.textContent})
+        setRefresh(true);
     }
 
     const categoryChange = (e) => {
         setCategoryName(e.target.textContent);
         setSearchParam({...searchParam, searchCategory:e.target.textContent})
+        setRefresh(true);
     }
 
     const searchValueChange = (e) => {
         setSearchParam({...searchParam, searchValue: e.target.value})
     }
+
+    const searchValueSubmitEnter = (e) => {
+        if(e.keyCode === 13) {
+            searchValueSubmit()
+        }
+    }
+    const searchValueSubmit = () => {
+        setRefresh(true);
+    }
+
 
     const pageNation = () => {
         if(getPageData.isLoading) {
@@ -129,8 +143,8 @@ const Search = () => {
     return (
         <div css={S.searchMainContainer}>
             <div css={S.searchBox}>
-                <input type="text" onChange={searchValueChange} css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
-                <button css={S.searchButton}><FiSearch/></button>
+                <input type="text" onChange={searchValueChange} onKeyUp={searchValueSubmitEnter} css={S.searchInput} placeholder='검색어를 입력해 주세요'/>
+                <button css={S.searchButton} onClick={searchValueSubmit}><FiSearch/></button>
             </div>
             <div css={S.searchResultBox}>
                 <div css={S.searchResultCategory}>
@@ -139,10 +153,10 @@ const Search = () => {
                 </div>
                 <div css={S.searchResultContainer}>
                     <div css={S.searchResultTop}>
-                        <div css={S.searchResultLeft}>검색결과 " " 건</div>
+                        <div css={S.searchResultLeft}>검색결과 "{getPageData.isLoading ? "" : getPageData.data.data.totalCount}" 건</div>
                         <div css={S.searchResultRight}>
-                           <button onClick={sortTemaWordChange} css={S.newestButton}>최신순</button>
-                           <button onClick={sortTemaWordChange} css={S.amountButton}>금액순</button>
+                           <button onClick={sortTemaWordChange} css={S.newestButton({sortTemaWord})}>최신순</button>
+                           <button onClick={sortTemaWordChange} css={S.amountButton({sortTemaWord})}>금액순</button>
                            <div css={S.searchSortContainer}>
                                 <div css={S.searchSortButtonContainer} onClick={sortHiden}>
                                     <button css={S.searchSortButton} >{sortWord}</button>
@@ -163,7 +177,7 @@ const Search = () => {
                              </div>
                              <div css={S.panelInfo}>
                                  <div css={S.panelTitle}>
-                                     <div css={S.progress}>{page.eventStatus}</div>
+                                     <div css={S.progress(page.eventStatus)}>{page.eventStatus}</div>
                                      <div css={S.panelTitleText}>{page.pageTitle}</div>    
                                  </div>
                                  <div css={S.centerName}> <HiHome/> {page.userName}</div>
@@ -172,7 +186,9 @@ const Search = () => {
                          </div>
                     ))}
                    
-                     
+                    <div>
+                    {pageNation()}
+                    </div>
                 </div>
             </div>
 

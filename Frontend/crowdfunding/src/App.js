@@ -13,6 +13,7 @@ import Donation from "./pages/Donation/Donation";
 import Search from "./pages/Search/Search";
 import HeaderMain from "./components/Header/HeaderMain/HeaderMain";
 import Funding from "./pages/Funding/Funding";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/donation" element={<Donation />} />
-        <Route path="/funding/" element={<Funding />} />
+        <Route path="/funding" element={<Funding />} />
+        <Route path="/registerpage" element={<RegisterPage/>}/>
       </Routes>
     </>
   );
