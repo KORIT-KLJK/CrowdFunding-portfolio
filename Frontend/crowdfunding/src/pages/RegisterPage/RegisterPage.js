@@ -95,6 +95,12 @@ const input = css`
    margin-right: 10px;
 `;
 
+const comboBox = css`
+    width: 60%;
+    height: 60%;
+
+    margin-right: 10px;
+`
 const storyInfoInput = css`
     display: flex;
     justify-content: center;
@@ -225,17 +231,26 @@ const rewardTdInput = css`
     margin-right: 10px;
     width: 80%;
     height: 50%;
-`
+`;
+
+const submitBtn = css`
+    display: flex;
+    justify-content: end;
+
+`;
 
 const RegisterPage = () => {
 
     const [inputParams, setInputParams] = useState({ 
-        pageCategory: "펀딩",
-        detailCategory : "",
+        pageCategory: "기부",
+        detailCategory : "아동",
         title: "",
         story: "",
         imgUrl: "",
-        reward: [],
+        goaltotal: 0,
+        email:"",
+        rewardName: [],
+        rewardPrice: []
     });
 
     const [rewardTds, setRewardTds] = useState([
@@ -245,8 +260,36 @@ const RegisterPage = () => {
     ]);
     const rewardId = useRef(2);
 
-    const [rewardName, setRewardName] = useState([]);
-    const [rewardPrice, setRewardPrice] = useState([]);
+    const mainCategoryList = ["기부", "펀딩"];
+    const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
+    const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
+
+    const changePageCategory = (e) => {
+        setInputParams({...inputParams, pageCategory:e.target.value})
+    }
+
+    const changeDetailCategory = (e) => {
+        setInputParams({...inputParams, detailCategory:e.target.value})
+    }
+
+    const changeTitle = (e) => {
+        setInputParams({...inputParams, title:e.target.textContent})
+    }
+
+    const changeStory = (e) => {
+        setInputParams({...inputParams, story:e.target.textContent})
+    }
+
+    const changeImgUrl = (e) => {
+        setInputParams({...inputParams, story:e.target.textContent})
+    }
+
+    const changegoalTotal = (e) => {
+        setInputParams({...inputParams, goaltotal:e.target.textContent})
+    }
+    const changeEmail = (e) => {
+        setInputParams({...inputParams, email:e.target.textContent})
+    }
 
     const addRewardInputComponentHandle = () => {
         setRewardTds([...rewardTds, {id: rewardId.current}]);
@@ -256,6 +299,7 @@ const RegisterPage = () => {
     const removeRewardInputComponentHandle = (e) => {
         setRewardTds([...rewardTds.filter(rewardTd => rewardTd.id !== parseInt(e.target.value))]);
     }
+
 
 
     return (
@@ -271,13 +315,32 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>페이지 카테고리</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>    
+                    <select onChange={changePageCategory} css={comboBox}>
+                        {mainCategoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select> 
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>상세 카테고리</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>    
+                    {inputParams.pageCategory === '펀딩' ? 
+                    <select onChange={changeDetailCategory} css={comboBox}>
+                        {fundSubCateogoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select> :<select onChange={changeDetailCategory} css={comboBox}>
+                        {giveSubCategoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select>}
                     </div> 
                 </div>
                 <div css={subTitle}>
@@ -286,36 +349,37 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>제목</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>    
+                        <input onChange={changeTitle} css={input} type="text"/>    
                     </div> 
                 </div>
                 <div css={storyInfoInput}>
                     <div css={storyInfoTitle}>스토리</div>
                     <div css={storyInputContainer}>
-                       <textarea css={storyTextArea} name="" id="" cols="30" rows="10">
+                       <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
                         </textarea> 
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>이미지</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>    
+                        <input onChange={changeImgUrl} css={input} type="text"/>    
                     </div> 
                 </div>
                
                 <div css={infoInput}>
                     <div css={infoTitle}>목표금액</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>원    
+                        <input onChange={changegoalTotal} css={input} type="text"/>원    
                     </div> 
                 </div>
+
                 {inputParams.pageCategory === '펀딩' ?
                     <div css={rewardInfoInputContainer}>
                         <div css={rewardHeader}>
                             <h1 css={rewardH1}>리워드 추가</h1>
                             <div css={btnContainer}>
                                 <button css={rewardBtn} onClick={addRewardInputComponentHandle}>+</button>
-                                <button css={rewardBtn}>-</button>
+            
                             </div>
                         </div>
                         <table css={rewardTable}>
@@ -329,8 +393,8 @@ const RegisterPage = () => {
                                 {rewardTds.map(rewardTd => (
                                     <tr css={rewardTr} key={rewardTd.id}>
                                         <td css={rewardNameThAndTd}><input css={rewardTdInput} type="text"/></td>
-                                        <td css={rewardPriceThAndTd}><input css={rewardTdInput} type="text"/>원</td>
-                                        <td><button css={rewardBtn} value={rewardTd.id} onClick={removeRewardInputComponentHandle}>-</button></td>
+                                        <td css={rewardPriceThAndTd}><input css={rewardTdInput} type="text" placeholder='(원)'/><button css={rewardBtn} value={rewardTd.id} onClick={removeRewardInputComponentHandle}>-</button></td>
+                                        
                                     </tr>
                                 ))}
                                 
@@ -345,9 +409,12 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>이메일</div>
                     <div css={inputContainer}>
-                        <input css={input} type="text"/>    
+                        <input onChange={changeEmail} css={input} type="text"/>    
                     </div> 
                 </div>
+            </div>
+            <div css={submitBtn}>
+                <button>등록하기</button>
             </div>
         </div>
     );
