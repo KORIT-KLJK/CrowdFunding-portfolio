@@ -19,15 +19,10 @@ import lombok.RequiredArgsConstructor;
 public class FundingService {
 	private final FundingRepository fundingRepository;
 	
-	public Map<String, Object> toSaveFunding(SearchFundingReqDto searchFundingReqDto) {
+	public Map<String, Object> toSaveFunding() {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
-		int index = (searchFundingReqDto.getPage() - 1) * 20;
-		Map<String, Object> map = new HashMap<>();
-		map.put("index", index);
-		map.put("searchStatus", searchFundingReqDto.getSearchStatus());
-		map.put("searchCategory", searchFundingReqDto.getSearchCategory());
 		
-		fundingRepository.saveFunding(map).forEach(funding -> {
+		fundingRepository.saveFunding().forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());
 		});
 		

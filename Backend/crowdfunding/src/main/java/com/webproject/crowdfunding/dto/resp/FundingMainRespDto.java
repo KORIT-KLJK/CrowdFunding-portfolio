@@ -16,4 +16,6 @@ public class FundingMainRespDto {
 	private String totalRewardPrice;
 	private String imgUrl;
 	private int fundingCategoryId;
+	private int recentSort;
+	private int nearDeadlineSort;
 }

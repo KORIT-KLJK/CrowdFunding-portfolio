@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from "axios";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 export const welcomeFunding = css`
@@ -80,13 +80,97 @@ export const fundingStatusDetail = css`
     align-items: center;
     border: 1px solid #dbdbdb;
     width: 125px;
-    padding: 10px;
+    height: 38px;
+    padding: 0px 10px;
     margin-left: 10px;
+    background-color: white;
+
     cursor: pointer;
+
+    &:focus {
+        border: 1px solid #dbdbdb;
+    }
 `;
+
 
 export const fundingStatus = css`
     font-size: 13px;
+`;
+
+export const sortingFundingStatusContainer = css`
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 100;
+    width: 1075px;
+    height: 120px;
+`;
+
+export const sortingFundingRewardContainer = css`
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 99;
+    width: 1210px;
+    height: 120px;
+`;
+
+export const sortingFundingStatusList = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+    width: 125px;
+    padding: 10px;
+    margin-left: 10px;
+    margin-top: -10px;
+    background-color: white;
+
+    cursor: pointer;
+`;
+
+export const sortingFundingRewardStatusList = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+    width: 125px;
+    padding: 10px;
+    margin-left: 10px;
+    margin-top: 20px;
+    background-color: white;
+
+    cursor: pointer;
+`;
+
+export const sortingFundingStatus = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 13px;
+
+    &:hover {
+        border-bottom: 1px solid black;
+    }
+`;
+
+export const sortingFundingReward = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 13px;
+
+    &:hover {
+        border-bottom: 1px solid black;
+    }
 `;
 
 export const fundingMainConatiner = css`
@@ -128,7 +212,8 @@ export const img = css`
     height: 100%;
 `;
 
-export const checkFunding = css`
+export const checkFunding = ({funding}) => css`
+    opacity: ${funding.eventStatus === "종료" ? "1" : "0"};
     border: 1px solid #37b343;
     display: flex;
     flex-direction: column;
@@ -140,7 +225,7 @@ export const checkFunding = css`
     left: 89.5%;
     width: 60px;
     height: 60px;
-    background-color: #38d247cc;
+    background-color: ${(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal)) >= 100 ? "#38d247cc" : "red"};
     color: white;
     font-size: 14px;
 `;
@@ -201,34 +286,72 @@ export const fundingContainerFooterPrice = css`
 
 
 const Funding = () => {
-    const [hiddenFlag, setHiddenFlag] = useState(false);
-    const [searchParam, setSearchParam] = useState({page:1, searchStatus: "전체", searchCategory:"최신순"});
-    const [selectedCategoryId, setSelectedCategoryId] = useState(null)
+    const [statusHiddenFlag, setStatusHiddenFlag] = useState(false);
+    const [rewardHiddenFlag, setRewardHiddenFlag] = useState(false);
+    const [sortingStatus, setsortingStatus] = useState("전체");
+    const [sortingReward, setsortingReward] = useState("최신순");
+    const [fundings, setFundings] = useState([]);
+    // 펀딩 메인화면 카테고리ID와 카테고리 선택에 있는 카테고리ID가 일치하는지
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
+    // 펀딩 메인화면에 쓸 것들
     const fundingData = useQuery(["fundingData"], async () => {
-        const option= {
-            params: {
-                ...searchParam
-            }
-        }
-        const response = await axios.get("http://localhost:8080/funding/main", option)
+        const response = await axios.get("http://localhost:8080/funding/main")
         return response;
-    })
-
-    const fundingCategorys = useQuery(["fundingCategory"], async () => {
+    });
+    
+    // 펀딩 카테고리 선택에 쓸 것들
+    const fundingCategorys = useQuery(["fundingCategory"], async () => { 
         return await axios.get("http://localhost:8080/funding/category");
-    })
-
+    });
+    
+    useEffect(() => {
+        if(fundingData.isSuccess) {
+            setFundings(fundingData.data.data.fundingList);
+        }
+    }, [fundingData.isSuccess]);
+    
+    
+    // 카테고리 이름들이 들어감. (전체는 null을 넣어줌으로써 모든 걸 보여준다)
     const handleCategoryClick = (categoryId) => {
         setSelectedCategoryId(categoryId);
-      };
+    };
+
+    const statussortingHidden = () => {
+        if(statusHiddenFlag) {
+            setStatusHiddenFlag(false);
+        }else {
+            setStatusHiddenFlag(true);
+        }
+    }
+
+    const rewardsortingHidden = () => {
+        if(rewardHiddenFlag) {
+            setRewardHiddenFlag(false);
+        }else {
+            setRewardHiddenFlag(true);
+        }
+    }
+
+    const sortingStatusHandle = (e) => {
+        setsortingStatus(e.target.textContent);
+        setStatusHiddenFlag(false);
+    }
+
+    const sortingRewardHandle = (e) => {
+        setsortingReward(e.target.textContent);
+        setRewardHiddenFlag(false);
+    }
+
+
+
 
     return (
         <div>
             <div css={welcomeFunding}>펀딩 페이지에 오신 것을 환영합니다 ^_^(나중에 수정할 부분)</div>
             <div css={fundingMain}>
                 <header css={fundingHeader}>
-                    <button css={fundingCategoryMainButton}onClick={() =>handleCategoryClick(null)}>전체</button>
+                    <button css={fundingCategoryMainButton} onClick={() => handleCategoryClick(null)}>전체</button>
                     {fundingCategorys.isLoading ? <div>...불러오는 중</div> : fundingCategorys.data.data.map(fundingCategory => (
                         <div css={fundingCategoryContainer}>
                             <button css={fundingCategoryButton} 
@@ -240,29 +363,42 @@ const Funding = () => {
                     ))}
                 </header>
                     <div css={fundingStatusContainer}>
-                        <div css={fundingStatusDetail}>
-                            <div css={fundingStatus}>전체</div>
-                            <div>{hiddenFlag ? "△" : "▽"}</div>
-                        </div>
-                        <div css={fundingStatusDetail}>
-                            <div css={fundingStatus}>최신 순</div>
-                            <div>{hiddenFlag ? "△" : "▽"}</div>
-                        </div>
+                        <button css={fundingStatusDetail} onClick={statussortingHidden}>
+                            <div css={fundingStatus}>{sortingStatus}</div>
+                            <div>{statusHiddenFlag ? "△" : "▽"}</div>
+                        </button>
+                        <button css={fundingStatusDetail} onClick={rewardsortingHidden}>
+                            <div css={fundingStatus}>{sortingReward}</div>
+                            <div>{rewardHiddenFlag ? "△" : "▽"}</div>
+                        </button>
+                    </div>
+                    <div css={sortingFundingStatusContainer}>
+                        {statusHiddenFlag ? (<ul css={sortingFundingStatusList}>
+                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>전체</li>
+                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>진행중</li>
+                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>종료</li>
+                        </ul>) : ""}
+                    </div>
+                    <div css={sortingFundingRewardContainer}>
+                        {rewardHiddenFlag ? (<ul css={sortingFundingRewardStatusList}>
+                            <li css={sortingFundingReward} onClick={sortingRewardHandle}>최신 순</li>
+                            <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여 금액 순</li>
+                            <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여율 순</li>
+                            <li css={sortingFundingReward} onClick={sortingRewardHandle}>종료 임박 순</li>
+                        </ul>) : ""}
                     </div>
                 <main css={fundingMainConatiner}>
-                    {fundingData.isLoading 
-                    ? <div>... 불러오는 중</div> 
-                    : fundingData.data.data.fundingList.filter(
-                    (funding) => selectedCategoryId === null ||
+                    {fundings.filter(
+                    funding => selectedCategoryId === null ||
                     funding.fundingCategoryId === selectedCategoryId).map(funding => (
                         <div css={fundingContainer}>
                             <header>
                                 <div css={imgBox}>
                                     <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
-                                    <div css={checkFunding}>
-                                        <div css={fundingTxt}>펀딩</div>
-                                        <div>성공</div>
-                                    </div>
+                                        <div css={checkFunding({funding})}>
+                                            <div css={fundingTxt}>펀딩</div>
+                                            <div>{(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal)) >= 100 ? "성공" : "실패"}</div>
+                                        </div>
                                 </div>
                             </header>
                                 <main key={funding.pageId}>
@@ -275,7 +411,7 @@ const Funding = () => {
                                     <div css={fundingContainerMainUsername}>{funding.username}</div>
                                 </main>
                             <footer css={fundingContainerFooter}>
-                                    <div css={fundingContainerFooterEventStatus}>{funding.eventStatus} 남음</div>
+                                    <div css={fundingContainerFooterEventStatus}>{funding.eventStatus}</div>
                                     <div css={fundingContainerFooterPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
                             </footer>
                         </div>

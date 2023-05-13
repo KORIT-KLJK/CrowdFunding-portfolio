@@ -18,6 +18,10 @@
 		<result property="rewardId" column="reward_id"/>
 		<result property="rewardName" column="reward_name"/>
 		<result property="fundingCategoryId" column="funding_category_id"/>
+		<result property="registerDate" column="register_date"/>
+		<result property="endDate" column="end_date"/>
+		<result property="recentSort" column="recent_sort"/>
+		<result property="nearDeadlineSort" column="near_deadline_sort"/>
 	</resultMap>
 	
 	<resultMap type="com.webproject.crowdfunding.entity.FundingCategory" id="FundingCategoryMap">
@@ -26,30 +30,33 @@
 	</resultMap>
 	
 	
-	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
+	<select id="saveFunding" resultMap="FundingMap">
 		select 
-		   	fpt.funding_id AS page_id,
-		    fpt.funding_name AS page_title,
-		    ut.name AS user_name,
-		  CONCAT(
-		    IF(NOW() &lt; fpt.end_date, TIMESTAMPDIFF(DAY, NOW(), fpt.end_date), '종료'), 
-		    '일'
-		  ) AS event_status,
-		  	fpt.goal_total,
-		    sum(if(ft.funder_id is null, null, rt.reward_price)) as total_reward_price,
-		    fpt.main_img_url AS img_url,
-		    fpt.funding_category_id
+			fpt.funding_id AS page_id,
+			fpt.funding_name AS page_title,
+			ut.name AS user_name,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+   			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+		  	CONCAT(
+			IF(NOW() &lt; fpt.end_date, CONCAT(TIMESTAMPDIFF(DAY, NOW(), fpt.end_date), '일 남음'), '종료')
+			) AS event_status,
+			fpt.goal_total,
+			sum(if(ft.funder_id is null, null, rt.reward_price)) as total_reward_price,
+			fpt.main_img_url AS img_url,
+		    fpt.funding_category_id,
+		    fpt.register_date,
+    		fpt.end_date
 		from
 		   funding_page_tb fpt
-		    left outer join user_tb ut on(ut.user_id = fpt.user_id)
-		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
-		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join user_tb ut on(ut.user_id = fpt.user_id)
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
 		    left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
 		group by
 		   page_id,
-		    page_title,
-		    user_name,
-		    event_status
+			page_title,
+			user_name,
+			event_status
 	</select>
 	
 	<select id="getFundingCategory" resultMap="FundingCategoryMap">

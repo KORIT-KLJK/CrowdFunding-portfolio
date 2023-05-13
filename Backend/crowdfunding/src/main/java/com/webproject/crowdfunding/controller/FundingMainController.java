@@ -16,10 +16,8 @@ public class FundingMainController {
 	private final FundingService fundingService;
 	
 	@GetMapping("/funding/main")
-	public ResponseEntity<?> fundingData(SearchFundingReqDto searchFundingReqDto) {
-		System.out.println(searchFundingReqDto);
-		
-		return ResponseEntity.ok(fundingService.toSaveFunding(searchFundingReqDto));
+	public ResponseEntity<?> fundingData() {
+		return ResponseEntity.ok(fundingService.toSaveFunding());
 	}
 	
 	@GetMapping("/funding/category")

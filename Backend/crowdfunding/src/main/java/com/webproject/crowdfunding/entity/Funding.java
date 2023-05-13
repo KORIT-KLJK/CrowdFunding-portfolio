@@ -29,6 +29,8 @@ public class Funding {
 	private int rewardId;
 	private String rewardName;
 	private int fundingCategoryId;
+	private int recentSort;
+	private int nearDeadlineSort;
 	
 	public FundingMainRespDto toSaveFunding() {
 		return FundingMainRespDto.builder()
@@ -40,6 +42,8 @@ public class Funding {
 				.totalRewardPrice(totalRewardPrice)
 				.imgUrl(imgUrl)
 				.fundingCategoryId(fundingCategoryId)
+				.recentSort(recentSort)
+				.nearDeadlineSort(nearDeadlineSort)
 				.build();
 	}
 }
