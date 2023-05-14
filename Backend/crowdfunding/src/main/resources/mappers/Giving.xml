@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.GivingRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.Giving" id="GivingMap">
+		<id property="pageId" column="page_id"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="givingTotal" column="giving_total"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="content" column="content"/>
+		<result property="givingExpense" column="giving_expense"/>
+		<result property="centerName" column="center_name"/>
+		<result property="givingCategoryId" column="giving_category_id"/>
+	</resultMap>
+		
+	<resultMap type="com.webproject.crowdfunding.entity.GivingCategory" id="GivingCategoryMap">
+		<id property="givingCategoryId" column="giving_category_id"/>
+		<result property="categoryName" column="category_name"/>
+	</resultMap>
+	
+	<select id="saveGiving" parameterType="hashMap" resultMap="GivingMap">
+		select
+		   gpt.giving_page_id as page_id,
+		   gpt.giving_name as page_title,
+		   ct.center_name,
+		   if(now() &lt; end_date, '진행중', '종료') as event_status,
+		   sum(gt.giving_total)/goal_total as achievement_rate,
+		   sum(gt.giving_total) as amount_collected
+		from
+		   giving_page_tb   gpt
+		   left outer join center_tb ct on(ct.center_id = gpt.center);
+	</select>
+	
+	<select id="getGivingCategory" resultMap="GivingCategoryMap">
+		select
+			gt.giving_category_id,
+			gt.category_name
+		from
+			giving_category_tb gt
+	</select>
+
+
+</mapper>
