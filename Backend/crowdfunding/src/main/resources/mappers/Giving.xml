@@ -29,7 +29,7 @@
 		   sum(gt.giving_total)/goal_total as achievement_rate,
 		   sum(gt.giving_total) as amount_collected
 		from
-		   giving_page_tb   gpt
+		   giving_page_tb gpt
 		   left outer join center_tb ct on(ct.center_id = gpt.center);
 	</select>
 	
