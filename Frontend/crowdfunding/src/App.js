@@ -28,7 +28,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/donation" element={<Donation />} />
         <Route path="/funding" element={<Funding />} />
-        <Route path="/registerpage" element={<RegisterPage/>}/>
+        <Route path="/register/page" element={<RegisterPage/>}/>
       </Routes>
     </>
   );
