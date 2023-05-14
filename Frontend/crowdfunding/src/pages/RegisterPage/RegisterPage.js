@@ -233,7 +233,16 @@ const rewardTdInput = css`
     height: 50%;
 `;
 
-const submitBtn = css`
+const saveBtnContainer = css`
+    display: flex;
+    justify-content: end;
+
+`;
+const saveBtn = css`
+    
+
+`;
+const submitBtnContainer = css`
     display: flex;
     justify-content: end;
 
@@ -263,6 +272,50 @@ const RegisterPage = () => {
     const mainCategoryList = ["기부", "펀딩"];
     const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
     const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
+
+    const [rewardNameMap, setRewardNameMap] = useState(new Map());
+    const [rewardPriceMap, setRewardPriceMap] = useState(new Map());
+
+    const [rewardNameIsBlank, setRewarNameIsBlank] = useState(false);
+    const [rewardPriceIsBlank, setRewarPriceIsBlank] = useState(false);
+    
+    const handleRewardNameChange = (id, e) => {
+        const newInputValues = new Map(rewardNameMap);
+        newInputValues.set(id, e.target.value);
+        setRewardNameMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarNameIsBlank(false);
+        }else {
+            setRewarNameIsBlank(true);
+        }
+    };
+
+    const handleRewardPriceChange = (id, e) => {
+        const newInputValues = new Map(rewardPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setRewardPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarPriceIsBlank(false);
+        }else {
+            setRewarPriceIsBlank(true);
+        }
+      };
+
+    const madeRewardList = () => {
+        const nameList = Array.from(rewardNameMap.values())
+        const priceList = Array.from(rewardPriceMap.values())
+
+        if(!rewardNameIsBlank && !rewardPriceIsBlank) {
+            alert("reward는 비워져있으면 안 됩니다.");
+        }else{
+            setInputParams({...setInputParams, rewardName: nameList, rewardPrice: priceList})
+        }
+    };
+    
+    console.log(rewardNameMap, rewardPriceMap)
+    console.log(inputParams)
+
+
 
     const changePageCategory = (e) => {
         setInputParams({...inputParams, pageCategory:e.target.value})
@@ -296,8 +349,15 @@ const RegisterPage = () => {
         rewardId.current += 1;
     }
 
-    const removeRewardInputComponentHandle = (e) => {
+    const removeRewardInputComponentHandle = (id,e) => {
         setRewardTds([...rewardTds.filter(rewardTd => rewardTd.id !== parseInt(e.target.value))]);
+        const newRewardName = new Map(rewardNameMap);
+        const newRewardPrice = new Map(rewardPriceMap);
+        newRewardName.delete(id);
+        newRewardPrice.delete(id);
+        setRewardNameMap(newRewardName);
+        setRewardPriceMap(newRewardPrice);
+
     }
 
 
@@ -392,14 +452,16 @@ const RegisterPage = () => {
                             <tbody>
                                 {rewardTds.map(rewardTd => (
                                     <tr css={rewardTr} key={rewardTd.id}>
-                                        <td css={rewardNameThAndTd}><input css={rewardTdInput} type="text"/></td>
-                                        <td css={rewardPriceThAndTd}><input css={rewardTdInput} type="text" placeholder='(원)'/><button css={rewardBtn} value={rewardTd.id} onClick={removeRewardInputComponentHandle}>-</button></td>
-                                        
+                                        <td css={rewardNameThAndTd}><input onChange={(e)=> handleRewardNameChange(rewardTd.id,e)} css={rewardTdInput} type="text"/></td>
+                                        <td css={rewardPriceThAndTd}><input onChange={(e)=> handleRewardPriceChange(rewardTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={rewardTd.id} onClick={(e)=>removeRewardInputComponentHandle(rewardTd.id,e)}>-</button></td>    
                                     </tr>
                                 ))}
                                 
                             </tbody>
                         </table>
+                        <div css={saveBtnContainer}>
+                            <button onClick={madeRewardList}>저장하기</button>
+                        </div>
                     </div>
                     
                 : ""}
@@ -413,7 +475,7 @@ const RegisterPage = () => {
                     </div> 
                 </div>
             </div>
-            <div css={submitBtn}>
+            <div css={submitBtnContainer}>
                 <button>등록하기</button>
             </div>
         </div>
