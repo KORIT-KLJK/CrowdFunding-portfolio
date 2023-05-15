@@ -16,24 +16,28 @@ public class Giving {
 	private String pageTitle;
 	private int givingTotal;
 	private int goalTotal;
+	private String storyTitle;
 	private String imgUrl;
 	private String content;
 	private int givingExpense;
 	private String centerName;
-	private int percent;
-	private int givingCategoryId;
-	private String categoryName;
+	private int categoryId;
+	private int amountCollected;
+	private int achievementRate;
+	
+	private GivingCategory givingCategory;
 
-
-	public GivingMainRespDto toSaveGiving() {
+	public GivingMainRespDto toMainRespDto() {
 		return GivingMainRespDto.builder()
 				.pageId(pageId)
 				.pageTitle(pageTitle)
 				.goalTotal(goalTotal)
 				.imgUrl(imgUrl)
-				.givingCategoryId(givingCategoryId)
+				.givingCategoryId(givingCategory.getGivingCategoryId())
+				.givingCategoryName(givingCategory.getGivingCategoryName())
 				.centerName(centerName)
-				.percent(percent)
+				.amountCollected(amountCollected)
+				.achievementRate(achievementRate)
 				.build();
 	}
 }

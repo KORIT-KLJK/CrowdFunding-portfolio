@@ -354,8 +354,8 @@ const Funding = () => {
                     <button css={fundingCategoryMainButton} onClick={() => handleCategoryClick(null)}>전체</button>
                     {fundingCategorys.isLoading ? <div>...불러오는 중</div> : fundingCategorys.data.data.map(fundingCategory => (
                         <div css={fundingCategoryContainer}>
-                            <button css={fundingCategoryButton} 
-                                    onClick={() =>handleCategoryClick(fundingCategory.fundingCategoryId)} 
+                            <button css={fundingCategoryButton}
+                                    onClick={() =>handleCategoryClick(fundingCategory.fundingCategoryId)}
                                     key={fundingCategory.fundingCategoryId}>
                                 {fundingCategory.categoryName}
                             </button>

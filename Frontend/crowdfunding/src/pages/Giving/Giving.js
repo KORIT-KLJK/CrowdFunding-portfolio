@@ -8,7 +8,10 @@ import disable from "../../assets/images/disable.png";
 import multi from "../../assets/images/multi.png";
 import globe from "../../assets/images/globe.png";
 import { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io"
+import { IoIosArrowDown } from "react-icons/io";
+import { useQuery } from "react-query";
+import axios from "axios";
+
 const mainContainer = css`
   min-width: 1140px;
 `;
@@ -49,7 +52,7 @@ const categoryName = css`
   clip: rect(0 0 0 0);
 `;
 
-const categoryArea = css`
+export const categoryArea = css`
   background-color: #10c838;
 `;
 
@@ -69,19 +72,23 @@ const categoryItem = css`
   width: 100px;
   text-align: center;
   cursor: pointer;
-`;
-
-const label = css`
-  display: inline-block;
-  position: relative;
-  padding-top: 73px;
-  font-size: 16px;
+  &:focus {
+    border: 1px solid #047ff1;
+    color: #047ff1;
+  }
 `;
 
 const icon = css`
   background-position: -144px -715px;
   width: 32px;
   height: 32px;
+`;
+
+const categoryButton = css`
+  margin-top: 5px;
+  border: 0;
+  background-color: transparent;
+  font-size: 19;
 `;
 
 const fundBank = css`
@@ -105,6 +112,7 @@ const fundPoint = css`
 const fundMainCardContainer = css`
   width: 1140px;
   margin: 60px auto 0;
+  flex-direction: column;
 `;
 
 const fundBankBox = css`
@@ -169,14 +177,16 @@ const arrowIcon = css`
   margin-left: 65px;
 `;
 
-const donationCardList = css`
+const givingCardList = css`
+  display: flex;
+  flex-wrap: wrap;
   width: 1164px;
   margin: 12px 0 -24px -24px;
   clear: both;
 `;
 
 const cardToday = css`
-  border: 1px solid rgba(0,0,0,.09);
+  border: 1px solid rgba(0, 0, 0, 0.09);
   float: left;
   position: relative;
   width: 267px;
@@ -184,7 +194,7 @@ const cardToday = css`
   margin: 0 0 24px 24px;
   display: table;
   background-color: #10c838;
-  font-family: NanumSquareWebFont,dotum,Sans-serif;
+  font-family: NanumSquareWebFont, dotum, Sans-serif;
   text-align: center;
   color: #fff;
 `;
@@ -202,7 +212,7 @@ const labelToday = css`
   background-clip: padding-box;
   background-color: #0da82f;
   font-weight: 700;
-  letter-spacing: .3px;
+  letter-spacing: 0.3px;
   color: #fff;
 `;
 
@@ -234,21 +244,82 @@ const scrollNumber = css`
   color: #fff;
 `;
 
-const donationCard = css`
-  float: left;
-  position: relative;
+const givingCard = css`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
   width: 267px;
   height: 363px;
   margin: 0 0 24px 24px;
   background-color: #fff;
-  font-family: NanumSquareWebFont,dotum,Sans-serif;
+  font-family: NanumSquareWebFont, dotum, Sans-serif;
+
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #aaa;
+  }
 `;
 
-const cardImg = css`
-  vertical-align: top;
+const cardItemContent = css`
+  padding: 21px 20px 0;
 `;
 
-const Donation = () => {
+const img = css`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const cardImgContainer = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+`;
+
+const cardItemTitle = css`
+  text-overflow: ellipsis;
+  height: 50px;
+  line-height: 25px;
+  font-size: 17px;
+  letter-spacing: -0.5px;
+  color: #333;
+`;
+
+const cardItemOrganization = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 8px;
+  font-size: 15px;
+  color: #828282;
+`;
+
+const cardItemBar = css`
+  height: 5px;
+  margin-top: 13px;
+  background-color: #e8e8e8;
+`;
+
+const cardItemPercent = css`
+  display: inline-block;
+  margin-top: 11px;
+  font-size: 17px;
+  letter-spacing: -0.2px;
+  color: #00ab33;
+`;
+
+const cardItemMoney = css`
+  float: right;
+  margin-top: 11px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+`;
+
+const Giving = () => {
   const [showList, setShowList] = useState(false);
 
   const ClickView = (e) => {
@@ -259,6 +330,33 @@ const Donation = () => {
     }
     setShowList(!showList);
   };
+
+  const [searchParams, setSearchParams] = useState({ page: 1 });
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+
+  const givingData = useQuery(["givingData"], async () => {
+    const option = {
+      params: {
+        ...searchParams,
+      },
+    };
+    const response = await axios.get(
+      "http://localhost:8080/giving/main",
+      option
+    );
+    return response;
+  });
+
+  console.log(givingData);
+
+  const givingCategorys = useQuery(["givingCategory"], async () => {
+    return await axios.get("http://localhost:8080/giving/category");
+  });
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategoryId(categoryId);
+  };
+
   return (
     <div css={mainContainer}>
       <header css={header}>
@@ -267,44 +365,33 @@ const Donation = () => {
       <body>
         <div css={menubarMain}>
           <div css={menubar}>
-            <a css={menubarItem} href="/donation">
+            <a css={menubarItem} href="/giving">
               진행중 모금함
             </a>
-            <a css={menubarItem} href="/donation">
+            <a css={menubarItem} href="/giving">
               더블 모금함
             </a>
-            <a css={menubarItem} href="/donation">
+            <a css={menubarItem} href="/giving">
               모금후기
             </a>
           </div>
         </div>
         <div css={categoryArea}>
           <h2 css={categoryName}>테마 카테고리</h2>
-          <ul css={categoryInner}>
-            <li css={categoryItem}>
-              <img src={home} css={icon} alt="" />
-              <label for={label}>전체보기</label>
-            </li>
-            <li css={categoryItem}>
-              <img src={child} css={icon} alt="" />
-              <label for={label}>아동•청소년</label>
-            </li>
-            <li css={categoryItem}>
-              <img src={old} css={icon} alt="" />
-              <label for={label}>노인</label>
-            </li>
-            <li css={categoryItem}>
-              <img src={disable} css={icon} alt="" />
-              <label for={label}>장애인</label>
-            </li>
-            <li css={categoryItem}>
-              <img src={multi} css={icon} alt="" />
-              <label for={label}>다문화</label>
-            </li>
-            <li css={categoryItem}>
-              <img src={globe} css={icon} alt="" />
-              <label for={label}>환경</label>
-            </li>
+          <ul css={categoryInner} onClick={() => handleCategoryClick(null)}>
+            {givingCategorys.isLoading ? (
+              <div>불러오는 중...</div>
+            ) : (
+              givingCategorys.data.data.map((category) => (
+                <li
+                  css={categoryItem}
+                  onClick={() => handleCategoryClick(category.givingCategoryId)}
+                  key={category.givingCategoryId}
+                >
+                  {category.givingCategoryName}
+                </li>
+              ))
+            )}
           </ul>
         </div>
         <div role="main" css={fundMainCardContainer}>
@@ -382,9 +469,12 @@ const Donation = () => {
               </button>
             </div>
           </div>
-          <div css={donationCardList}>
+          <main css={givingCardList}>
             <div css={cardToday}>
-              <a href="https://happybean.naver.com/statistics" css={cardTodayInner}>
+              <a
+                href="https://happybean.naver.com/statistics"
+                css={cardTodayInner}
+              >
                 <span css={labelToday}>Today</span>
                 <strong css={cardTodayTitle}>오늘 함께한 기부금</strong>
                 <span css={cardTodayText}>
@@ -395,8 +485,7 @@ const Donation = () => {
                   <span css={scrollNumber}>이</span>
                   <br />
                   <strong css={point}>
-                  <span css={scrollNumber}>10,827,900</span>
-                  원
+                    <span css={scrollNumber}>10,827,900</span>원
                   </strong>
                   <span css={scrollNumber}>을</span>
                   <br />
@@ -404,11 +493,44 @@ const Donation = () => {
                 </span>
               </a>
             </div>
-          </div>
+            {givingData.isLoading ? (
+              <div>불러오는 중...</div>
+            ) : (
+              givingData.data.data
+                .filter(
+                  (giving) =>
+                    selectedCategoryId === null ||
+                    giving.donationCategoryId === selectedCategoryId
+                )
+                .map((giving) => (
+                  <div css={givingCard} key={giving.pageId}>
+                    <div css={cardImgContainer}>
+                      <img
+                        css={img}
+                        src={giving.imgUrl}
+                        alt={giving.imgUrl}
+                      ></img>
+                    </div>
+                    <div css={cardItemContent}>
+                      <div css={cardItemTitle}>{giving.pageTitle}</div>
+                      <div css={cardItemOrganization}>{giving.centerName}</div>
+                      <div css={cardItemBar}></div>
+                      <div css={cardItemPercent}></div>
+                      <div css={cardItemMoney}>
+                        {new Intl.NumberFormat("en-US").format(
+                          giving.goalTotal
+                        )}
+                        원
+                      </div>
+                    </div>
+                  </div>
+                ))
+            )}
+          </main>
         </div>
       </body>
     </div>
   );
 };
 
-export default Donation;
+export default Giving;
