@@ -1,7 +1,11 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+<<<<<<< HEAD
     url: jdbc:mysql://portfolio.ctaowcun6prm.ap-northeast-2.rds.amazonaws.com:3306/unicef
+=======
+    url: prm.ap-northeast-2.rds.amazonaws.com:3306/unicef
+>>>>>>> frontDesign
     username: admin
     password: 1q2w3e4r
     
