@@ -9,5 +9,6 @@ import com.webproject.crowdfunding.entity.Funding;
 
 @Mapper
 public interface FundingRepository {
-	public List<Funding> saveFunding(Map<String, Object> map);
+	public List<Funding> saveFunding();
+	//
 }

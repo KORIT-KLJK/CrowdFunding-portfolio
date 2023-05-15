@@ -17,10 +17,13 @@ public class FundingController {
 	private final FundingService fundingService;
 	
 	@GetMapping("/funding/main")
-	public ResponseEntity<?> fundingData(SearchFundingReqDto searchFundingReqDto) {
-		System.out.println(searchFundingReqDto);
+	public ResponseEntity<?> fundingData() {
 		
-		return ResponseEntity.ok(fundingService.toSaveFunding(searchFundingReqDto));
+		return ResponseEntity.ok(fundingService.toSaveFunding());
 	}
-	
+	// post get의 사용 용도
+	// post: web -> DB	insert 저장
+	// get: DB -> web select 조회 
+	// put: web -> DB update 수정
+	// delete web -> DB 
 }

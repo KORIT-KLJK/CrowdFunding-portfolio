@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webproject.crowdfunding.repository.FundingRepository">
 
+	<!-- resultMap: DB에서 데이터를 직접 가져옴 column DB의 column을 말함. property는 Entity와 접근
+			Entity의 변수로 변환후 repository의 List에 담음.
+			 -->
 	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingMap">
 		<id property="pageId" column="page_id"/>
 		<result property="pageTitle" column="page_title"/>
@@ -19,8 +22,8 @@
 		<result property="rewardName" column="reward_name"/>
 	</resultMap>
 	
-	
-	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
+	<!-- 1. 필요로한 쿼리문을 작성, id는 repository에 있는 함수명 반환하는타입, 파라미터타입: hashMap 매개변수의 타입 -->
+	<select id="saveFunding" resultMap="FundingMap">
 		select 
 		   	fpt.funding_id AS page_id,
 		    fpt.funding_name AS page_title,

@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import axios from 'axios';
 import React from 'react';
+import { useQuery } from 'react-query';
 
 const mainCardList = css`
     display: inline-block;
@@ -74,7 +76,14 @@ const cardItemMoney = css`
 `;
 
 const CardItem = () => {
+
+    const mainCardItemDonation = useQuery(["mainCarditemDonation"], async () => {
+        const response = await axios.get("http://localhost:8080/mainDonationList/cardItem")
+        return response;
+    });
+
     return (
+        
         <>
             <ul css={mainCardList}>
                 <li css={cardListItem}>
