@@ -11,5 +11,5 @@ import com.webproject.crowdfunding.entity.GivingCategory;
 @Mapper
 public interface GivingRepository {
 	public List<GivingCategory> getGivingCategory();
-	public List<Giving> saveGiving(Map<String, Object> map);
+	public List<Giving> getGivings(Map<String, Object> map);
 }

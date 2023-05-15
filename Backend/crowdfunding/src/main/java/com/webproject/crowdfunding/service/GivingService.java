@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class GivingService {
 	private final GivingRepository givingRepository;
 	
-	public Map<String, Object> toSaveGiving(SearchGivingReqDto searchGivingReqDto) {
+	public List<GivingMainRespDto> toSaveGiving(SearchGivingReqDto searchGivingReqDto) {
 		List<GivingMainRespDto> givingList = new ArrayList<>();
 		int index = (searchGivingReqDto.getPage() - 1) * 20;
 		Map<String, Object> map = new HashMap<>();
@@ -27,14 +27,11 @@ public class GivingService {
 		map.put("searchStatus", searchGivingReqDto.getSearchStatus());
 		map.put("searchCategory", searchGivingReqDto.getSearchCategory());
 		
-		givingRepository.saveGiving(map).forEach(giving -> {
-			givingList.add(giving.toSaveGiving());
+		givingRepository.getGivings(map).forEach(giving -> {
+			givingList.add(giving.toMainRespDto());
 		});
 		
-		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("givingList", givingList);
-		System.out.println(responseMap);
-		return responseMap;
+		return givingList;
 	}
 	
 	public List<GivingCategoryRespDto> givingCategory() {

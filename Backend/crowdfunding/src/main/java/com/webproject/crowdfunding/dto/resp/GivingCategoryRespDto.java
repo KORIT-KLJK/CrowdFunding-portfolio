@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class GivingCategoryRespDto {
 	private int givingCategoryId;
-	private String categoryName;
+	private String givingCategoryName;
 }

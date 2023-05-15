@@ -9,7 +9,7 @@ import Recommend from "./components/Recommend/Recommend";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import PopupPostCode from "./pages/SignUp/PopupPostCode";
-import Donation from "./pages/Donation/Donation";
+import Giving from "./pages/Giving/Giving";
 import Search from "./pages/Search/Search";
 import HeaderMain from "./components/Header/HeaderMain/HeaderMain";
 import Funding from "./pages/Funding/Funding";
@@ -19,16 +19,16 @@ function App() {
   return (
     <>
       <Global styles={Reset}></Global>
-      <HeaderMain/>
+      <HeaderMain />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/recommend" element={<Recommend />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/donation" element={<Donation />} />
+        <Route path="/giving" element={<Giving />} />
         <Route path="/funding" element={<Funding />} />
-        <Route path="/registerpage" element={<RegisterPage/>}/>
+        <Route path="/registerpage" element={<RegisterPage />} />
       </Routes>
     </>
   );

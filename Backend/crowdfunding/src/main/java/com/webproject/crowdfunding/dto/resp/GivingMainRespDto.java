@@ -11,6 +11,8 @@ public class GivingMainRespDto {
 	private int goalTotal;
 	private String imgUrl;
 	private int givingCategoryId;
+	private String givingCategoryName;
 	private String centerName;
-	private int percent;
+	private int achievementRate;
+	private int amountCollected;
 }

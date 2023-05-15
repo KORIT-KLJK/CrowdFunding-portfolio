@@ -4,7 +4,7 @@ import React from 'react';
 import HeaderMain from '../../components/Header/HeaderMain/HeaderMain';
 import Slide from '../../components/Bannder/swiper/Slide';
 import Recommend from '../../components/Recommend/Recommend';
-import MainDonationList from '../../components/MainCard/MainDonationList/MainDonationList';
+import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
 
 const mainContainer = css`
     padding: 10px;
@@ -38,7 +38,7 @@ const Main = () => {
                 <main css={mainBodyDetails}>
                     <Slide></Slide>
                     <Recommend></Recommend>
-                    <MainDonationList></MainDonationList>
+                    <MainGivingList></MainGivingList>
 
                 </main>
             </body>
