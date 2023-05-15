@@ -37,7 +37,7 @@ export const fundingContainer = css`
 
 const Funding = () => {
     const [searchParam, setSearchParam] = useState({page:1, searchStatus: "전체", searchCategory:"최신순"});
-
+    
     const fundingData = useQuery(["fundingData"], async () => {
         const option= {
             params: {

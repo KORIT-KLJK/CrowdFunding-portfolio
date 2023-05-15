@@ -101,4 +101,6 @@ const CardItem = () => {
     );
 };
 
+
+// useQuery: 데이터 조회 , useMutation: 데이터가 변동이 있을때.
 export default CardItem;
