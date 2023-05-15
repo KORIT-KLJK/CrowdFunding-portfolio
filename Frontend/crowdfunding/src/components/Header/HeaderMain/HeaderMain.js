@@ -92,7 +92,7 @@ const HeaderMain = () => {
                 <div css={header}>
                     <div css={headerLogo}>LOGO</div>
                     <div css={headerMenuList}>
-                        <div css={menuDonation}><Link to="/donation">기부</Link></div>
+                        <div css={menuDonation}><Link to="/giving">기부</Link></div>
                         <div css={menuFunding}><Link to="/funding">펀딩</Link></div>
                     </div>
                     <div css={headerRight}>
