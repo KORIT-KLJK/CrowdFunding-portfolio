@@ -1,7 +1,5 @@
 package com.webproject.crowdfunding.dto.resp;
 
-import java.time.LocalDate;
-
 import lombok.Builder;
 import lombok.Data;
 

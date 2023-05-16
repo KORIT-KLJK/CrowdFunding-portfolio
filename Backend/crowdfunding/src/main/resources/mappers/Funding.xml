@@ -57,6 +57,8 @@
 			page_title,
 			user_name,
 			event_status
+		order by
+			recent_sort DESC;	
 	</select>
 	
 	<select id="getFundingCategory" resultMap="FundingCategoryMap">
@@ -65,6 +67,39 @@
 			ft.category_name
 		from
 			funding_category_tb ft
+	</select>
+	
+	<select id="fundingStatus" parameterType="hashMap" resultMap="FundingMap">
+		SELECT
+		    fpt.funding_id AS page_id,
+		    fpt.funding_name AS page_title,
+		    ut.name AS user_name,
+		    DATEDIFF(NOW(), fpt.register_date) AS recent_sort,
+		    DATEDIFF(fpt.end_date, NOW()) AS near_deadline_sort,
+			CONCAT(
+		    IF(NOW() &lt;&#61; fpt.end_date, CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), '오늘 마감')
+		    ) as event_status,
+		    fpt.goal_total,
+		    SUM(IF(ft.funder_id IS NULL, NULL, rt.reward_price)) AS total_reward_price,
+		    fpt.main_img_url AS img_url,
+		    fpt.funding_category_id,
+		    fpt.register_date,
+		    fpt.end_date
+		FROM
+		    funding_page_tb fpt
+		    LEFT OUTER JOIN user_tb ut ON (ut.user_id = fpt.user_id)
+		    LEFT OUTER JOIN reward_tb rt ON (rt.funding_id = fpt.funding_id)
+		    LEFT OUTER JOIN funder_tb ft ON (ft.reward_id = rt.reward_id)
+		    LEFT OUTER JOIN funding_category_tb fct ON (fct.funding_category_id = fpt.funding_category_id)
+		WHERE
+			DATEDIFF(NOW(), fpt.end_date) &lt;&#61; 0
+		GROUP BY
+		    page_id,
+		    page_title,
+		    user_name,
+		    event_status
+		ORDER BY
+		    recent_sort DESC;
 	</select>
 
 

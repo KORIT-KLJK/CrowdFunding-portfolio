@@ -286,17 +286,18 @@ export const fundingContainerFooterPrice = css`
 
 
 const Funding = () => {
-    const [statusHiddenFlag, setStatusHiddenFlag] = useState(false);
-    const [rewardHiddenFlag, setRewardHiddenFlag] = useState(false);
-    const [sortingStatus, setsortingStatus] = useState("전체");
-    const [sortingReward, setsortingReward] = useState("최신순");
-    const [fundings, setFundings] = useState([]);
+    const [ statusHiddenFlag, setStatusHiddenFlag ] = useState(false);
+    const [ rewardHiddenFlag, setRewardHiddenFlag ] = useState(false);
+    const [ sortingStatus, setSortingStatus ] = useState("전체");
+    const [ sortingReward, setSortingReward ] = useState("최신 순");
+    const [ fundings, setFundings ] = useState([]);
+    const [ fundingSortingEventStatus, setFundingSortingEventStatus ] = useState([]);
     // 펀딩 메인화면 카테고리ID와 카테고리 선택에 있는 카테고리ID가 일치하는지
-    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [ selectedCategoryId, setSelectedCategoryId ] = useState(null);
 
     // 펀딩 메인화면에 쓸 것들
     const fundingData = useQuery(["fundingData"], async () => {
-        const response = await axios.get("http://localhost:8080/funding/main")
+        const response = await axios.get("http://localhost:8080/funding/main");
         return response;
     });
     
@@ -304,14 +305,24 @@ const Funding = () => {
     const fundingCategorys = useQuery(["fundingCategory"], async () => { 
         return await axios.get("http://localhost:8080/funding/category");
     });
+
+    const fundingEventStatus = useQuery(["fundingEventStatus"], async () => {
+
+        return await axios.get("http://localhost:8080/funding/status");
+    })
     
     useEffect(() => {
         if(fundingData.isSuccess) {
             setFundings(fundingData.data.data.fundingList);
         }
     }, [fundingData.isSuccess]);
-    
-    
+
+    useEffect(() => {
+        if(fundingEventStatus.isSuccess) {
+            setFundingSortingEventStatus(fundingEventStatus.data.data.fundingList);
+        }
+    }, [fundingEventStatus.isSuccess]);
+
     // 카테고리 이름들이 들어감. (전체는 null을 넣어줌으로써 모든 걸 보여준다)
     const handleCategoryClick = (categoryId) => {
         setSelectedCategoryId(categoryId);
@@ -334,17 +345,27 @@ const Funding = () => {
     }
 
     const sortingStatusHandle = (e) => {
-        setsortingStatus(e.target.textContent);
+        setSortingStatus(e.target.textContent);
         setStatusHiddenFlag(false);
     }
 
     const sortingRewardHandle = (e) => {
-        setsortingReward(e.target.textContent);
+        const rewardText = e.target.textContent;
+        setSortingReward(rewardText);
         setRewardHiddenFlag(false);
+        
+        if (rewardText === "최신 순") {
+            return fundings.sort((a, b) => b.recentSort - a.recentSort);
+        }else if(rewardText === "참여 금액 순") {
+            return fundings.sort((a, b) => b.totalRewardPrice - a.totalRewardPrice);
+        }else if(rewardText === "참여율 순") {
+            return fundings.sort((a, b) =>
+            (Math.round((b.totalRewardPrice * 100) / b.goalTotal)) - (Math.round((a.totalRewardPrice * 100) / a.goalTotal))
+            );
+        }else if(rewardText === "종료 임박 순") {
+            return fundingSortingEventStatus.sort((a, b) => a.nearDeadlineSort - b.nearDeadlineSort);
+        }
     }
-
-
-
 
     return (
         <div>
@@ -390,7 +411,15 @@ const Funding = () => {
                 <main css={fundingMainConatiner}>
                     {fundings.filter(
                     funding => selectedCategoryId === null ||
-                    funding.fundingCategoryId === selectedCategoryId).map(funding => (
+                    funding.fundingCategoryId === selectedCategoryId).filter(funding => {
+                        if(sortingStatus === "전체") {
+                            return true;
+                        }else if(sortingStatus === "종료") {
+                            return funding.eventStatus === "종료"
+                        }else {
+                            return funding.eventStatus !== "종료"
+                        }
+                    }).map(funding => (
                         <div css={fundingContainer}>
                             <header>
                                 <div css={imgBox}>
