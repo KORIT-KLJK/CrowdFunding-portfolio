@@ -11,6 +11,5 @@ import com.webproject.crowdfunding.entity.FundingCategory;
 @Mapper
 public interface FundingRepository {
 	public List<FundingCategory> getFundingCategory();
-	public List<Funding> saveFunding();
-	public List<Funding> fundingStatus(Map<String, Object> eventStatus);
+	public List<Funding> saveFunding(Map<String, Object> eventStatusMap);
 }

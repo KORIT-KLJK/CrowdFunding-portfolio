@@ -2,7 +2,6 @@ package com.webproject.crowdfunding.entity;
 
 import java.time.LocalDate;
 
-
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
 
 import lombok.AllArgsConstructor;
@@ -47,4 +46,5 @@ public class Funding {
 				.nearDeadlineSort(nearDeadlineSort)
 				.build();
 	}
+	
 }

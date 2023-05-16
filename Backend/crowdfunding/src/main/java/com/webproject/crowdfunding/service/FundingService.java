@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.FundingEventReqDto;
-import com.webproject.crowdfunding.dto.req.SearchFundingReqDto;
 import com.webproject.crowdfunding.dto.resp.FundingCategoryRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
 import com.webproject.crowdfunding.repository.FundingRepository;
@@ -20,16 +19,18 @@ import lombok.RequiredArgsConstructor;
 public class FundingService {
 	private final FundingRepository fundingRepository;
 	
-	public Map<String, Object> toSaveFunding() {
+	public Map<String, Object> toSaveFunding(FundingEventReqDto fundingEventReqDto) {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
-		fundingRepository.saveFunding().forEach(funding -> {
+		Map<String, Object> eventStatusMap = new HashMap<>();
+		eventStatusMap.put("fundingEventStatus", fundingEventReqDto.getFundingEventStatus());
+		System.out.println(eventStatusMap);
+		fundingRepository.saveFunding(eventStatusMap).forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());
 		});
 		
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("fundingList", fundingList);
-		System.out.println(responseMap);
 		System.out.println(responseMap);
 		return responseMap;
 	}
@@ -43,20 +44,6 @@ public class FundingService {
 		return fundingCategorys;
 	}
 	
-	public Map<String, Object> fundingStatus(FundingEventReqDto fundingMainReqDto) {
-		List<FundingMainRespDto> fundingList = new ArrayList<>();
-		Map<String, Object> eventStatusMap = new HashMap<>();
-		
-		eventStatusMap.put("fundingList", fundingList);
-		eventStatusMap.put("eventStatus", fundingMainReqDto.getEventStatus());
-		
-		fundingRepository.fundingStatus(eventStatusMap).forEach(funding -> {
-			fundingList.add(funding.toSaveFunding());
-		});
-		System.out.println(eventStatusMap);
-		System.out.println(eventStatusMap);
-		return eventStatusMap;
-	}
 	
 }
 
