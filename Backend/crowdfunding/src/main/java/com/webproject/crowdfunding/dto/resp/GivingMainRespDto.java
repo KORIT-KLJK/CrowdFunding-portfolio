@@ -8,7 +8,7 @@ import lombok.Data;
 public class GivingMainRespDto {
 	private int pageId;
 	private String pageTitle;
-	private int goalTotal;
+	private int givingTotal;
 	private String imgUrl;
 	private int givingCategoryId;
 	private String givingCategoryName;
