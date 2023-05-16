@@ -29,6 +29,7 @@ public class FundingService {
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("fundingList", fundingList);
 		System.out.println(responseMap);
+		System.out.println(responseMap);
 		return responseMap;
 	}
 	
