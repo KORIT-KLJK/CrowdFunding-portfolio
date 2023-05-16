@@ -53,6 +53,7 @@ public class FundingService {
 			fundingList.add(funding.toSaveFunding());
 		});
 		System.out.println(eventStatusMap);
+		System.out.println(eventStatusMap);
 		return eventStatusMap;
 	}
 	
