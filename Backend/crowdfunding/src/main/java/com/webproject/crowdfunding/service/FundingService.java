@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.webproject.crowdfunding.dto.req.FundingEventReqDto;
 import com.webproject.crowdfunding.dto.req.SearchFundingReqDto;
 import com.webproject.crowdfunding.dto.resp.FundingCategoryRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
@@ -21,10 +22,10 @@ public class FundingService {
 	
 	public Map<String, Object> toSaveFunding() {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
-		
 		fundingRepository.saveFunding().forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());
 		});
+		
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("fundingList", fundingList);
@@ -40,6 +41,21 @@ public class FundingService {
 			fundingCategorys.add(fundingCategory.fundingCategoryToDto());
 		});
 		return fundingCategorys;
+	}
+	
+	public Map<String, Object> fundingStatus(FundingEventReqDto fundingMainReqDto) {
+		List<FundingMainRespDto> fundingList = new ArrayList<>();
+		Map<String, Object> eventStatusMap = new HashMap<>();
+		
+		eventStatusMap.put("fundingList", fundingList);
+		eventStatusMap.put("eventStatus", fundingMainReqDto.getEventStatus());
+		
+		fundingRepository.fundingStatus(eventStatusMap).forEach(funding -> {
+			fundingList.add(funding.toSaveFunding());
+		});
+		System.out.println(eventStatusMap);
+		System.out.println(eventStatusMap);
+		return eventStatusMap;
 	}
 	
 }
