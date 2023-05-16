@@ -12,6 +12,15 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useQuery } from "react-query";
 import axios from "axios";
 
+const categoryImg = {
+  전체 : home,
+  아동 : child,
+  노인 : old,
+  장애인 : disable,
+  다문화 : multi,
+  환경 : globe
+}
+
 const mainContainer = css`
   min-width: 1140px;
 `;
@@ -66,6 +75,7 @@ const categoryInner = css`
 `;
 
 const categoryItem = css`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,6 +89,12 @@ const categoryItem = css`
     border: 1px solid #047ff1;
     color: #047ff1;
   }
+`;
+
+const categoryImgCss = css`
+  position: relative;
+  width: 50px;
+  height: 50px;
 `;
 
 const categoryButton = css`
@@ -384,16 +400,16 @@ const Giving = () => {
         <div css={categoryArea}>
           <h2 css={categoryName}>테마 카테고리</h2>
           <ul css={categoryInner}>
-            <button css={categoryItem} onClick={() => handleCategoryClick(null)}>전체</button>
+            <button css={categoryItem} onClick={() => handleCategoryClick(null)}><img css={categoryImgCss} src={home}></img>전체</button>
             {givingCategorys.isLoading ? (
               <div>불러오는 중...</div>
             ) : (
               givingCategorys.data.data.map((category) => (
                 <button css={categoryItem}
                         key={category.givingCategoryId}
-                        onClick={() => handleCategoryClick(category.givingCategoryId)}
-                >
-                  {category.givingCategoryName}
+                        onClick={() => handleCategoryClick(category.givingCategoryId)}>
+                        <img css={categoryImgCss} src={categoryImg[category.givingCategoryName]} alt={category.givingCategoryName}></img>
+                        {category.givingCategoryName}
                 </button>
               ))
             )}
