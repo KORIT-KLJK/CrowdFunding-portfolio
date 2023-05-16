@@ -6,7 +6,6 @@
 		<id property="pageId" column="page_id"/>
 		<result property="pageTitle" column="page_title"/>
 		<result property="givingTotal" column="giving_total"/>
-		<result property="goalTotal" column="goal_total"/>
 		<result property="storyTitle" column="story_title"/>
 		<result property="imgUrl" column="img_url"/>
 		<result property="content" column="content"/>
@@ -25,11 +24,11 @@
 	
 	<select id="getGivings" parameterType="hashMap" resultMap="GivingMap">
 		select
-		   gpt.giving_page_id as page_id,
+		    gpt.giving_page_id as page_id,
 		    gpt.giving_name as page_title,
 		    ct.center_name,
 		    gpt.main_img_url as img_url,
-		    gpt.goal_total,
+		    gt.giving_total as giving_total,
 		    gpt.category_id,
 		    gct.giving_category_id,
 		    gct.giving_category_name,

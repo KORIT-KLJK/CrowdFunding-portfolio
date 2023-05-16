@@ -71,6 +71,9 @@ const categoryItem = css`
   align-items: center;
   width: 100px;
   text-align: center;
+  border: 0;
+  background-color: transparent;
+  font-size: 15px;
   cursor: pointer;
   &:focus {
     border: 1px solid #047ff1;
@@ -78,17 +81,19 @@ const categoryItem = css`
   }
 `;
 
-const icon = css`
-  background-position: -144px -715px;
-  width: 32px;
-  height: 32px;
-`;
-
 const categoryButton = css`
-  margin-top: 5px;
-  border: 0;
-  background-color: transparent;
-  font-size: 19;
+  width: 130px;
+  height: 40px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  margin-right: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 15px;
+  &:focus {
+    border: 1px solid #047ff1;
+    color: #047ff1;
+  }
 `;
 
 const fundBank = css`
@@ -378,18 +383,18 @@ const Giving = () => {
         </div>
         <div css={categoryArea}>
           <h2 css={categoryName}>테마 카테고리</h2>
-          <ul css={categoryInner} onClick={() => handleCategoryClick(null)}>
+          <ul css={categoryInner}>
+            <button css={categoryItem} onClick={() => handleCategoryClick(null)}>전체</button>
             {givingCategorys.isLoading ? (
               <div>불러오는 중...</div>
             ) : (
               givingCategorys.data.data.map((category) => (
-                <li
-                  css={categoryItem}
-                  onClick={() => handleCategoryClick(category.givingCategoryId)}
-                  key={category.givingCategoryId}
+                <button css={categoryItem}
+                        key={category.givingCategoryId}
+                        onClick={() => handleCategoryClick(category.givingCategoryId)}
                 >
                   {category.givingCategoryName}
-                </li>
+                </button>
               ))
             )}
           </ul>
@@ -500,7 +505,7 @@ const Giving = () => {
                 .filter(
                   (giving) =>
                     selectedCategoryId === null ||
-                    giving.donationCategoryId === selectedCategoryId
+                    giving.givingCategoryId === selectedCategoryId
                 )
                 .map((giving) => (
                   <div css={givingCard} key={giving.pageId}>
@@ -518,7 +523,7 @@ const Giving = () => {
                       <div css={cardItemPercent}></div>
                       <div css={cardItemMoney}>
                         {new Intl.NumberFormat("en-US").format(
-                          giving.goalTotal
+                          giving.givingTotal
                         )}
                         원
                       </div>

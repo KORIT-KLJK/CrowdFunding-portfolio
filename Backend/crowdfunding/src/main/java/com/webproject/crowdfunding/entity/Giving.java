@@ -15,7 +15,6 @@ public class Giving {
 	private int pageId;
 	private String pageTitle;
 	private int givingTotal;
-	private int goalTotal;
 	private String storyTitle;
 	private String imgUrl;
 	private String content;
@@ -31,7 +30,7 @@ public class Giving {
 		return GivingMainRespDto.builder()
 				.pageId(pageId)
 				.pageTitle(pageTitle)
-				.goalTotal(goalTotal)
+				.givingTotal(givingTotal)
 				.imgUrl(imgUrl)
 				.givingCategoryId(givingCategory.getGivingCategoryId())
 				.givingCategoryName(givingCategory.getGivingCategoryName())
