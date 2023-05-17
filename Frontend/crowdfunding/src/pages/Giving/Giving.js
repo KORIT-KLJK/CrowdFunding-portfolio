@@ -294,23 +294,6 @@ const img = css`
   height: 100%;
 `;
 
-const eventStatus = css`
-  border: 1px solid #37b343;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 14.5%;
-  left: 89.5%;
-  width: 60px;
-  height: 60px;
-  background-color: #38d247cc;
-  color: white;
-  font-size: 14px;
-`;
-
 const cardImgContainer = css`
   display: flex;
   justify-content: center;
@@ -342,21 +325,23 @@ const cardItemBar = css`
   width: 100%;
   height: 5px;
   margin-top: 13px;
+  border-radius: 3px;
   background-color: #10c838;
 `;
 
 const cardItemPercent = css`
-  display: inline-block;
-  margin-top: 11px;
-  font-size: 17px;
-  letter-spacing: -0.2px;
-  color: #00ab33;
+  position: relative;
+  display: flex;
+  justify-content: left;
+  margin-top: 10px;
+  color: #10c838;
+  font-size: 15px;
+  font-weight: 600;
 `;
 
 const cardItemMoney = css`
   float: right;
-  margin-top: 11px;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   color: #333;
 `;
@@ -562,13 +547,16 @@ const Giving = () => {
                   <div css={cardItemContent}>
                     <div css={cardItemTitle}>{giving.pageTitle}</div>
                     <div css={cardItemOrganization}>{giving.centerName}</div>
-                    <progress css={cardItemBar} max="200">
-                      {giving.achievementRate}
-                    </progress>
-                    <div css={cardItemPercent}></div>
-                    <div css={cardItemMoney}>
-                      {new Intl.NumberFormat("en-US").format(giving.goalTotal)}
-                      원
+                    <progress
+                      css={cardItemBar}
+                      value={giving.achievementRate}
+                      max="100"/>
+                      <div css={cardItemPercent}>{giving.achievementRate}%</div>
+                      <div css={cardItemMoney}>
+                        {new Intl.NumberFormat("en-US").format(
+                          giving.goalTotal
+                        )}
+                        원
                     </div>
                   </div>
                 </div>
