@@ -500,7 +500,7 @@ const Giving = () => {
                 .filter(
                   (giving) =>
                     selectedCategoryId === null ||
-                    giving.donationCategoryId === selectedCategoryId
+                    giving.givingCategoryId === selectedCategoryId
                 )
                 .map((giving) => (
                   <div css={givingCard} key={giving.pageId}>

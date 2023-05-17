@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 
 const mainCardList = css`
@@ -77,26 +77,37 @@ const cardItemMoney = css`
 
 const CardItem = () => {
 
-    const mainCardItemDonation = useQuery(["mainCarditemDonation"], async () => {
-        const response = await axios.get("http://localhost:8080/mainDonationList/cardItem")
-        return response;
-    });
+   const [searchParams, setSearchParams] = useState({page:1});
+   const givingData = useQuery(["mainDonationCardItem"], async () => {
+    const option = {
+        params: {
+            ...searchParams,
+        },
+    };
+    const response = await axios.get("http://localhost:8080/main", option)
+    return response;
+   });
+
+   console.log(givingData)
 
     return (
         
         <>
-            <ul css={mainCardList}>
-                <li css={cardListItem}>
-                    <div css={cardItemImg}><img src="" alt="" />img</div>
-                    <div css={cardItemContent}>
-                        <strong css={cardItemTitle}>보고싶어요,생명을 구하고 떠난 우리 아빠</strong>
-                        <div css={cardItemOrganization}>사랑의 장기기증 운동본부</div>
-                        <div css={cardItemBar}>모금률</div>
-                        <strong css={cardItemPercent}>모금퍼센트</strong>
-                        <strong css={cardItemMoney}>모금금액</strong>
-                    </div>
-                </li>
-            </ul>
+            givingData.data.data
+            .map((giving) => (
+                <ul css={mainCardList} >
+                    <li css={cardListItem}>
+                        <div css={cardItemImg}><img src="" alt="" />img</div>
+                        <div css={cardItemContent}>
+                            <strong css={cardItemTitle}>보고싶어요,생명을 구하고 떠난 우리 아빠</strong>
+                            <div css={cardItemOrganization}>사랑의 장기기증 운동본부</div>
+                            <div css={cardItemBar}>모금률</div>
+                            <strong css={cardItemPercent}>모금퍼센트</strong>
+                            <strong css={cardItemMoney}>모금금액</strong>
+                        </div>
+                    </li>
+                </ul>
+            ))
         </>
     );
 };
