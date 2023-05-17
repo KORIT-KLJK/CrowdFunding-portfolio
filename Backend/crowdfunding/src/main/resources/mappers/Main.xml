@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.Main">
-	<resultMap type="com.webproject.crowdfunding.entity.Main" id="mainMap">
-	
+<mapper namespace="com.webproject.crowdfunding.repository.MainCardItemGivingRepository">
+	<resultMap type="com.webproject.crowdfunding.entity.MainCardItemGiving" id="MainCardItemGivingMap">
+		<id property="pageId" column="page_id"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="centerName" column="center_name"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="givingTotal" column="giving_total"/>
+		<result property="categoryId" column="category_id"/>
+		<result property="achievementRate" column="achievement_rate"/>
 	</resultMap>
+	
+	<select id="saveCardItemGiving" parameterType="hashMap" resultMap="MainCardItemGivingMap">
+		select
+		   gpt.giving_page_id as page_id,
+		   gpt.giving_name as page_title,
+		   ct.center_name,
+		   gpt.main_img_url as img_url,
+		   gt.giving_total as giving_total,
+		   gpt.category_id,
+		   ROUND(sum(gt.giving_total)/goal_total * 100) as achievement_rate			
+		from
+		   giving_page_tb gpt
+		   left outer join center_tb ct on(ct.center_id = gpt.center_id)
+		   left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
+		where
+		   DATEDIFF(gpt.end_date, NOW()) &#62;= 0 			
+		group by
+		   gpt.giving_page_id
+		order by
+		   giving_total desc
+		limit 4;
+	</select>
 </mapper>

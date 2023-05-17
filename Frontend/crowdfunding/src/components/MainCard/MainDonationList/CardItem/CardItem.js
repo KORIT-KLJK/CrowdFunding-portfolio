@@ -21,11 +21,16 @@ const cardListItem = css`
     border: 1px solid #dbdbdb;
 
     width: 267px;
-    height: 363px;       
+    
     position: relative;
     background-color: #fff;
 
     cursor: pointer;
+    &:not(:nth-child(1)) {
+        margin-left: 24px;
+    }
+    // &:not(:nth-child(n)) {조건} n번째 card만 조건에 따르지 않겠다. 
+    // not이 없으면 true로 n번째만 조건에 따르겠다.로 보면됨.  
 `;
 const cardItemContent = css`
     padding: 21px 20px 0;
@@ -76,38 +81,35 @@ const cardItemMoney = css`
 `;
 
 const CardItem = () => {
+    const givings = useQuery(["mainDonationCardItem"], async () => {
 
-   const [searchParams, setSearchParams] = useState({page:1});
-   const givingData = useQuery(["mainDonationCardItem"], async () => {
-    const option = {
-        params: {
-            ...searchParams,
-        },
-    };
-    const response = await axios.get("http://localhost:8080/main", option)
+    const response = await axios.get("http://localhost:8080/main/cardItemGiving")
     return response;
    });
 
-   console.log(givingData)
+   if(givings.isLoading) {
+    return <></>
+   }
+
+   console.log(givings)
 
     return (
         
         <>
-            givingData.data.data
-            .map((giving) => (
-                <ul css={mainCardList} >
-                    <li css={cardListItem}>
-                        <div css={cardItemImg}><img src="" alt="" />img</div>
-                        <div css={cardItemContent}>
-                            <strong css={cardItemTitle}>보고싶어요,생명을 구하고 떠난 우리 아빠</strong>
-                            <div css={cardItemOrganization}>사랑의 장기기증 운동본부</div>
-                            <div css={cardItemBar}>모금률</div>
-                            <strong css={cardItemPercent}>모금퍼센트</strong>
-                            <strong css={cardItemMoney}>모금금액</strong>
-                        </div>
-                    </li>
-                </ul>
-            ))
+            <ul css={mainCardList}>
+                {givings.data.data.cardGivingList.map(giving => (
+                <li css={cardListItem} key={giving.pageId}>
+                    <img css={cardItemImg} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                    <div css={cardItemContent}>
+                        <strong css={cardItemTitle}>{giving.pageTitle}</strong>
+                        <div css={cardItemOrganization}>{giving.centerName}</div>
+                        <div css={cardItemBar}></div>
+                        <strong css={cardItemPercent}>{giving.achievementRate}%</strong>
+                        <strong css={cardItemMoney}>{giving.givingTotal}원</strong>
+                    </div>
+                </li>
+                ))}
+            </ul>
         </>
     );
 };
