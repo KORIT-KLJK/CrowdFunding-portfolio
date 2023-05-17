@@ -14,6 +14,7 @@ import Search from "./pages/Search/Search";
 import HeaderMain from "./components/Header/HeaderMain/HeaderMain";
 import Funding from "./pages/Funding/Funding";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import FundingDetail from "./pages/Funding/FundingDetail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/giving" element={<Giving />} />
         <Route path="/funding" element={<Funding />} />
+        <Route path="/funding/:pageId" element={<FundingDetail />} />
         <Route path="/register/page" element={<RegisterPage/>}/>
       </Routes>
     </>
