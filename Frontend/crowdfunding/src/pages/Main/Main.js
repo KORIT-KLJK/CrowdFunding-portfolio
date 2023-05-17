@@ -5,6 +5,7 @@ import HeaderMain from '../../components/Header/HeaderMain/HeaderMain';
 import Slide from '../../components/Bannder/swiper/Slide';
 import Recommend from '../../components/Recommend/Recommend';
 import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
+import CardItem from '../../components/MainCard/MainDonationList/CardItem/CardItem';
 
 const mainContainer = css`
     padding: 10px;
@@ -39,7 +40,6 @@ const Main = () => {
                     <Slide></Slide>
                     <Recommend></Recommend>
                     <MainGivingList></MainGivingList>
-
                 </main>
             </body>
             <footer>
