@@ -7,19 +7,19 @@ import old from "../../assets/images/old.png";
 import disable from "../../assets/images/disable.png";
 import multi from "../../assets/images/multi.png";
 import globe from "../../assets/images/globe.png";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useQuery } from "react-query";
 import axios from "axios";
 
 const categoryImg = {
-  전체 : home,
-  아동 : child,
-  노인 : old,
-  장애인 : disable,
-  다문화 : multi,
-  환경 : globe
-}
+  전체: home,
+  아동: child,
+  노인: old,
+  장애인: disable,
+  다문화: multi,
+  환경: globe,
+};
 
 const mainContainer = css`
   min-width: 1140px;
@@ -195,7 +195,10 @@ const liBox = css`
 `;
 
 const arrowIcon = css`
-  margin-left: 65px;
+  position: absolute;
+  transform: translateY(-50%);
+  top: 50%;
+  right: 10px;
 `;
 
 const givingCardList = css`
@@ -291,6 +294,23 @@ const img = css`
   height: 100%;
 `;
 
+const eventStatus = css`
+  border: 1px solid #37b343;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 14.5%;
+  left: 89.5%;
+  width: 60px;
+  height: 60px;
+  background-color: #38d247cc;
+  color: white;
+  font-size: 14px;
+`;
+
 const cardImgContainer = css`
   display: flex;
   justify-content: center;
@@ -319,9 +339,10 @@ const cardItemOrganization = css`
 `;
 
 const cardItemBar = css`
+  width: 100%;
   height: 5px;
   margin-top: 13px;
-  background-color: #e8e8e8;
+  background-color: #10c838;
 `;
 
 const cardItemPercent = css`
@@ -341,7 +362,51 @@ const cardItemMoney = css`
 `;
 
 const Giving = () => {
+  const [givingRefresh, setGivingRefresh] = useState(true);
   const [showList, setShowList] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState("최신순");
+  const [searchParams, setSearchParams] = useState({
+    page: 1,
+    categoryId: 0,
+    selectedOrder: "최신순",
+  });
+
+  const givingCategorys = useQuery(
+    ["givingCategory"],
+    async () => {
+      return await axios.get("http://localhost:8080/giving/category");
+    },
+    {
+      enabled: givingRefresh,
+      onSuccess: () => {
+        setGivingRefresh(false);
+      },
+    }
+  );
+
+  const givingData = useQuery(
+    ["givingData"],
+    async () => {
+      const option = {
+        params: {
+          ...searchParams,
+        },
+      };
+      const response = await axios.get(
+        "http://localhost:8080/giving/main",
+        option
+      );
+      return response;
+    },
+    {
+      enabled: givingRefresh,
+      onSuccess: () => {
+        setGivingRefresh(false);
+      },
+    }
+  );
+
+  console.log(givingData);
 
   const ClickView = (e) => {
     if (e.type !== "click") {
@@ -352,30 +417,16 @@ const Giving = () => {
     setShowList(!showList);
   };
 
-  const [searchParams, setSearchParams] = useState({ page: 1 });
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-
-  const givingData = useQuery(["givingData"], async () => {
-    const option = {
-      params: {
-        ...searchParams,
-      },
-    };
-    const response = await axios.get(
-      "http://localhost:8080/giving/main",
-      option
-    );
-    return response;
-  });
-
-  console.log(givingData);
-
-  const givingCategorys = useQuery(["givingCategory"], async () => {
-    return await axios.get("http://localhost:8080/giving/category");
-  });
-
   const handleCategoryClick = (categoryId) => {
-    setSelectedCategoryId(categoryId);
+    console.log(categoryId);
+    setSearchParams({ ...searchParams, categoryId });
+    setGivingRefresh(true);
+  };
+
+  const handleSortByAmount = (selectedOrder) => {
+    setSelectedOrder(selectedOrder);
+    setSearchParams({ ...searchParams, selectedOrder });
+    setGivingRefresh(true);
   };
 
   return (
@@ -400,16 +451,24 @@ const Giving = () => {
         <div css={categoryArea}>
           <h2 css={categoryName}>테마 카테고리</h2>
           <ul css={categoryInner}>
-            <button css={categoryItem} onClick={() => handleCategoryClick(null)}><img css={categoryImgCss} src={home}></img>전체</button>
+            <button css={categoryItem} onClick={() => handleCategoryClick(0)}>
+              <img css={categoryImgCss} src={home}></img>전체
+            </button>
             {givingCategorys.isLoading ? (
               <div>불러오는 중...</div>
             ) : (
               givingCategorys.data.data.map((category) => (
-                <button css={categoryItem}
-                        key={category.givingCategoryId}
-                        onClick={() => handleCategoryClick(category.givingCategoryId)}>
-                        <img css={categoryImgCss} src={categoryImg[category.givingCategoryName]} alt={category.givingCategoryName}></img>
-                        {category.givingCategoryName}
+                <button
+                  css={categoryItem}
+                  key={category.givingCategoryId}
+                  onClick={() => handleCategoryClick(category.givingCategoryId)}
+                >
+                  <img
+                    css={categoryImgCss}
+                    src={categoryImg[category.givingCategoryName]}
+                    alt={category.givingCategoryName}
+                  ></img>
+                  {category.givingCategoryName}
                 </button>
               ))
             )}
@@ -422,7 +481,8 @@ const Giving = () => {
           <div css={fundBankBox}>
             <div css={fundBankArea}>
               <button css={fundBankButton} onClick={ClickView}>
-                추천 순<IoIosArrowDown css={arrowIcon} />
+                {selectedOrder}
+                <IoIosArrowDown css={arrowIcon} />
                 {showList && (
                   <ul css={ulListBox} role="listbox" aria-hidden="false">
                     <li
@@ -432,8 +492,9 @@ const Giving = () => {
                       data-order=""
                       data-sorttype="desc"
                       aria-selected="true"
+                      onClick={() => handleSortByAmount("최신순")}
                     >
-                      <span>추천 순서</span>
+                      <span>최신순</span>
                     </li>
                     <li
                       role="option"
@@ -442,16 +503,7 @@ const Giving = () => {
                       data-order=""
                       data-sorttype="desc"
                       aria-selected="true"
-                    >
-                      <span>최신 순서</span>
-                    </li>
-                    <li
-                      role="option"
-                      css={liBox}
-                      tabindex="0"
-                      data-order=""
-                      data-sorttype="desc"
-                      aria-selected="true"
+                      onClick={() => handleSortByAmount("모금액 많은 순서")}
                     >
                       <span>모금액 많은 순서</span>
                     </li>
@@ -459,31 +511,12 @@ const Giving = () => {
                       role="option"
                       css={liBox}
                       tabindex="0"
-                      data-order=""
+                      data-order="giving.amountCollected"
                       data-sorttype="desc"
                       aria-selected="true"
+                      onClick={() => handleSortByAmount("모금액 적은 순서")}
                     >
                       <span>모금액 적은 순서</span>
-                    </li>
-                    <li
-                      role="option"
-                      css={liBox}
-                      tabindex="0"
-                      data-order=""
-                      data-sorttype="desc"
-                      aria-selected="true"
-                    >
-                      <span>모금액 높은 순서</span>
-                    </li>
-                    <li
-                      role="option"
-                      css={liBox}
-                      tabindex="0"
-                      data-order=""
-                      data-sorttype="desc"
-                      aria-selected="true"
-                    >
-                      <span>종료임박 순서</span>
                     </li>
                   </ul>
                 )}
@@ -517,35 +550,29 @@ const Giving = () => {
             {givingData.isLoading ? (
               <div>불러오는 중...</div>
             ) : (
-              givingData.data.data
-                .filter(
-                  (giving) =>
-                    selectedCategoryId === null ||
-                    giving.givingCategoryId === selectedCategoryId
-                )
-                .map((giving) => (
-                  <div css={givingCard} key={giving.pageId}>
-                    <div css={cardImgContainer}>
-                      <img
-                        css={img}
-                        src={giving.imgUrl}
-                        alt={giving.imgUrl}
-                      ></img>
-                    </div>
-                    <div css={cardItemContent}>
-                      <div css={cardItemTitle}>{giving.pageTitle}</div>
-                      <div css={cardItemOrganization}>{giving.centerName}</div>
-                      <div css={cardItemBar}></div>
-                      <div css={cardItemPercent}></div>
-                      <div css={cardItemMoney}>
-                        {new Intl.NumberFormat("en-US").format(
-                          giving.givingTotal
-                        )}
-                        원
-                      </div>
+              givingData.data.data.map((giving) => (
+                <div css={givingCard} key={giving.pageId}>
+                  <div css={cardImgContainer}>
+                    <img
+                      css={img}
+                      src={giving.imgUrl}
+                      alt={giving.imgUrl}
+                    ></img>
+                  </div>
+                  <div css={cardItemContent}>
+                    <div css={cardItemTitle}>{giving.pageTitle}</div>
+                    <div css={cardItemOrganization}>{giving.centerName}</div>
+                    <progress css={cardItemBar} max="200">
+                      {giving.achievementRate}
+                    </progress>
+                    <div css={cardItemPercent}></div>
+                    <div css={cardItemMoney}>
+                      {new Intl.NumberFormat("en-US").format(giving.goalTotal)}
+                      원
                     </div>
                   </div>
-                ))
+                </div>
+              ))
             )}
           </main>
         </div>
