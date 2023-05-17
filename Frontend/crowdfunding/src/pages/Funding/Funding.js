@@ -286,7 +286,7 @@ export const fundingContainerFooterPrice = css`
 
 
 const Funding = () => {
-    const [ searchParam, setSearchParam ] = useState({fundingEventStatus: "최신 순"});
+    const [ searchParam, setSearchParam ] = useState({fundingSortingReward: "최신 순", fundingSortingStatus: "전체"});
     const [ refresh, setRefresh ] = useState(true);
     const [ statusHiddenFlag, setStatusHiddenFlag ] = useState(false);
     const [ rewardHiddenFlag, setRewardHiddenFlag ] = useState(false);
@@ -305,23 +305,24 @@ const Funding = () => {
         }
         const response = await axios.get("http://localhost:8080/funding/main", option);
         return response;
-    },{
-        onSuccess: (response) => {
-            setFundings([...fundings, ...response.data.fundingList])
+    }, {
+        enabled: refresh,
+        onSuccess: () => {
+            setRefresh(false);
         }
     });
-    
-    useEffect(() => {
-        if(fundingData.isSuccess) {
-            setFundings(fundingData.data.data.fundingList);
-        }
-    }, [fundingData]);
 
+    console.log(searchParam);
+
+    
     // 펀딩 카테고리 선택에 쓸 것들
     const fundingCategorys = useQuery(["fundingCategory"], async () => { 
         return await axios.get("http://localhost:8080/funding/category");
     });
 
+    if(fundingData.isLoading) {
+        return <></>;
+    }
 
     // 카테고리 이름들이 들어감. (전체는 null을 넣어줌으로써 모든 걸 보여준다)
     const handleCategoryClick = (categoryId) => {
@@ -345,32 +346,20 @@ const Funding = () => {
     }
 
     const sortingStatusHandle = (e) => {
-        setSortingStatus(e.target.textContent);
+        const statusText = e.target.textContent;
+        setSearchParam({...searchParam, fundingSortingStatus: statusText})
+        setSortingStatus(statusText);
         setStatusHiddenFlag(false);
+        setRefresh(true);
     }
 
     const sortingRewardHandle = (e) => {
         const rewardText = e.target.textContent;
-        setSearchParam({ ...searchParam, fundingEventStatus: rewardText });
+        setSearchParam({ ...searchParam, fundingSortingReward: rewardText});
         setSortingReward(rewardText);
         setRewardHiddenFlag(false);
         setRefresh(true);
-      
-        if (rewardText === "최신 순") {
-          return fundings.sort((a, b) => b.recentSort - a.recentSort);
-        } else if (rewardText === "참여 금액 순") {
-          return fundings.sort((a, b) => b.totalRewardPrice - a.totalRewardPrice);
-        } else if (rewardText === "참여율 순") {
-            return fundings.sort(
-              (a, b) =>
-                Math.round((b.totalRewardPrice * 100) / b.goalTotal) -
-                Math.round((a.totalRewardPrice * 100) / a.goalTotal)
-            )
-        } else if (rewardText === "종료 임박 순") {
-            return fundings
-              .sort((a, b) => a.nearDeadlineSort - b.nearDeadlineSort);
-          }
-      };
+    };
 
     return (
         <div>
@@ -414,24 +403,16 @@ const Funding = () => {
                         </ul>) : ""}
                     </div>
                 <main css={fundingMainConatiner}>
-                    {fundings.filter(
+                    {fundingData.data.data.fundingList.filter(
                     funding => selectedCategoryId === null ||
-                    funding.fundingCategoryId === selectedCategoryId).filter(funding => {
-                        if(sortingStatus === "전체") {
-                            return true;
-                        }else if(sortingStatus === "종료") {
-                            return funding.eventStatus === "종료"
-                        }else {
-                            return funding.eventStatus !== "종료"
-                        }
-                    }).map(funding => (
+                    funding.fundingCategoryId === selectedCategoryId).map(funding => (
                         <div css={fundingContainer}>
                             <header>
                                 <div css={imgBox}>
                                     <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
                                         <div css={checkFunding({funding})}>
                                             <div css={fundingTxt}>펀딩</div>
-                                            <div>{(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal)) >= 100 ? "성공" : "실패"}</div>
+                                            <div>{funding.joinPercent >= 100 ? "성공" : "실패"}</div>
                                         </div>
                                 </div>
                             </header>
@@ -439,7 +420,7 @@ const Funding = () => {
                                     <div css={fundingContainerMainTitlePrice}>
                                         <div css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</div>
                                         <div css={fundingContainerMainPricePadding}>
-                                            <div css={fundingContainerMainPrice}>{(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal))}%</div>
+                                            <div css={fundingContainerMainPrice}>{funding.joinPercent}%</div>
                                         </div>
                                     </div>
                                     <div css={fundingContainerMainUsername}>{funding.username}</div>

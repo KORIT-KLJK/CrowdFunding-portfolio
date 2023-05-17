@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class FundingEventReqDto {
-	private String fundingEventStatus;
+	private String fundingSortingReward;
+	private String fundingSortingStatus;
 }

@@ -1,7 +1,5 @@
 package com.webproject.crowdfunding.entity;
 
-import java.time.LocalDate;
-
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
 
 import lombok.AllArgsConstructor;
@@ -13,37 +11,32 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Funding {
+public class FundingMain {
 	private int pageId;
 	private String pageTitle;
 	private String username;
-	private String eventStatus;
-	private LocalDate registerDate;
-	private LocalDate endDate;
-	private String totalRewardPrice;
-	private int goalTotal;
-	private String storyTitle;
-	private String storyContent;
-	private String imgUrl;
-	private int userId;
-	private int rewardId;
-	private String rewardName;
-	private int fundingCategoryId;
 	private int recentSort;
 	private int nearDeadlineSort;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String imgUrl;
+	private int fundingCategoryId;
 	
 	public FundingMainRespDto toSaveFunding() {
 		return FundingMainRespDto.builder()
 				.pageId(pageId)
 				.pageTitle(pageTitle)
 				.username(username)
+				.recentSort(recentSort)
+				.nearDeadlineSort(nearDeadlineSort)
 				.eventStatus(eventStatus)
 				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)
+				.joinPercent(joinPercent)
 				.imgUrl(imgUrl)
 				.fundingCategoryId(fundingCategoryId)
-				.recentSort(recentSort)
-				.nearDeadlineSort(nearDeadlineSort)
 				.build();
 	}
 	
