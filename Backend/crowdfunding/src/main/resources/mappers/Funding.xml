@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webproject.crowdfunding.repository.FundingRepository">
 
-	<resultMap type="com.webproject.crowdfunding.entity.FundingMain" id="FundingMap">
-		<id property="pageId" column="page_id"/>
-		<result property="pageTitle" column="page_title"/>
+	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingMap">
+		<id property="fundingId" column="page_id"/>
+		<result property="fundingTitle" column="page_title"/>
 		<result property="username" column="user_name"/>
 		<result property="recentSort" column="recent_sort"/>
-		<result property="nearDeadlineSort" column="near_deadline_sort"/>
+		<result property="nearDeadline" column="near_deadline_sort"/>
 		<result property="eventStatus" column="event_status"/>
 		<result property="goalTotal" column="goal_total"/>
 		<result property="totalRewardPrice" column="total_reward_price"/>

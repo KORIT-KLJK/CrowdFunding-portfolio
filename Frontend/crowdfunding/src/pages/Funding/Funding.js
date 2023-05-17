@@ -3,7 +3,8 @@ import {css} from "@emotion/react";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import FundingDetail from "./FundingDetail";
 export const welcomeFunding = css`
     display: flex;
     justify-content: center;
@@ -225,7 +226,7 @@ export const checkFunding = ({funding}) => css`
     left: 89.5%;
     width: 60px;
     height: 60px;
-    background-color: ${(Math.round((funding.totalRewardPrice * 100) / funding.goalTotal)) >= 100 ? "#38d247cc" : "red"};
+    background-color: #38d247cc;
     color: white;
     font-size: 14px;
 `;
@@ -286,13 +287,13 @@ export const fundingContainerFooterPrice = css`
 
 
 const Funding = () => {
+    const navigate = useNavigate();
     const [ searchParam, setSearchParam ] = useState({fundingSortingReward: "최신 순", fundingSortingStatus: "전체"});
     const [ refresh, setRefresh ] = useState(true);
     const [ statusHiddenFlag, setStatusHiddenFlag ] = useState(false);
     const [ rewardHiddenFlag, setRewardHiddenFlag ] = useState(false);
     const [ sortingStatus, setSortingStatus ] = useState("전체");
     const [ sortingReward, setSortingReward ] = useState("최신 순");
-    const [ fundings, setFundings ] = useState([]);
     // 펀딩 메인화면 카테고리ID와 카테고리 선택에 있는 카테고리ID가 일치하는지
     const [ selectedCategoryId, setSelectedCategoryId ] = useState(null);
 
@@ -312,9 +313,6 @@ const Funding = () => {
         }
     });
 
-    console.log(searchParam);
-
-    
     // 펀딩 카테고리 선택에 쓸 것들
     const fundingCategorys = useQuery(["fundingCategory"], async () => { 
         return await axios.get("http://localhost:8080/funding/category");
@@ -361,6 +359,10 @@ const Funding = () => {
         setRefresh(true);
     };
 
+    const fundingDetailHandle = (pageId) => {
+        navigate("/funding/" + pageId);
+    }
+
     return (
         <div>
             <div css={welcomeFunding}>펀딩 페이지에 오신 것을 환영합니다 ^_^(나중에 수정할 부분)</div>
@@ -406,13 +408,13 @@ const Funding = () => {
                     {fundingData.data.data.fundingList.filter(
                     funding => selectedCategoryId === null ||
                     funding.fundingCategoryId === selectedCategoryId).map(funding => (
-                        <div css={fundingContainer}>
+                        <div css={fundingContainer} onClick={() => {fundingDetailHandle(funding.pageId)}}>
                             <header>
                                 <div css={imgBox}>
                                     <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
                                         <div css={checkFunding({funding})}>
                                             <div css={fundingTxt}>펀딩</div>
-                                            <div>{funding.joinPercent >= 100 ? "성공" : "실패"}</div>
+                                            <div>{funding.joinPercent >= 100 ? "성공" : "종료"}</div>
                                         </div>
                                 </div>
                             </header>
