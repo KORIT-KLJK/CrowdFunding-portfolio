@@ -6,6 +6,7 @@
 		<id property="pageId" column="page_id"/>
 		<result property="pageTitle" column="page_title"/>
 		<result property="givingTotal" column="giving_total"/>
+		<result property="goalTotal" column="goal_total"/>
 		<result property="storyTitle" column="story_title"/>
 		<result property="imgUrl" column="img_url"/>
 		<result property="content" column="content"/>
@@ -30,18 +31,39 @@
 		    gpt.main_img_url as img_url,
 		    gt.giving_total as giving_total,
 		    gpt.category_id,
+		    gpt.goal_total,
 		    gct.giving_category_id,
 		    gct.giving_category_name,
 		    if(now() &lt; end_date, '진행중', '종료') as event_status,
-		    sum(gt.giving_total)/goal_total as achievement_rate,
+		    round(sum(gt.giving_total) / goal_total * 100) as achievement_rate,
 		    sum(gt.giving_total) as amount_collected
 		from
 		   giving_page_tb gpt
 		   left outer join center_tb ct on(ct.center_id = gpt.center_id)
 		   left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
 		   left outer join giving_category_tb gct on(gct.giving_category_id = gpt.category_id)
+		where
+			1 = 1
+			<if test="categoryId != 0">
+				and gpt.category_id = #{categoryId}
+			</if>
 		group by
 		   gpt.giving_page_id
+		order by
+		<choose>
+			<when test='selectedOrder == "모금액 많은 순서"'>
+				goal_total desc,
+				page_id desc
+			</when>
+			<when test='selectedOrder == "모금액 적은 순서"'>
+				goal_total,
+				page_id desc
+			</when>
+			<otherwise>
+				page_id desc
+			</otherwise>
+		</choose>
+			
 	</select>
 	
 	<select id="getGivingCategory" resultMap="GivingCategoryMap">

@@ -1,5 +1,7 @@
 package com.webproject.crowdfunding.entity;
 
+import java.time.LocalDate;
+
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +17,9 @@ public class Giving {
 	private int pageId;
 	private String pageTitle;
 	private int givingTotal;
+	private int goalTotal;
 	private String storyTitle;
+	private String eventStatus;
 	private String imgUrl;
 	private String content;
 	private int givingExpense;
@@ -31,7 +35,9 @@ public class Giving {
 				.pageId(pageId)
 				.pageTitle(pageTitle)
 				.givingTotal(givingTotal)
+				.goalTotal(goalTotal)
 				.imgUrl(imgUrl)
+				.eventStatus(eventStatus)
 				.givingCategoryId(givingCategory.getGivingCategoryId())
 				.givingCategoryName(givingCategory.getGivingCategoryName())
 				.centerName(centerName)
