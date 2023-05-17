@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.webproject.crowdfunding.entity.Funding;
+import com.webproject.crowdfunding.entity.FundingMain;
 import com.webproject.crowdfunding.entity.FundingCategory;
 
 @Mapper
 public interface FundingRepository {
 	public List<FundingCategory> getFundingCategory();
-	public List<Funding> saveFunding(Map<String, Object> eventStatusMap);
+	public List<FundingMain> saveFunding(Map<String, Object> eventStatusMap);
 }

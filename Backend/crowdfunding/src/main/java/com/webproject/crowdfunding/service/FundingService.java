@@ -22,7 +22,8 @@ public class FundingService {
 	public Map<String, Object> toSaveFunding(FundingEventReqDto fundingEventReqDto) {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
 		Map<String, Object> eventStatusMap = new HashMap<>();
-		eventStatusMap.put("fundingEventStatus", fundingEventReqDto.getFundingEventStatus());
+		eventStatusMap.put("fundingSortingReward", fundingEventReqDto.getFundingSortingReward());
+		eventStatusMap.put("fundingSortingStatus", fundingEventReqDto.getFundingSortingStatus());
 		System.out.println(eventStatusMap);
 		fundingRepository.saveFunding(eventStatusMap).forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());

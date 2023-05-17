@@ -9,11 +9,12 @@ public class FundingMainRespDto {
 	private int pageId;
 	private String pageTitle;
 	private String username;
-	private String eventStatus;
-	private int goalTotal;
-	private String totalRewardPrice;
-	private String imgUrl;
-	private int fundingCategoryId;
 	private int recentSort;
 	private int nearDeadlineSort;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String imgUrl;
+	private int fundingCategoryId;
 }
