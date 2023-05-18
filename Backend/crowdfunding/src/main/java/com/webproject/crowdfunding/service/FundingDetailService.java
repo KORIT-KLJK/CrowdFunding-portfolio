@@ -1,8 +1,14 @@
 package com.webproject.crowdfunding.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
+import com.webproject.crowdfunding.dto.resp.RewardRespDto;
 import com.webproject.crowdfunding.repository.FundingDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,8 +20,20 @@ public class FundingDetailService {
 	private final FundingDetailRepository fundingDetailRepository;
 	
 	public FundingDetailRespDto fundingDetail(int pageId) {
-		
 		return fundingDetailRepository.fundingDetail(pageId).getDetailFunding();
+	}
+	
+	public Map<String, Object> getReward(int pageId) {
+		List<RewardRespDto> rewardList = new ArrayList<>();
+		
+		fundingDetailRepository.getReward(pageId).forEach(reward -> {
+			rewardList.add(reward.getFundingReward());
+		});
+		
+		Map<String, Object> rewardMap = new HashMap<>();
+		rewardMap.put("rewardList", rewardList);
+		
+		return rewardMap;
 	}
 	
 }

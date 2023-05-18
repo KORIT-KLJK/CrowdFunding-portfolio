@@ -68,13 +68,6 @@ export const fundingCategoryButton = css`
     }
 `;
 
-export const fundingStatusContainer = css`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 1210px;
-`;
-
 export const fundingStatusDetail = css`
     display: flex;
     justify-content: space-between;
@@ -96,29 +89,13 @@ export const fundingStatusDetail = css`
 
 export const fundingStatus = css`
     font-size: 13px;
-`;
-
-export const sortingFundingStatusContainer = css`
-    position: absolute;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    z-index: 100;
-    width: 1075px;
-    height: 120px;
-`;
-
-export const sortingFundingRewardContainer = css`
-    position: absolute;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    z-index: 99;
-    width: 1210px;
-    height: 120px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
 `;
 
 export const sortingFundingStatusList = css`
+    position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -127,7 +104,9 @@ export const sortingFundingStatusList = css`
     border-top: none;
     width: 125px;
     padding: 10px;
-    margin-left: 10px;
+    z-index: 99;
+    top: 211%;
+    left: 73.1%;
     margin-top: -10px;
     background-color: white;
 
@@ -135,6 +114,7 @@ export const sortingFundingStatusList = css`
 `;
 
 export const sortingFundingRewardStatusList = css`
+    position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -143,11 +123,20 @@ export const sortingFundingRewardStatusList = css`
     border-top: none;
     width: 125px;
     padding: 10px;
-    margin-left: 10px;
-    margin-top: 20px;
+    z-index: 99;
+    top: 211%;
+    left: 83.45%;
+    margin-top: -10px;
     background-color: white;
 
     cursor: pointer;
+`;
+
+export const sortingFundingStatusContainer = css`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 1210px;
 `;
 
 export const sortingFundingStatus = css`
@@ -160,6 +149,13 @@ export const sortingFundingStatus = css`
     &:hover {
         border-bottom: 1px solid black;
     }
+`;
+
+export const sortingFundingRewardContainer = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 export const sortingFundingReward = css`
@@ -379,30 +375,26 @@ const Funding = () => {
                         </div>
                     ))}
                 </header>
-                    <div css={fundingStatusContainer}>
-                        <button css={fundingStatusDetail} onClick={statussortingHidden}>
-                            <div css={fundingStatus}>{sortingStatus}</div>
-                            <div>{statusHiddenFlag ? "△" : "▽"}</div>
-                        </button>
-                        <button css={fundingStatusDetail} onClick={rewardsortingHidden}>
-                            <div css={fundingStatus}>{sortingReward}</div>
-                            <div>{rewardHiddenFlag ? "△" : "▽"}</div>
-                        </button>
-                    </div>
                     <div css={sortingFundingStatusContainer}>
-                        {statusHiddenFlag ? (<ul css={sortingFundingStatusList}>
-                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>전체</li>
-                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>진행중</li>
-                            <li css={sortingFundingStatus} onClick={sortingStatusHandle}>종료</li>
-                        </ul>) : ""}
-                    </div>
-                    <div css={sortingFundingRewardContainer}>
+                        <div css={fundingStatusDetail} onClick={statussortingHidden}>
+                            <button css={fundingStatus}>{sortingStatus}</button>
+                            <div>{statusHiddenFlag ? "△" : "▽"}</div>
+                            {statusHiddenFlag ? (<ul css={sortingFundingStatusList}>
+                                <li css={sortingFundingStatus} onClick={sortingStatusHandle}>전체</li>
+                                <li css={sortingFundingStatus} onClick={sortingStatusHandle}>진행중</li>
+                                <li css={sortingFundingStatus} onClick={sortingStatusHandle}>종료</li>
+                            </ul>) : ""}
+                        </div>
+                        <div css={fundingStatusDetail} onClick={rewardsortingHidden}>
+                            <button css={fundingStatus}>{sortingReward}</button>
+                            <div>{rewardHiddenFlag ? "△" : "▽"}</div>
                         {rewardHiddenFlag ? (<ul css={sortingFundingRewardStatusList}>
                             <li css={sortingFundingReward} onClick={sortingRewardHandle}>최신 순</li>
                             <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여 금액 순</li>
                             <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여율 순</li>
                             <li css={sortingFundingReward} onClick={sortingRewardHandle}>종료 임박 순</li>
                         </ul>) : ""}
+                        </div>
                     </div>
                 <main css={fundingMainConatiner}>
                     {fundingData.data.data.fundingList.filter(
