@@ -15,6 +15,7 @@ import HeaderMain from "./components/Header/HeaderMain/HeaderMain";
 import Funding from "./pages/Funding/Funding";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import FundingDetail from "./pages/Funding/FundingDetail";
+import GivingDetail from "./pages/Giving/GivingDetail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/giving" element={<Giving />} />
+        <Route path="/giving/:givingId" element={<GivingDetail />} />
         <Route path="/funding" element={<Funding />} />
         <Route path="/funding/:pageId" element={<FundingDetail />} />
         <Route path="/register/page" element={<RegisterPage/>}/>

@@ -2,6 +2,7 @@ package com.webproject.crowdfunding.entity;
 
 import java.time.LocalDate;
 
+import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 
 import lombok.AllArgsConstructor;
@@ -29,8 +30,11 @@ public class Giving {
 	private int achievementRate;
 	private int givingCount;
 	private LocalDate givingDate;
+	private LocalDate registerDate;
+	private LocalDate endDate;
 	private int todayGivers;
 	private int todayDonations;
+	private String storyContent;
 	
 	private GivingCategory givingCategory;
 
@@ -53,6 +57,21 @@ public class Giving {
 				.todayDonations(todayDonations)
 				.build();
 	}
+	public GivingDetailRespDto givingDetail() {
+		return GivingDetailRespDto.builder()
+				.givingId(pageId)
+				.givingTitle(pageTitle)
+				.achievementRate(achievementRate)
+				.registerDate(registerDate)
+				.endDate(endDate)
+				.givingTotal(givingTotal)
+				.storyTitle(storyTitle)
+				.storyContent(storyContent)
+				.build();
+				
+				
+	}
+	
 }
 
 

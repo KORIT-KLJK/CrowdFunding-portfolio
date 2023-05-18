@@ -14,6 +14,8 @@
 		<result property="joinPercent" column="join_percent"/>
 		<result property="imgUrl" column="img_url"/>
 		<result property="fundingCategoryId" column="funding_category_id"/>
+		<result property="rewardName" column="reward_name"/>
+		<result property="rewardPrice" column=""/>
 	</resultMap>
 	
 	<resultMap type="com.webproject.crowdfunding.entity.FundingCategory" id="FundingCategoryMap">

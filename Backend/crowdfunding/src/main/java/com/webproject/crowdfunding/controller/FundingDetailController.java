@@ -21,4 +21,10 @@ public class FundingDetailController {
 		return ResponseEntity.ok(fundingDetailService.fundingDetail(pageId));
 	}
 	
+	@GetMapping("/fundingreward/{pageId}")
+	public ResponseEntity<?> fundingReward(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getReward(pageId));
+	}
+	
 }
