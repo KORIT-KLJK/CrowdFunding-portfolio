@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from "axios";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import FundingDetail from "./FundingDetail";
+import { useNavigate } from "react-router-dom";
 export const welcomeFunding = css`
     display: flex;
     justify-content: center;
@@ -358,6 +357,8 @@ const Funding = () => {
     const fundingDetailHandle = (pageId) => {
         navigate("/funding/" + pageId);
     }
+
+    console.log(fundingData)
 
     return (
         <div>

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
@@ -155,6 +155,57 @@ export const SelectRewardName = css`
     }
 `;
 
+export const rewardNameAndDelete = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+export const rewardCountAndPriceContainer = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+export const rewardButtonAndPrice = css`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+`;
+
+export const minusButton = css`
+    border: 1px solid #dbdbdb;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    font-size: 30px;
+    color: #949494;
+    cursor: pointer;
+`;
+
+export const rewardCount = css`
+    border: 1px solid #dbdbdb;
+    padding-left: 20px;
+    width: 80px;
+    height: 40px;
+    background-color: white;
+    font-size: 18px;
+`;
+
+export const plusButton = css`
+    border: 1px solid #dbdbdb;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    font-size: 30px;
+    color: #949494;
+    cursor: pointer;
+`;
+
 export const TotalReward = css`
     display: flex;
     justify-content: space-between;
@@ -187,11 +238,10 @@ export const TotalRewardPrice = css`
 
 const FundingDetail = () => {
     const { pageId } = useParams();
-    const [ count, setCount ] = useState(1);
-    const [ rewardPrice, setRewardPrice ] = useState();
     const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
-    const [ rewardId, setRewardId ] = useState(null);
-    const [ options, setOptions ] = useState([]);
+    const [ rewards, setRewards ] = useState([]);
+    const [totalQuantity, setTotalQuantity] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const fundingDetail = useQuery(["fundingDetail"], async () => {
         return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`)
@@ -199,13 +249,13 @@ const FundingDetail = () => {
 
     const fundingDetailReward = useQuery(["fundingDetailReward"], async () => {
         return await axios.get(`http://localhost:8080/fundingreward/${pageId}`)
-    })
+    });
 
     if(fundingDetail.isLoading) {
         return <></>
     }
     const funding = fundingDetail.data.data;
-
+    
     const selectRewardHandle = () => {
         if(selectRewardHidden) {
             setSelectRewardHidden(false);
@@ -213,26 +263,65 @@ const FundingDetail = () => {
             setSelectRewardHidden(true);
         }
     }
-
+    
     const selectRewardNameHandle = (fundingReward) => {
-        setSelectRewardHidden(false);
-        setRewardPrice(fundingReward.rewardPrice);
-        setRewardId(fundingReward.rewardId);
+        const isDuplicate = rewards.some((reward) => reward.fundingReward.rewardId === fundingReward.rewardId);
+        if (isDuplicate) {
+          alert("이미 등록된 상품입니다.");
+          setSelectRewardHidden(false);
+        } else {
+          setSelectRewardHidden(false);
+          setRewards([...rewards, { fundingReward }]);
+          setTotalQuantity((prevTotalQuantity) => prevTotalQuantity + 1);
+          setTotalPrice((prevTotalPrice) => prevTotalPrice + fundingReward.rewardPrice);
+        }
+    }
+    
+    const decreaseCount = (reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        
+        if (rewardIndex !== -1) {
+          newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) - 1;
+          const count = newRewards[rewardIndex].fundingReward.count;
+          if (count >= 1) {
+            setTotalQuantity((quantity) => quantity - 1);
+            setTotalPrice((price) => price - reward.fundingReward.rewardPrice);
+          }
+        }
+        
+        setRewards(newRewards);
     }
 
-    const decreaseCount = () => {
-        if(count > 1) {
-            setCount(count - 1);
+    const countHandle = (e, reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        if (rewardIndex !== -1) {
+          const count = parseInt(e.target.value, 10);
+          newRewards[rewardIndex].fundingReward.count = isNaN(count) ? 0 : count;
+          setRewards(newRewards);
+
+          const updatedTotalQuantity = newRewards.reduce((total, r) => total + (r.fundingReward.count || 1), 1);
+          const updatedTotalPrice = newRewards.reduce((total, r) => total + ((r.fundingReward.count || 1) * r.fundingReward.rewardPrice), 0);
+          setTotalQuantity(updatedTotalQuantity);
+          setTotalPrice(updatedTotalPrice);
         }
     }
 
-    const increaseCount = () => {
-        setCount(count + 1);
-    }
+    const increaseCount = (reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        if (rewardIndex !== -1) {
+          newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) + 1;
+          const count = newRewards[rewardIndex].fundingReward.count;
+          if (count >= 1) {
+            setTotalQuantity((prevTotalQuantity) => prevTotalQuantity + 1);
+            setTotalPrice((prevTotalPrice) => prevTotalPrice + reward.fundingReward.rewardPrice);
+          }
+        }
+        setRewards(newRewards);
+      };
 
-
-    // 펀딩 번호이자, 페이지 번호: {fundingDetail.data.data.fundingId},
-    // 리워드 들고오기
     return (
         <div>
             <div css={fundingDetailContainer}>
@@ -257,35 +346,37 @@ const FundingDetail = () => {
                                 {selectRewardHidden ? (<ul css={SelectRewardList}>
                                     {fundingDetailReward.data.data.rewardList.map(fundingReward => (
                                         <li css={SelectRewardName} 
-                                            onClick={() => selectRewardNameHandle(fundingReward)}
-                                            key={fundingReward.rewardId}>{fundingReward.rewardName}</li>
+                                            onClick={() => selectRewardNameHandle(fundingReward)}>{fundingReward.rewardName}</li>
                                         ))}
                                         </ul>) : ""}
-                                    {fundingDetailReward.data.data.rewardList.filter(fundingReward => 
-                                        fundingReward.rewardId === rewardId
-                                    ).map(fundingReward => (
-                                        <div key={fundingReward.rewardId}>
-                                            <div>
-                                                <div>{fundingReward.rewardName}</div>
+                                    {rewards.map(reward =>(
+                                        <div key={reward.fundingReward.rewardId}>
+                                            <div css={rewardNameAndDelete}>
+                                                <div>{reward.fundingReward.rewardName}</div>
                                                 <button>X</button>
                                             </div>
-                                            <div>
-                                                <div>
-                                                    <button onClick={decreaseCount}>-</button>
-                                                    <input type="text" value={count} />
-                                                    <button onClick={increaseCount}>+</button>
+                                            <div css={rewardCountAndPriceContainer}>
+                                                <div css={rewardButtonAndPrice}>
+                                                    <button css={minusButton}
+                                                            onClick={() => decreaseCount(reward)}>-</button>
+                                                    <input  css={rewardCount}
+                                                            type="text"
+                                                            value={reward.fundingReward.count || 1} 
+                                                            onChange={(e) => countHandle(e, reward)} />
+                                                    <button css={plusButton}
+                                                            onClick={() => increaseCount(reward)}>+</button>
                                                 </div>
-                                                <div>{rewardPrice}원</div>
+                                                <div>{reward.fundingReward.rewardPrice}원</div>
                                             </div>
                                         </div>
                                     ))}
-                                    <div css={TotalReward}>
-                                        <div css={TotalRewardCount}>총 수량 0개</div>
-                                        <div css={TotalRewardPriceContainer}>
-                                            <div css={TotalRewardPriceTxt}>총 금액</div>
-                                            <div css={TotalRewardPrice}>0원</div>
-                                        </div>
+                                <div css={TotalReward}>
+                                    <div css={TotalRewardCount}>총 수량 {totalQuantity}개</div>
+                                    <div css={TotalRewardPriceContainer}>
+                                        <div css={TotalRewardPriceTxt}>총 금액</div>
+                                        <div css={TotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
