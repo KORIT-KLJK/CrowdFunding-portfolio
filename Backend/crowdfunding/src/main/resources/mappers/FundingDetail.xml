@@ -13,7 +13,14 @@
 		<result property="imgUrl" column="img_url"/>
 		<result property="joinPercent" column="join_percent"/>
 	</resultMap>
-	<!-- 리워드는 따로 들고오기 -->
+
+	<resultMap type="com.webproject.crowdfunding.entity.Reward" id="RewardMap">
+		<id property="rewardId" column="reward_id"/>
+		<id property="fundingId" column="funding_id"/>
+		<result property="rewardName" column="reward_name"/>
+		<result property="rewardPrice" column="reward_price"/>
+	</resultMap>
+
 	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
 		select
 			fpt.funding_id,
@@ -32,8 +39,19 @@
 		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
 		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
 		where
-			fpt.funding_id = #{pageId}
-		
+			fpt.funding_id = #{pageId};
+	</select>
+	
+	<select id="getReward" parameterType="integer" resultMap="RewardMap">
+		select
+			rt.reward_id,
+			rt.funding_id,
+			rt.reward_name,
+			rt.reward_price
+		from 
+			reward_tb rt
+		where
+			rt.funding_id = #{pageId};
 	</select>
 	
 </mapper>
