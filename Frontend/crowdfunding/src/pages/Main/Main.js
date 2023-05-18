@@ -5,7 +5,8 @@ import HeaderMain from '../../components/Header/HeaderMain/HeaderMain';
 import Slide from '../../components/Bannder/swiper/Slide';
 import Recommend from '../../components/Recommend/Recommend';
 import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
-import CardItem from '../../components/MainCard/MainDonationList/CardItem/CardItem';
+import CardItemGiving from '../../components/MainCard/MainDonationList/CardItem/CardItemGiving';
+import MainFundingList from '../../components/MainCard/MainFundingList/MainFundingList';
 
 const mainContainer = css`
     padding: 10px;
@@ -35,11 +36,12 @@ const Main = () => {
         <div mainContainer={mainContainer}>
             
             <body css={mainBody}>
-                <HeaderMain></HeaderMain>
+                <HeaderMain />
                 <main css={mainBodyDetails}>
-                    <Slide></Slide>
-                    <Recommend></Recommend>
-                    <MainGivingList></MainGivingList>
+                    <Slide />
+                    <Recommend />
+                    <MainGivingList />
+                    <MainFundingList />
                 </main>
             </body>
             <footer>
