@@ -27,6 +27,10 @@ public class Giving {
 	private int categoryId;
 	private int amountCollected;
 	private int achievementRate;
+	private int givingCount;
+	private LocalDate givingDate;
+	private int todayGivers;
+	private int todayDonations;
 	
 	private GivingCategory givingCategory;
 
@@ -43,6 +47,10 @@ public class Giving {
 				.centerName(centerName)
 				.amountCollected(amountCollected)
 				.achievementRate(achievementRate)
+				.givingCategoryId(givingCount)
+				.givingDate(givingDate)
+				.todayGivers(todayGivers)
+				.todayDonations(todayDonations)
 				.build();
 	}
 }

@@ -356,6 +356,11 @@ const Giving = () => {
     selectedOrder: "최신순",
   });
 
+  const [todayCardDatas, setTodayCardDatas] = useState({
+    todayGivers: 0,
+    todayDonations: 0,
+  });
+
   const givingCategorys = useQuery(
     ["givingCategory"],
     async () => {
@@ -385,11 +390,26 @@ const Giving = () => {
     },
     {
       enabled: givingRefresh,
-      onSuccess: () => {
+      onSuccess: (response) => {
+        const todayData = {
+          todayGivers: 0,
+          todayDonations: 0,
+        };
+
+        response.data.forEach((responseData) => {
+          todayData.todayGivers += responseData.todayGivers;
+          todayData.todayDonations += responseData.todayDonations;
+        });
+
+        setTodayCardDatas(todayData);
         setGivingRefresh(false);
       },
     }
   );
+
+  if (givingCategorys.isLoading || givingData.isLoading) {
+    return <></>;
+  }
 
   console.log(givingData);
 
@@ -419,7 +439,7 @@ const Giving = () => {
       <header css={header}>
         <HeaderMain />
       </header>
-      <body>
+      <div>
         <div css={menubarMain}>
           <div css={menubar}>
             <a css={menubarItem} href="/giving">
@@ -439,29 +459,25 @@ const Giving = () => {
             <button css={categoryItem} onClick={() => handleCategoryClick(0)}>
               <img css={categoryImgCss} src={home}></img>전체
             </button>
-            {givingCategorys.isLoading ? (
-              <div>불러오는 중...</div>
-            ) : (
-              givingCategorys.data.data.map((category) => (
-                <button
-                  css={categoryItem}
-                  key={category.givingCategoryId}
-                  onClick={() => handleCategoryClick(category.givingCategoryId)}
-                >
-                  <img
-                    css={categoryImgCss}
-                    src={categoryImg[category.givingCategoryName]}
-                    alt={category.givingCategoryName}
-                  ></img>
-                  {category.givingCategoryName}
-                </button>
-              ))
-            )}
+            {givingCategorys.data.data.map((category) => (
+              <button
+                css={categoryItem}
+                key={category.givingCategoryId}
+                onClick={() => handleCategoryClick(category.givingCategoryId)}
+              >
+                <img
+                  css={categoryImgCss}
+                  src={categoryImg[category.givingCategoryName]}
+                  alt={category.givingCategoryName}
+                ></img>
+                {category.givingCategoryName}
+              </button>
+            ))}
           </ul>
         </div>
         <div role="main" css={fundMainCardContainer}>
           <h4 css={fundBank}>
-            모금함 <span css={fundPoint}>922</span>개
+            모금함 <span css={fundPoint}>{givingData.data.data.length}</span>개
           </h4>
           <div css={fundBankBox}>
             <div css={fundBankArea}>
@@ -518,13 +534,18 @@ const Giving = () => {
                 <strong css={cardTodayTitle}>오늘 함께한 기부금</strong>
                 <span css={cardTodayText}>
                   <strong css={point}>
-                    <span css={scrollNumber}>3,320</span>
+                    <span css={scrollNumber}>{todayCardDatas.todayGivers}</span>
                     <span css={scrollNumber}>명</span>
                   </strong>
                   <span css={scrollNumber}>이</span>
                   <br />
                   <strong css={point}>
-                    <span css={scrollNumber}>10,827,900</span>원
+                    <span css={scrollNumber}>
+                      {new Intl.NumberFormat("en-US").format(
+                        todayCardDatas.todayDonations
+                      )}
+                    </span>
+                    원
                   </strong>
                   <span css={scrollNumber}>을</span>
                   <br />
@@ -532,39 +553,29 @@ const Giving = () => {
                 </span>
               </a>
             </div>
-            {givingData.isLoading ? (
-              <div>불러오는 중...</div>
-            ) : (
-              givingData.data.data.map((giving) => (
-                <div css={givingCard} key={giving.pageId}>
-                  <div css={cardImgContainer}>
-                    <img
-                      css={img}
-                      src={giving.imgUrl}
-                      alt={giving.imgUrl}
-                    ></img>
-                  </div>
-                  <div css={cardItemContent}>
-                    <div css={cardItemTitle}>{giving.pageTitle}</div>
-                    <div css={cardItemOrganization}>{giving.centerName}</div>
-                    <progress
-                      css={cardItemBar}
-                      value={giving.achievementRate}
-                      max="100"/>
-                      <div css={cardItemPercent}>{giving.achievementRate}%</div>
-                      <div css={cardItemMoney}>
-                        {new Intl.NumberFormat("en-US").format(
-                          giving.goalTotal
-                        )}
-                        원
-                    </div>
+            {givingData.data.data.map((giving) => (
+              <div css={givingCard} key={giving.pageId}>
+                <div css={cardImgContainer}>
+                  <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                </div>
+                <div css={cardItemContent}>
+                  <div css={cardItemTitle}>{giving.pageTitle}</div>
+                  <div css={cardItemOrganization}>{giving.centerName}</div>
+                  <progress
+                    css={cardItemBar}
+                    value={giving.achievementRate}
+                    max="100"
+                  />
+                  <div css={cardItemPercent}>{giving.achievementRate}%</div>
+                  <div css={cardItemMoney}>
+                    {new Intl.NumberFormat("en-US").format(giving.givingTotal)}원
                   </div>
                 </div>
-              ))
-            )}
+              </div>
+            ))}
           </main>
         </div>
-      </body>
+      </div>
     </div>
   );
 };
