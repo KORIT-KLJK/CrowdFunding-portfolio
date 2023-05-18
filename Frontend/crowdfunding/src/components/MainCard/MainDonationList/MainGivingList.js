@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import CardItem from './CardItem/CardItem';
+import CardItem from './CardItem/CardItemGiving';
 import { FaGreaterThan } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import CardItemGiving from './CardItem/CardItemGiving';
 
 const donationContainer = css`
     display: block;
@@ -34,22 +35,20 @@ const greaterThenIcon = css`
 `;
 
 
-const mainDonationList = () => {
-    // function navigateHandle() {
-    //     const navigate = useNavigate();
-    
-    //     const givingPageHandle = () => {
-    //         navigate("/giving"); 
-    //     }
-    // } 
+const MainDonationList = ({ giving }) => {
+
+    const navigate = useNavigate();
+    const givingPageHandle = () => {
+        navigate("/giving"); 
+    }
+ 
 
     return (
         <div css={donationContainer}>
-            <h3 css={mainCardText} >100%전달하는 기부<div css={greaterThenIcon}><FaGreaterThan /></div></h3>
-                <CardItem></CardItem>
-                
+            <h3 css={mainCardText} onClick={givingPageHandle} >100%전달하는 기부<div css={greaterThenIcon}><FaGreaterThan /></div></h3>
+                <CardItemGiving />
         </div>
     );
 };
 
-export default mainDonationList;
+export default MainDonationList;

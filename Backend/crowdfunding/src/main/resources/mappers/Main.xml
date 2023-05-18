@@ -7,6 +7,7 @@
 		<result property="centerName" column="center_name"/>
 		<result property="imgUrl" column="img_url"/>
 		<result property="givingTotal" column="giving_total"/>
+		<result property="goalTotal" column="goal_total"/>
 		<result property="categoryId" column="category_id"/>
 		<result property="achievementRate" column="achievement_rate"/>
 	</resultMap>
@@ -32,4 +33,9 @@
 		   giving_total desc
 		limit 4;
 	</select>
+	
+	<select id="">
+		
+	</select>
+	
 </mapper>
