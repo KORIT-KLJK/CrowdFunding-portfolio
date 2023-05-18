@@ -27,9 +27,9 @@ public class FundingService {
 		map.put("searchStatus", searchFundingReqDto.getSearchStatus());
 		map.put("searchCategory", searchFundingReqDto.getSearchCategory());
 		
-		fundingRepository.saveFunding(map).forEach(funding -> {
-			fundingList.add(funding.toSaveFunding());
-		});
+//		fundingRepository.saveFunding(map).forEach(funding -> {
+//			fundingList.add(funding.toSaveFunding());
+//		});
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("fundingList", fundingList);
