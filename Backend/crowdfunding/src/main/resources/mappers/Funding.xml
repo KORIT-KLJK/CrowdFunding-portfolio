@@ -119,7 +119,7 @@
 		
 		<if test="fundingSortingReward == '참여울 순'">
 		order by
-			(total_reward_price / fpt.goal_total) * 100 DESC;
+			join_percent DESC;
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
@@ -168,9 +168,9 @@
 			total_reward_price DESC;
 		</if>
 		
-		<if test="fundingSortingReward == '참여울 순'">
+		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			(total_reward_price / fpt.goal_total) * 100 DESC;
+			join_percent DESC;
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
