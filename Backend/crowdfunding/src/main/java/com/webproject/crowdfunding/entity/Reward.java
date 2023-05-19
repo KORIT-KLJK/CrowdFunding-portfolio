@@ -19,6 +19,7 @@ public class Reward {
 	private int rewardPrice;
 	private int fundingId;
 	private LocalDate endDate;
+	private String userCount;
 	
 	public RewardRespDto getFundingReward() {
 		return RewardRespDto.builder()
@@ -27,6 +28,7 @@ public class Reward {
 				.rewardPrice(rewardPrice)
 				.fundingId(fundingId)
 				.endDate(endDate)
+				.userCount(userCount)
 				.build();
 	}
 }

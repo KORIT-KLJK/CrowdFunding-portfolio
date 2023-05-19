@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class FundingMainRespDto {
 	private int pageId;
+	private String fundingSummaryName;
 	private String pageTitle;
 	private String username;
 	private int recentSort;

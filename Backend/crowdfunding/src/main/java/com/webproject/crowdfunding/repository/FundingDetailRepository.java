@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.webproject.crowdfunding.entity.BusinessInfo;
 import com.webproject.crowdfunding.entity.Funding;
 import com.webproject.crowdfunding.entity.Reward;
 
@@ -11,4 +12,6 @@ import com.webproject.crowdfunding.entity.Reward;
 public interface FundingDetailRepository {
 	public Funding fundingDetail(int pageId);
 	public List<Reward> getReward(int pageId);
+	public BusinessInfo getBusinessInfo(int pageId);
+	public List<Funding> getBreakdown(int pageId);
 }
