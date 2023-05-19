@@ -488,8 +488,8 @@ const FundingDetail = () => {
     const { pageId } = useParams();
     const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
     const [ rewards, setRewards ] = useState([]);
-    const [totalQuantity, setTotalQuantity] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [ totalQuantity, setTotalQuantity ] = useState(0);
+    const [ totalPrice, setTotalPrice ] = useState(0);
 
     const fundingDetail = useQuery(["fundingDetail"], async () => {
         return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`);
@@ -515,9 +515,17 @@ const FundingDetail = () => {
     if(fundingBusinessInfo.isLoading) {
         return <></>
     }
+
+    if(fundingDetailReward.isLoading) {
+        return <></>
+    }
+
+    if(fundingJoinBreakdown.isLoading) {
+        return <></>
+    }
+
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
-    console.log(fundingDetailReward);
     
     const selectRewardHandle = () => {
         if(selectRewardHidden) {
