@@ -13,4 +13,5 @@ public class RewardRespDto {
 	private int rewardPrice;
 	private int fundingId;
 	private LocalDate endDate;
+	private String userCount;
 }

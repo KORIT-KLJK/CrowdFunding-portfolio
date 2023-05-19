@@ -393,6 +393,97 @@ export const rewardGuideDetailInfo = css`
     margin-bottom: 5px;
 `;
 
+export const joinUserContainer = css`
+    width: 1150px;
+    margin: 0px auto;
+`;
+
+export const joinUserMain = css`
+    border-top: 1px solid black;
+    width: 750px;
+`;
+
+export const joinUserContent = css`
+    padding: 70px 0px;
+`;
+
+export const joinBreakdownTxt = css`
+    font-size: 20px;
+`;
+
+export const joinBreakdownCount = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #dbdbdb33;
+    width: 750px;
+    height: 80px;
+    background-color: #dbdbdb33;
+    margin: 20px 0px;
+`;
+
+export const joinBreakdownTotalCount = css`
+    font-size: 18px;
+    font-weight: 600;
+`;
+
+export const joinBreakdownJoinTxt = css`
+    font-size: 18px;
+`;
+
+export const joinBreakdownUserContainer = css`
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #dbdbdb77;
+    padding: 10px 0px;
+    height: 100px;
+`;
+
+export const joinBreakdownUser = css`
+    font-size: 18px;
+    font-weight: 600;
+`;
+
+export const joinBreakdownUserPrice = css`
+    margin-left: 20px;
+    font-size: 18px;
+    color: #1f9eff;
+`;
+
+export const joinBreakdownPriceTxt = css`
+    font-size: 18px;
+`;
+
+export const businessInfoContainer = css`
+    width: 1150px;
+    margin: 0px auto;
+`;
+
+export const businessInfoMain = css`
+    border: 1px solid #dbdbdb33;
+    background-color: #dbdbdb33;
+    width: 750px;
+`;
+
+export const businessInfoPadding = css`
+    padding: 20px;
+`;
+
+export const businessInfoTxt = css`
+    margin-top: 8px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 600;
+`;
+
+export const businessInfoContent = css`
+    margin-top: 20px;
+`;
+
+export const businessInfoDetailContent = css`
+    margin-bottom: 8px;
+`;
+
 const FundingDetail = () => {
     const { pageId } = useParams();
     const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
@@ -401,17 +492,32 @@ const FundingDetail = () => {
     const [totalPrice, setTotalPrice] = useState(0);
 
     const fundingDetail = useQuery(["fundingDetail"], async () => {
-        return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`)
+        return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`);
     });
 
     const fundingDetailReward = useQuery(["fundingDetailReward"], async () => {
-        return await axios.get(`http://localhost:8080/fundingreward/${pageId}`)
+        return await axios.get(`http://localhost:8080/fundingreward/${pageId}`);
     });
+
+    const fundingBusinessInfo = useQuery(["fundingBusinessInfo"], async () => {
+        return await axios.get(`http://localhost:8080/businessinfo/${pageId}`);
+    })
+
+    const fundingJoinBreakdown = useQuery(["fundingJoinBreakDown"], async () => {
+        return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
+    })
+
 
     if(fundingDetail.isLoading) {
         return <></>
     }
+    
+    if(fundingBusinessInfo.isLoading) {
+        return <></>
+    }
     const funding = fundingDetail.data.data;
+    const businessInfo = fundingBusinessInfo.data.data;
+    console.log(fundingDetailReward);
     
     const selectRewardHandle = () => {
         if(selectRewardHidden) {
@@ -500,7 +606,7 @@ const FundingDetail = () => {
                             <div css={fundingDetailGoalTotal}>{new Intl.NumberFormat('en-US').format(funding.goalTotal)}원 목표</div>
                             <div css={fundingDetailTotalRewardPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
                         </div>
-                        <div css={funderName}>{funding.username}</div>
+                        <div css={funderName}>{funding.fundingSummaryName}</div>
                         <div css={fundingDetailRewardContainer}>
                             <div css={SelectFundingDetail}>
                                 <button css={SelectRewardButton} onClick={selectRewardHandle}>
@@ -570,7 +676,7 @@ const FundingDetail = () => {
                             <div css={rewardGuideInfo}>
                                 <div css={rewardGuideRewardName}>{reward.rewardName}</div>
                                 <div css={rewardGuideDetailContainer}>
-                                    <li css={rewardGuideDetailInfo}>현재 참여 명 수</li>
+                                    <li css={rewardGuideDetailInfo}>현재 {reward.userCount}명 참여 수</li>
                                     <li css={rewardGuideDetailInfo}>발송 예상일 {reward.endDate}</li>
                                 </div>
                             </div>
@@ -578,7 +684,40 @@ const FundingDetail = () => {
                     ))}
                 </div>
             </div>
-            참여내역
+            <div css={joinUserContainer}>
+                <div css={joinUserMain}>
+                    <div css={joinUserContent}>
+                        <div css={joinBreakdownTxt}>참여내역</div>
+                        <div css={joinBreakdownCount}>
+                            <div css={joinBreakdownTotalCount}>총 {fundingJoinBreakdown.data.data.breakdownList.length}명</div>
+                            <div css={joinBreakdownJoinTxt}>이 참여하였습니다.</div>
+                        </div>
+                        {fundingJoinBreakdown.data.data.breakdownList.map(breakdown => (
+                            <div>
+                                <div css={joinBreakdownUserContainer}>
+                                    <div css={joinBreakdownUser}>{breakdown.username}님</div>
+                                    <div css={joinBreakdownUserPrice}>{new Intl.NumberFormat('en-US').format(breakdown.totalRewardPrice)}</div>
+                                    <div css={joinBreakdownPriceTxt}>원 참여</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div css={businessInfoContainer}>
+                <div css={businessInfoMain} key={businessInfo.fundingId}>
+                    <div css={businessInfoPadding}>
+                        <div css={businessInfoTxt}>사업자 정보</div>
+                        <div css={businessInfoContent}>
+                            <div css={businessInfoDetailContent}>상호명: {businessInfo.companyName}</div>
+                            <div css={businessInfoDetailContent}>대표자: {businessInfo.ceoName}</div>
+                            <div css={businessInfoDetailContent}>사업자 소재지: {businessInfo.companyAddress}</div>
+                            <div css={businessInfoDetailContent}>고객센터: {businessInfo.companyPhoneNumber}</div>
+                            <div css={businessInfoDetailContent}>이메일: {businessInfo.ceoEmail}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
