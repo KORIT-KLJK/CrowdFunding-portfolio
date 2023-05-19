@@ -14,6 +14,7 @@ public class GivingDetailRespDto {
 	private int achievementRate;
 	private LocalDate registerDate;
 	private LocalDate endDate;
+	private String dDay;
 	private int givingTotal;
 	private String storyTitle;
 	private String storyContent;

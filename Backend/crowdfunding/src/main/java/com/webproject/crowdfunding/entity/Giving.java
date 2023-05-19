@@ -32,6 +32,7 @@ public class Giving {
 	private LocalDate givingDate;
 	private LocalDate registerDate;
 	private LocalDate endDate;
+	private String dDay;
 	private int todayGivers;
 	private int todayDonations;
 	private String storyContent;
@@ -53,6 +54,7 @@ public class Giving {
 				.achievementRate(achievementRate)
 				.givingCategoryId(givingCount)
 				.givingDate(givingDate)
+				.dDay(dDay)
 				.todayGivers(todayGivers)
 				.todayDonations(todayDonations)
 				.build();
@@ -65,6 +67,7 @@ public class Giving {
 				.achievementRate(achievementRate)
 				.registerDate(registerDate)
 				.endDate(endDate)
+				.dDay(dDay)
 				.givingTotal(givingTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)

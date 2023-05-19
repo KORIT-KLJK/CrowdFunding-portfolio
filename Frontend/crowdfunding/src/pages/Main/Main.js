@@ -12,7 +12,6 @@ const mainContainer = css`
     padding: 10px;
 `;
 
-
 const mainBody = css`
 
 `;
@@ -28,15 +27,11 @@ const mainBanner = css`
 const body = css``;
 const mainFooter = css``;
 
-
 const Main = () => {
-
 
     return (
         <div mainContainer={mainContainer}>
-            
             <body css={mainBody}>
-                <HeaderMain />
                 <main css={mainBodyDetails}>
                     <Slide />
                     <Recommend />
@@ -45,7 +40,6 @@ const Main = () => {
                 </main>
             </body>
             <footer>
-
             </footer>
         </div>
     );

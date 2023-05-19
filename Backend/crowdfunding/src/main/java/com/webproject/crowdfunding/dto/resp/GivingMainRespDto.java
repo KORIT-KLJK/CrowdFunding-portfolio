@@ -21,6 +21,7 @@ public class GivingMainRespDto {
 	private int amountCollected;
 	private int givingCount;
 	private LocalDate givingDate;
+	private String dDay;
 	private int todayGivers;
 	private int todayDonations;
 }

@@ -4,13 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const mainHeader = css`
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 30;
     border-bottom: 1px solid #e8e8e8;
-
     background-color: #fff;
     text-align: right;
 `;

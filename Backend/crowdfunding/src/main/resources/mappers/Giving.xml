@@ -16,6 +16,7 @@
 		<result property="amountCollected" column="amount_collected"/>
 		<result property="achievementRate" column="achievement_rate"/>
 		<result property="givingDate" column="giving_date"/>
+		<result property="dDay" column="dDay"/>
 		<result property="todayGivers" column="today_givers"/>
 		<result property="todayDonations" column="today_donations"/>
 		<association property="givingCategory" resultMap="GivingCategoryMap"></association>

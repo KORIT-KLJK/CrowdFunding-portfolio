@@ -15,30 +15,35 @@
 		<result property="achievementRate" column="achievement_rate"/>
 		<result property="registerDate" column="register_date"/>
 		<result property="endDate" column="end_date"/>
+		<result property="dDay" column="d_day"/>
 	</resultMap>
 	
 	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
-	    select
-	        gpt.giving_page_id as page_id,
-	        gpt.giving_name as page_title,
-	        ct.center_name,
-	        gpt.main_img_url as img_url,
-	        gt.giving_total as giving_total,
-            gpt.story_title,
-            gpt.story_content,
-	        gpt.category_id,
-	        gpt.goal_total,
-            gpt.register_date,
-            gpt.end_date,
-	        if(now() &lt; end_date, '진행중', '종료') as event_status,
-	        round(sum(gt.giving_total) / goal_total * 100) as achievement_rate
-	    from
-	       giving_page_tb gpt
-	       left outer join center_tb ct on(ct.center_id = gpt.center_id)
-	       left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
-	       left outer join giving_category_tb gct on(gct.giving_category_id = gpt.category_id)
-		where
-	       gpt.giving_page_id = #{pageId}
+	    SELECT
+		    gpt.giving_page_id AS page_id,
+		    gpt.giving_name AS page_title,
+		    ct.center_name,
+		    gpt.main_img_url AS img_url,
+		    gt.giving_total AS giving_total,
+		    gpt.story_title,
+		    gpt.story_content,
+		    gpt.category_id,
+		    gpt.goal_total,
+		    gpt.register_date,
+		    gpt.end_date,
+		    CASE
+		        WHEN end_date &lt; CURDATE() THEN '모금 종료'
+		        WHEN end_date = CURDATE() THEN '오늘 모금 종료'
+		        ELSE DATEDIFF(end_date, CURDATE())
+		    END AS d_day,
+		    ROUND(SUM(gt.giving_total) / goal_total * 100) AS achievement_rate
+		FROM
+		    giving_page_tb gpt
+		    LEFT OUTER JOIN center_tb ct ON (ct.center_id = gpt.center_id)
+		    LEFT OUTER JOIN giver_tb gt ON (gt.giving_page_id = gpt.giving_page_id)
+		    LEFT OUTER JOIN giving_category_tb gct ON (gct.giving_category_id = gpt.category_id)
+		WHERE
+		    gpt.giving_page_id = #{pageId}
 	</select>
 	
 </mapper>

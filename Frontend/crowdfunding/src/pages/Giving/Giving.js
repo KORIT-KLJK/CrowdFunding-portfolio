@@ -442,23 +442,7 @@ const Giving = () => {
 
   return (
     <div css={mainContainer}>
-      <header css={header}>
-        <HeaderMain />
-      </header>
       <div>
-        <div css={menubarMain}>
-          <div css={menubar}>
-            <a css={menubarItem} href="/giving">
-              진행중 모금함
-            </a>
-            <a css={menubarItem} href="/giving">
-              더블 모금함
-            </a>
-            <a css={menubarItem} href="/giving">
-              모금후기
-            </a>
-          </div>
-        </div>
         <div css={categoryArea}>
           <h2 css={categoryName}>테마 카테고리</h2>
           <ul css={categoryInner}>
