@@ -1,5 +1,7 @@
 package com.webproject.crowdfunding.entity;
 
+import java.time.LocalDate;
+
 import com.webproject.crowdfunding.dto.resp.RewardRespDto;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ public class Reward {
 	private String rewardName;
 	private int rewardPrice;
 	private int fundingId;
+	private LocalDate endDate;
 	
 	public RewardRespDto getFundingReward() {
 		return RewardRespDto.builder()
@@ -23,6 +26,7 @@ public class Reward {
 				.rewardName(rewardName)
 				.rewardPrice(rewardPrice)
 				.fundingId(fundingId)
+				.endDate(endDate)
 				.build();
 	}
 }

@@ -1,5 +1,7 @@
 package com.webproject.crowdfunding.dto.resp;
 
+import java.time.LocalDate;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,4 +12,5 @@ public class RewardRespDto {
 	private String rewardName;
 	private int rewardPrice;
 	private int fundingId;
+	private LocalDate endDate;
 }

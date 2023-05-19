@@ -25,14 +25,14 @@ export const fundingDetailImg = css`
 export const fundingDetailHeaderRight = css`
     margin-left: 40px;
         /* 진행 바의 색상 */
-progress::-webkit-progress-value {
-  background-color: skyblue;
-}
+    progress::-webkit-progress-value {
+    background-color: skyblue;
+    }
 
-/* 배경색 */
-progress::-webkit-progress-bar {
-  background-color: #e8e8e8;
-}
+    /* 배경색 */
+    progress::-webkit-progress-bar {
+    background-color: #e8e8e8;
+    }
 `;
 
 export const fundingDetailNearDeadline = css`
@@ -288,6 +288,111 @@ export const endFundingButton = css`
     color: white;
 `;
 
+export const storyHeadLine = css`
+    width: 100%;
+    height: 50px;
+    border-top: 1px solid #dbdbdb77;
+    border-bottom: 1px solid #dbdbdb77;
+
+`;
+
+export const storyHeadLineContainer = css`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 1150px;
+    height: 100%;
+    margin: 0px auto;
+`;
+
+export const storyTxt = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f9eff;
+    border-bottom: 3px solid #1f9eff;
+`;
+
+export const fundingStoryContainer = css`
+    display: flex;
+    width: 1150px;
+    padding-top: 50px;
+    margin: 0px auto;
+`;
+
+export const fundingStory = css`
+    width: 750px;
+`;
+
+export const fundingStoryTitle = css`
+    font-size: 30px;
+    font-weight: 600;
+    padding-bottom: 30px;
+`;
+
+export const fundingStoryContent = css`
+    font-size: 18px;
+`;
+
+export const rewardGuide = css`
+    width: 390px;
+    margin-left: 40px;
+`;
+
+export const txtGuide = css`
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 30px;
+`;
+
+export const rewardGuideList = css`
+    border: 1px solid #dbdbdb77;
+    width: 390px;
+    height: 180px;
+    margin-bottom: 10px;
+`;
+
+export const rewardGuidePriceAndJoin = css`
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid #dbdbdb77;
+`;
+
+export const rewardGuidePrice = css`
+    font-size: 18px;
+    color: #1f9eff;
+    margin-right: 10px;
+`;
+
+export const rewardGuideJoin = css`
+    font-size: 18px;
+`;
+
+export const rewardGuideInfo = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 30px 20px;
+    height: 120px;
+`;
+
+export const rewardGuideRewardName = css`
+    font-size: 18px;
+`;
+
+export const rewardGuideDetailContainer = css`
+    margin-top: 10px;
+`;
+
+export const rewardGuideDetailInfo = css`
+    margin-bottom: 5px;
+`;
+
 const FundingDetail = () => {
     const { pageId } = useParams();
     const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
@@ -444,14 +549,36 @@ const FundingDetail = () => {
                     </div>
                 </div>
             </div>
-            <main>
-                펀딩 스토리 제목: {funding.storyTitle},
-                펀딩 스토리 내용: {funding.storyContent}
-            </main>
-            <footer>
-                리워드 안내
-                결제 방법 및 배송 방법
-            </footer>
+            <div css={storyHeadLine}>
+                <div css={storyHeadLineContainer}>
+                    <div css={storyTxt}>스토리</div>
+                </div>
+            </div>
+            <div css={fundingStoryContainer}>
+                <div css={fundingStory}>
+                    <div css={fundingStoryTitle}>{funding.storyTitle}</div>
+                    <div css={fundingStoryContent}>{funding.storyContent}</div>
+                </div>
+                <div css={rewardGuide}>
+                    <div css={txtGuide}>리워드 안내</div>
+                    {fundingDetailReward.data.data.rewardList.map(reward => (
+                        <div css={rewardGuideList} key={reward.rewardId}>
+                            <div css={rewardGuidePriceAndJoin}>
+                                <div css={rewardGuidePrice}>{new Intl.NumberFormat('en-US').format(reward.rewardPrice)}원</div>
+                                <div css={rewardGuideJoin}>펀딩 참여</div>
+                            </div>
+                            <div css={rewardGuideInfo}>
+                                <div css={rewardGuideRewardName}>{reward.rewardName}</div>
+                                <div css={rewardGuideDetailContainer}>
+                                    <li css={rewardGuideDetailInfo}>현재 참여 명 수</li>
+                                    <li css={rewardGuideDetailInfo}>발송 예상일 {reward.endDate}</li>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            참여내역
         </div>
     );
 };

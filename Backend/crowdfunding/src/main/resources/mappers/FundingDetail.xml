@@ -16,9 +16,10 @@
 
 	<resultMap type="com.webproject.crowdfunding.entity.Reward" id="RewardMap">
 		<id property="rewardId" column="reward_id"/>
-		<id property="fundingId" column="funding_id"/>
+		<result property="fundingId" column="funding_id"/>
 		<result property="rewardName" column="reward_name"/>
 		<result property="rewardPrice" column="reward_price"/>
+		<result property="endDate" column="end_date"/>
 	</resultMap>
 
 	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
@@ -49,9 +50,11 @@
 			rt.reward_id,
 			rt.funding_id,
 			rt.reward_name,
-			rt.reward_price
+			rt.reward_price,
+			fpt.end_date
 		from 
 			reward_tb rt
+			left outer join funding_page_tb fpt on(fpt.funding_id = rt.funding_id)
 		where
 			rt.funding_id = #{pageId};
 	</select>
