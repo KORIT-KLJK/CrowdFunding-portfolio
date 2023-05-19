@@ -6,5 +6,5 @@ import com.webproject.crowdfunding.entity.Giving;
 
 @Mapper
 public interface GivingDetailRepository {
-	public Giving getGivingDetail(int givingId);
+	public Giving getGivingDetail(int pageId);
 }

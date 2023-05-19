@@ -3,8 +3,8 @@
 <mapper namespace="com.webproject.crowdfunding.repository.GivingDetailRepository">
 
 	<resultMap type="com.webproject.crowdfunding.entity.Giving" id="GivingDetailMap">
-		<id property="givingId" column="giving_id"/>
-		<result property="givingTitle" column="giving_title"/>
+		<id property="pageId" column="page_id"/>
+		<result property="pageTitle" column="page_title"/>
 		<result property="givingTotal" column="giving_total"/>
 		<result property="goalTotal" column="goal_total"/>
 		<result property="storyTitle" column="story_title"/>
@@ -17,7 +17,7 @@
 		<result property="endDate" column="end_date"/>
 	</resultMap>
 	
-	<select id="GivingDetail" parameterType="integer" resultMap="GivingDetailMap">
+	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
 	    select
 	        gpt.giving_page_id as page_id,
 	        gpt.giving_name as page_title,

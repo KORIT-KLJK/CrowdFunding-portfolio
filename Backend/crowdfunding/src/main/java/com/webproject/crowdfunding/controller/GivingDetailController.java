@@ -15,9 +15,9 @@ public class GivingDetailController {
 	
 	private final GivingDetailService givingDetailService;
 	
-	@GetMapping("/givingDetail/{givingId}")
-	public ResponseEntity<?> givingDetail(@PathVariable int givingId) {
-		return ResponseEntity.ok(givingDetailService.givingDetail(givingId));
+	@GetMapping("/givingDetail/{pageId}")
+	public ResponseEntity<?> givingDetail(@PathVariable int pageId) {
+		return ResponseEntity.ok(givingDetailService.givingDetail(pageId));
 	}
 	
 }

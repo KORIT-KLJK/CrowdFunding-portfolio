@@ -8,8 +8,9 @@ import lombok.Data;
 @Builder
 @Data
 public class GivingDetailRespDto {
-	private int givingId;
-	private String givingTitle;
+	private int pageId;
+	private String pageTitle;
+	private String imgUrl;
 	private int achievementRate;
 	private LocalDate registerDate;
 	private LocalDate endDate;
