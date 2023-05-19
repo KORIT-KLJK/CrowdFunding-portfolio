@@ -59,8 +59,9 @@ public class Giving {
 	}
 	public GivingDetailRespDto givingDetail() {
 		return GivingDetailRespDto.builder()
-				.givingId(pageId)
-				.givingTitle(pageTitle)
+				.pageId(pageId)
+				.pageTitle(pageTitle)
+				.imgUrl(imgUrl)
 				.achievementRate(achievementRate)
 				.registerDate(registerDate)
 				.endDate(endDate)

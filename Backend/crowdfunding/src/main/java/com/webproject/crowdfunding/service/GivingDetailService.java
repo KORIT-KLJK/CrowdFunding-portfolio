@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 public class GivingDetailService {
 	private final GivingDetailRepository givingDetailRepository;
 	
-	public GivingDetailRespDto givingDetail(int givingId) {
-		return givingDetailRepository.getGivingDetail(givingId).givingDetail();
+	public GivingDetailRespDto givingDetail(int pageId) {
+		return givingDetailRepository.getGivingDetail(pageId).givingDetail();
 	}
 
 }

@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const categoryImg = {
   전체: home,
@@ -347,6 +348,7 @@ const cardItemMoney = css`
 `;
 
 const Giving = () => {
+  const navigate = useNavigate();
   const [givingRefresh, setGivingRefresh] = useState(true);
   const [showList, setShowList] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState("최신순");
@@ -433,6 +435,10 @@ const Giving = () => {
     setSearchParams({ ...searchParams, selectedOrder });
     setGivingRefresh(true);
   };
+
+  const givingDetailHandle = (pageId) => {
+    navigate("/giving/" + pageId)
+  }
 
   return (
     <div css={mainContainer}>
@@ -554,24 +560,24 @@ const Giving = () => {
               </a>
             </div>
             {givingData.data.data.map((giving) => (
-              <div css={givingCard} key={giving.pageId}>
-                <div css={cardImgContainer}>
-                  <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
-                </div>
-                <div css={cardItemContent}>
-                  <div css={cardItemTitle}>{giving.pageTitle}</div>
-                  <div css={cardItemOrganization}>{giving.centerName}</div>
-                  <progress
-                    css={cardItemBar}
-                    value={giving.achievementRate}
-                    max="100"
-                  />
-                  <div css={cardItemPercent}>{giving.achievementRate}%</div>
-                  <div css={cardItemMoney}>
-                    {new Intl.NumberFormat("en-US").format(giving.givingTotal)}원
+                <div css={givingCard} key={giving.pageId} onClick={() => {givingDetailHandle(giving.pageId)}}>
+                  <div css={cardImgContainer}>
+                    <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                  </div>
+                  <div css={cardItemContent}>
+                    <div css={cardItemTitle}>{giving.pageTitle}</div>
+                    <div css={cardItemOrganization}>{giving.centerName}</div>
+                    <progress
+                      css={cardItemBar}
+                      value={giving.achievementRate}
+                      max="100"
+                    />
+                    <div css={cardItemPercent}>{giving.achievementRate}%</div>
+                    <div css={cardItemMoney}>
+                      {new Intl.NumberFormat("en-US").format(giving.givingTotal)}원
+                    </div>
                   </div>
                 </div>
-              </div>
             ))}
           </main>
         </div>

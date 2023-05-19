@@ -32,7 +32,7 @@
 		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
 		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
 		where
-			fpt.funding_id = #{givingId}
+			fpt.funding_id = #{pageId}
 		
 	</select>
 	
