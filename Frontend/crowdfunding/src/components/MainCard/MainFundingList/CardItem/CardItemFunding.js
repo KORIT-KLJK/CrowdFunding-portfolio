@@ -116,8 +116,8 @@ const CardItemFunding = () => {
                     </header>
                     <main>
                         <div css={fundingText}>
-                            <div css={fundingContainerMainTitlePrice}>{funding.pageTitle}</div>
-                            <strong css={fundingContainerMainTitlePageTitle}>{funding.userName}</strong>
+                            <div css={fundingContainerMainTitlePrice}>{funding.userName}</div>
+                            <strong css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</strong>
                             <span css={fundingContainerMainPricePadding}>
                                 <span css={fundingContainerMainPrice}>{funding.joinPercent}%</span>
                             </span>
