@@ -1,5 +1,6 @@
 package com.webproject.crowdfunding.entity;
 
+import com.webproject.crowdfunding.dto.resp.BreakdownRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
 
@@ -14,7 +15,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Funding {
 	private int fundingId;
+	private int userId;
 	private String fundingTitle;
+	private String fundingSummaryName;
 	private String username;
 	private int recentSort;
 	private String nearDeadline;
@@ -30,6 +33,7 @@ public class Funding {
 	public FundingMainRespDto toSaveFunding() {
 		return FundingMainRespDto.builder()
 				.pageId(fundingId)
+				.fundingSummaryName(fundingSummaryName)
 				.pageTitle(fundingTitle)
 				.username(username)
 				.recentSort(recentSort)
@@ -46,6 +50,7 @@ public class Funding {
 	public FundingDetailRespDto getDetailFunding() {
 		return FundingDetailRespDto.builder()
 				.fundingId(fundingId)
+				.fundingSummaryName(fundingSummaryName)
 				.fundingTitle(fundingTitle)
 				.username(username)
 				.deadline(nearDeadline)
@@ -55,6 +60,15 @@ public class Funding {
 				.storyContent(storyContent)
 				.imgUrl(imgUrl)
 				.joinPercent(joinPercent)
+				.build();
+	}
+	
+	public BreakdownRespDto toBreakdown() {
+		return BreakdownRespDto.builder()
+				.fundingId(fundingId)
+				.userId(userId)
+				.username(username)
+				.totalRewardPrice(totalRewardPrice)
 				.build();
 	}
 	

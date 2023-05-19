@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.webproject.crowdfunding.dto.resp.BreakdownRespDto;
+import com.webproject.crowdfunding.dto.resp.BusinessInfoRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.RewardRespDto;
 import com.webproject.crowdfunding.repository.FundingDetailRepository;
@@ -34,6 +36,22 @@ public class FundingDetailService {
 		rewardMap.put("rewardList", rewardList);
 		
 		return rewardMap;
+	}
+	
+	public BusinessInfoRespDto getBusinessInfo(int pageId) {
+		return fundingDetailRepository.getBusinessInfo(pageId).toBusinessInfo();
+	}
+	
+	public Map<String, Object> getBreakdown(int pageId) {
+		List<BreakdownRespDto> breakdownList = new ArrayList<>();
+		fundingDetailRepository.getBreakdown(pageId).forEach(breakdown -> {
+			breakdownList.add(breakdown.toBreakdown());
+		});
+		
+		Map<String, Object> breakdownMap = new HashMap<>();
+		breakdownMap.put("breakdownList", breakdownList);
+		
+		return breakdownMap;
 	}
 	
 }

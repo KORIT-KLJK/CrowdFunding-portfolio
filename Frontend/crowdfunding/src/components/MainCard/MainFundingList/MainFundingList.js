@@ -12,13 +12,14 @@ const fundingContainer = css`
     justify-content: center;
 
     width: 1140px;
-    margin: 69px auto 0;
+    margin: 70px auto;
     margin-bottom: 0;
 `;
 
 const mainCardText = css`
     display: flex;
     justify-content: flex-start;
+    align-items: flex-start;
     width: 1140px;
     height: 30px;
 

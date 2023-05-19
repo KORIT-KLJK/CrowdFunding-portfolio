@@ -418,7 +418,7 @@ const Funding = () => {
                                             <div css={fundingContainerMainPrice}>{funding.joinPercent}%</div>
                                         </div>
                                     </div>
-                                    <div css={fundingContainerMainUsername}>{funding.username}</div>
+                                    <div css={fundingContainerMainUsername}>{funding.fundingSummaryName}</div>
                                 </main>
                             <footer css={fundingContainerFooter}>
                                     <div css={fundingContainerFooterEventStatus}>{funding.eventStatus}</div>

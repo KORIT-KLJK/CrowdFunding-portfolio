@@ -3,19 +3,18 @@ import {css} from "@emotion/react";
 import axios from "axios";
 import React from 'react';
 import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 
 const mainFundingContainer = css`
-    
+    display: flex;
 `;
 
 const fundingContainer = css`
-    float: left;
-    position: relative;
     border: 1px solid #dbdbdb;
     width:  364px;
     height: 356px;
-    margin: 20px 24px 0 0;
+    margin: 20px 22px 0 0;
     cursor: pointer;
     &:hover {
         border: 1px solid black;
@@ -97,29 +96,36 @@ const CardItemFunding = () => {
     return response;
     });
 
+    console.log(fundings)
+
+    const navigate = useNavigate();
+    const fundingDetailHandle = (pageId) => {
+        navigate("/funding/" + pageId)
+    }
+
     return (
         <div css={mainFundingContainer}>
-            {/* {fundings.isLoading ?(
+            {fundings.isLoading ?(
                 <div>불러오는중...</div>
             ) : (
-                givings.data.data.cardGivingList.map(giving => ( */}
-                <div css={fundingContainer}>
+                fundings.data.data.cardFundingList.map(funding => (
+                    <div css={fundingContainer} key={funding.pageId} onClick={() => fundingDetailHandle(funding.pageId)}>      
+                    {/** navigate로 상세페이지 클릭이벤트는 파라미터로 해당 페이지 주소(pageId)를 받은뒤 onClick에 함수를 줘야됨 아님 무한루프돔. */}
                     <header>
-                        <div css={imgBox}>
-                        </div>
+                        <img css={imgBox} src={funding.imgUrl} alt={funding.imgUrl}></img>
                     </header>
                     <main>
                         <div css={fundingText}>
-                            <div css={fundingContainerMainTitlePrice}>회사명</div>
-                            <strong css={fundingContainerMainTitlePageTitle}>funding_name</strong>
+                            <div css={fundingContainerMainTitlePrice}>{funding.pageTitle}</div>
+                            <strong css={fundingContainerMainTitlePageTitle}>{funding.userName}</strong>
                             <span css={fundingContainerMainPricePadding}>
-                                <span css={fundingContainerMainPrice}>%</span>
+                                <span css={fundingContainerMainPrice}>{funding.joinPercent}%</span>
                             </span>
                         </div>
                     </main>
                 </div>
-                {/* ))
-            )} */}
+                ))
+            )}
         </div>
     );
 };

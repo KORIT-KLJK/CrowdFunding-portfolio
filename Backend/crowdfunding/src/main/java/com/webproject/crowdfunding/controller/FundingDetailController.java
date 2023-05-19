@@ -27,4 +27,16 @@ public class FundingDetailController {
 		return ResponseEntity.ok(fundingDetailService.getReward(pageId));
 	}
 	
+	@GetMapping("/businessinfo/{pageId}")
+	public ResponseEntity<?> fundingBusinessInfo(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getBusinessInfo(pageId));
+	}
+	
+	@GetMapping("/breakdown/{pageId}")
+	public ResponseEntity<?> breakdown(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getBreakdown(pageId));
+	}
+	
 }

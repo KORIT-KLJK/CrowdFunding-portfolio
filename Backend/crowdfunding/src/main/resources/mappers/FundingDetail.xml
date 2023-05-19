@@ -3,6 +3,8 @@
 <mapper namespace="com.webproject.crowdfunding.repository.FundingDetailRepository">
 	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingDetailMap">
 		<id property="fundingId" column="funding_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
 		<result property="fundingTitle" column="funding_title"/>
 		<result property="username" column="username"/>
 		<result property="nearDeadline" column="deadline"/>
@@ -20,11 +22,23 @@
 		<result property="rewardName" column="reward_name"/>
 		<result property="rewardPrice" column="reward_price"/>
 		<result property="endDate" column="end_date"/>
+		<result property="userCount" column="user_count"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.BusinessInfo" id="BusinessInfoMap">
+		<id property="businessInfoId" column="business_info_id"/>
+		<result property="companyName" column="company_name"/>
+		<result property="ceoName" column="ceo_name"/>
+		<result property="companyAddress" column="company_address"/>
+		<result property="companyPhoneNumber" column="company_phone_number"/>
+		<result property="ceoEmail" column="ceo_email"/>
+		<result property="fundingId" column="funding_id"/>
 	</resultMap>
 
 	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
 		select
 			fpt.funding_id,
+			fpt.funding_summary_name,
 		    fpt.funding_name as funding_title,
 		    ut.name as username,
 		    CONCAT(
@@ -51,12 +65,51 @@
 			rt.funding_id,
 			rt.reward_name,
 			rt.reward_price,
-			fpt.end_date
+			fpt.end_date,
+			count(distinct ut.user_id) as user_count
 		from 
 			reward_tb rt
 			left outer join funding_page_tb fpt on(fpt.funding_id = rt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join user_tb ut on(ut.user_id = ft.user_id)
 		where
-			rt.funding_id = #{pageId};
+			rt.funding_id = #{pageId}
+		group by
+			reward_id;
+	</select>
+	
+	<select id="getBusinessInfo" parameterType="integer" resultMap="BusinessInfoMap">
+		select
+			bt.business_info_id,
+		    bt.company_name,
+		    bt.ceo_name,
+		    bt.company_address,
+		    bt.company_phone_number,
+		    bt.ceo_email,
+		    bt.funding_id
+		from
+			business_info_tb bt
+		where
+			bt.funding_id = #{pageId};
+	</select>
+	
+	<select id="getBreakdown" parameterType="integer" resultMap="FundingDetailMap">
+		select
+			fpt.funding_id,
+		    ut.user_id,
+		    ut.name as username,
+		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price
+		from
+			funding_page_tb fpt
+		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join user_tb ut on(ut.user_id = ft.user_id)
+		where
+			fpt.funding_id = #{pageId}
+		group by
+			funding_id,
+		    user_id,
+		    username
 	</select>
 	
 </mapper>

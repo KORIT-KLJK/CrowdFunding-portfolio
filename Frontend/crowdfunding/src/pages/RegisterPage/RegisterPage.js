@@ -2,6 +2,8 @@
 import { css } from '@emotion/react';
 import React, { useRef, useState } from 'react';
 import * as S from './style'
+import { async } from 'q';
+import axios from 'axios';
 
 
 const mainContainer = css`
@@ -245,7 +247,6 @@ const saveBtn = css`
 const submitBtnContainer = css`
     display: flex;
     justify-content: end;
-
 `;
 
 const RegisterPage = () => {
@@ -254,13 +255,20 @@ const RegisterPage = () => {
         pageCategory: "기부",
         detailCategory : "아동",
         title: "",
+        storyTitle: "",
         story: "",
         imgUrl: "",
         goaltotal: 0,
-        email:"",
         rewardName: [],
-        rewardPrice: []
+        rewardPrice: [],
+        companyName: "",
+        ceoName: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
     });
+
+    console.log(inputParams)
 
     const [rewardTds, setRewardTds] = useState([
         {
@@ -268,7 +276,7 @@ const RegisterPage = () => {
         }
     ]);
     const rewardId = useRef(2);
-
+    const [showTable, setShowTable] = useState(true);
     const mainCategoryList = ["기부", "펀딩"];
     const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
     const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
@@ -278,6 +286,22 @@ const RegisterPage = () => {
 
     const [rewardNameIsBlank, setRewarNameIsBlank] = useState(false);
     const [rewardPriceIsBlank, setRewarPriceIsBlank] = useState(false);
+
+    const registerPage = async () => {
+        const data = {
+            ...inputParams
+        }
+        const option = {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/registerpage", JSON.stringify(data), option)
+        } catch (error) {
+            
+        }
+    }
     
     const handleRewardNameChange = (id, e) => {
         const newInputValues = new Map(rewardNameMap);
@@ -308,12 +332,10 @@ const RegisterPage = () => {
         if(!rewardNameIsBlank && !rewardPriceIsBlank) {
             alert("reward는 비워져있으면 안 됩니다.");
         }else{
-            setInputParams({...setInputParams, rewardName: nameList, rewardPrice: priceList})
+            setInputParams({...inputParams, rewardName: nameList, rewardPrice: priceList})
+            setShowTable(false);
         }
     };
-    
-    console.log(rewardNameMap, rewardPriceMap)
-    console.log(inputParams)
 
 
 
@@ -326,22 +348,39 @@ const RegisterPage = () => {
     }
 
     const changeTitle = (e) => {
-        setInputParams({...inputParams, title:e.target.textContent})
+        setInputParams({...inputParams, title:e.target.value})
+    }
+
+    const changeStoryTitle = (e) => {
+        setInputParams({...inputParams, storyTitle:e.target.value})
     }
 
     const changeStory = (e) => {
-        setInputParams({...inputParams, story:e.target.textContent})
+        setInputParams({...inputParams, story:e.target.value})
     }
 
     const changeImgUrl = (e) => {
-        setInputParams({...inputParams, story:e.target.textContent})
+        setInputParams({...inputParams, imgUrl:e.target.value})
     }
 
     const changegoalTotal = (e) => {
-        setInputParams({...inputParams, goaltotal:e.target.textContent})
+        setInputParams({...inputParams, goaltotal:e.target.value})
+    }
+
+    const changeCompanyName = (e) => {
+        setInputParams({...inputParams, companyName:e.target.value})
+    }
+    const changeCeoName = (e) => {
+        setInputParams({...inputParams, ceoName:e.target.value})
+    }
+    const changeCompanyAddress = (e) => {
+        setInputParams({...inputParams, companyAddress:e.target.value})
+    }
+    const changePhoneNumber = (e) => {
+        setInputParams({...inputParams, phoneNumber:e.target.value})
     }
     const changeEmail = (e) => {
-        setInputParams({...inputParams, email:e.target.textContent})
+        setInputParams({...inputParams, email:e.target.value})
     }
 
     const addRewardInputComponentHandle = () => {
@@ -412,6 +451,12 @@ const RegisterPage = () => {
                         <input onChange={changeTitle} css={input} type="text"/>    
                     </div> 
                 </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>스토리 제목</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeStoryTitle} css={input} type="text"/>    
+                    </div> 
+                </div>
                 <div css={storyInfoInput}>
                     <div css={storyInfoTitle}>스토리</div>
                     <div css={storyInputContainer}>
@@ -433,7 +478,7 @@ const RegisterPage = () => {
                     </div> 
                 </div>
 
-                {inputParams.pageCategory === '펀딩' ?
+                {showTable && inputParams.pageCategory === '펀딩' ?
                     <div css={rewardInfoInputContainer}>
                         <div css={rewardHeader}>
                             <h1 css={rewardH1}>리워드 추가</h1>
@@ -469,6 +514,30 @@ const RegisterPage = () => {
                     신청인 등록
                 </div>
                 <div css={infoInput}>
+                    <div css={infoTitle}>단체명</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyName} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>대표자</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCeoName} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>주소</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyAddress} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>고객센터</div>
+                    <div css={inputContainer}>
+                        <input onChange={changePhoneNumber} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
                     <div css={infoTitle}>이메일</div>
                     <div css={inputContainer}>
                         <input onChange={changeEmail} css={input} type="text"/>    
@@ -476,7 +545,7 @@ const RegisterPage = () => {
                 </div>
             </div>
             <div css={submitBtnContainer}>
-                <button>등록하기</button>
+                <button onClick={registerPage}>등록하기</button>
             </div>
         </div>
     );

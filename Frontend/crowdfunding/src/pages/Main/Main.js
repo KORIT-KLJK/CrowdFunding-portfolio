@@ -31,14 +31,15 @@ const Main = () => {
 
     return (
         <div mainContainer={mainContainer}>
-            <body css={mainBody}>
+            
+            <div css={mainBody}>
                 <main css={mainBodyDetails}>
                     <Slide />
                     <Recommend />
                     <MainGivingList />
                     <MainFundingList />
                 </main>
-            </body>
+            </div>
             <footer>
             </footer>
         </div>

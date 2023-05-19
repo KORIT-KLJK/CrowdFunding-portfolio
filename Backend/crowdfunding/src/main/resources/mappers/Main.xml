@@ -34,8 +34,4 @@
 		limit 4;
 	</select>
 	
-	<select id="">
-		
-	</select>
-	
 </mapper>

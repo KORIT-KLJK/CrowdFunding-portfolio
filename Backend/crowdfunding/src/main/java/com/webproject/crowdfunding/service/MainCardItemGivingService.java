@@ -23,7 +23,7 @@ public class MainCardItemGivingService {
 		
 		mainCardItemGivingRepository.saveCardItemGiving(null).forEach(mainCardItemGiving -> {
 			cardGivingList.add(mainCardItemGiving.toSaveMainCardGivingRespDto());
-		});
+		});		// mainCardItemGiving은 repository의 saveCardItemGiving의 자료형인 list의 매개변수임.
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("cardGivingList", cardGivingList);
