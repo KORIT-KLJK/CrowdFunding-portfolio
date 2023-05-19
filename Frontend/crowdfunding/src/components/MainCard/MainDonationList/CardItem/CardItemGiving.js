@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -101,6 +102,11 @@ const CardItemGiving = () => {
 
    console.log(givings)
 
+   const navigate = useNavigate();
+   const givingDetailHandle = (pageId) => {
+        navigate("/giving/" + pageId)
+   }
+
     return (
         <>
             <ul css={mainCardList}>
@@ -108,7 +114,7 @@ const CardItemGiving = () => {
                     <div>불러오는중...</div>
                 ) : (
                     givings.data.data.cardGivingList.map(giving => (
-                    <li css={cardListItem} key={giving.pageId}>
+                    <li css={cardListItem} key={giving.pageId} onClick={() => givingDetailHandle(giving.pageId)}>
                         <img css={cardItemImg} src={giving.imgUrl} alt={giving.imgUrl}></img>
                         <div css={cardItemContent}>
                             <strong css={cardItemTitle}>{giving.pageTitle}</strong>

@@ -35,7 +35,7 @@ const Main = () => {
     return (
         <div mainContainer={mainContainer}>
             
-            <body css={mainBody}>
+            <div css={mainBody}>
                 <HeaderMain />
                 <main css={mainBodyDetails}>
                     <Slide />
@@ -43,7 +43,7 @@ const Main = () => {
                     <MainGivingList />
                     <MainFundingList />
                 </main>
-            </body>
+            </div>
             <footer>
 
             </footer>
