@@ -17,7 +17,7 @@ public class Funding {
 	private String fundingTitle;
 	private String username;
 	private int recentSort;
-	private int nearDeadline;
+	private String nearDeadline;
 	private String eventStatus;
 	private int goalTotal;
 	private int totalRewardPrice;
@@ -48,7 +48,7 @@ public class Funding {
 				.fundingId(fundingId)
 				.fundingTitle(fundingTitle)
 				.username(username)
-				.nearDeadline(nearDeadline)
+				.deadline(nearDeadline)
 				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)
 				.storyTitle(storyTitle)

@@ -9,7 +9,7 @@ public class FundingDetailRespDto {
 	private int fundingId;
 	private String fundingTitle;
 	private String username;
-	private int nearDeadline;
+	private String deadline;
 	private int goalTotal;
 	private int totalRewardPrice;
 	private String storyTitle;

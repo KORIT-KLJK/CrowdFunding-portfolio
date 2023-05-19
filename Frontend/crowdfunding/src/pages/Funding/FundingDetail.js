@@ -40,8 +40,8 @@ export const fundingDetailNearDeadline = css`
     justify-content: center;
     align-items: center;
     border-radius: 30px;
-    width: 55px;
-    height: 30px;
+    width: 75px;
+    height: 40px;
     background-color: red;
     color: white;
     font-size: 16px;
@@ -155,10 +155,28 @@ export const SelectRewardName = css`
     }
 `;
 
+export const rewardsMain = css`
+    border-bottom: 1px solid #dbdbdb;
+    padding: 20px 0px;
+`;
+
 export const rewardNameAndDelete = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 10px;
+`;
+
+export const rewardsName = css`
+    font-size: 15px;
+`;
+
+export const rewardsDeleteButton = css`
+    border: none;
+    font-size: 20px;
+    background-color: white;
+    color: #dbdbdb;
+    cursor: pointer;
 `;
 
 export const rewardCountAndPriceContainer = css`
@@ -206,6 +224,11 @@ export const plusButton = css`
     cursor: pointer;
 `;
 
+export const rewardsPrice = css`
+    font-size: 17px;
+    font-weight: 600;
+`;
+
 export const TotalReward = css`
     display: flex;
     justify-content: space-between;
@@ -234,6 +257,35 @@ export const TotalRewardPrice = css`
     font-weight: 600;
     margin-left: 20px;
     color: skyblue;
+`;
+
+export const joinFundingButtonContainer = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0px;
+`;
+
+export const joiFundingButton = css`
+    width: 100%;
+    height: 55px;
+    border-radius: 3px;
+    border: none;
+    font-size: 19px;
+    font-weight: 600;
+    background-color: #1f9eff;
+    color: white;
+    cursor: pointer;
+`;
+
+export const endFundingButton = css`
+    width: 100%;
+    height: 55px;
+    border-radius: 3px;
+    border: none;
+    font-size: 19px;
+    font-weight: 600;
+    color: white;
 `;
 
 const FundingDetail = () => {
@@ -265,28 +317,35 @@ const FundingDetail = () => {
     }
     
     const selectRewardNameHandle = (fundingReward) => {
-        const isDuplicate = rewards.some((reward) => reward.fundingReward.rewardId === fundingReward.rewardId);
+        const isDuplicate = rewards.some(reward => reward.fundingReward.rewardId === fundingReward.rewardId);
         if (isDuplicate) {
           alert("이미 등록된 상품입니다.");
           setSelectRewardHidden(false);
         } else {
           setSelectRewardHidden(false);
           setRewards([...rewards, { fundingReward }]);
-          setTotalQuantity((prevTotalQuantity) => prevTotalQuantity + 1);
-          setTotalPrice((prevTotalPrice) => prevTotalPrice + fundingReward.rewardPrice);
+          setTotalQuantity(quantity => quantity + 1);
+          setTotalPrice(price => price + fundingReward.rewardPrice);
         }
+    }
+
+    const deleteRewardHandle = (reward) => {
+        const newRewards = rewards.filter(r => r.fundingReward.rewardId !== reward.fundingReward.rewardId);
+        setRewards(newRewards);
+        setTotalQuantity(quantity => quantity - (reward.fundingReward.count || 1));
+        setTotalPrice(price => price - (reward.fundingReward.rewardPrice * (reward.fundingReward.count || 1)));
     }
     
     const decreaseCount = (reward) => {
         const newRewards = [...rewards];
-        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
         
         if (rewardIndex !== -1) {
           newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) - 1;
           const count = newRewards[rewardIndex].fundingReward.count;
           if (count >= 1) {
-            setTotalQuantity((quantity) => quantity - 1);
-            setTotalPrice((price) => price - reward.fundingReward.rewardPrice);
+            setTotalQuantity(quantity => quantity - 1);
+            setTotalPrice(price => price - reward.fundingReward.rewardPrice);
           }
         }
         
@@ -295,7 +354,7 @@ const FundingDetail = () => {
 
     const countHandle = (e, reward) => {
         const newRewards = [...rewards];
-        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
         if (rewardIndex !== -1) {
           const count = parseInt(e.target.value, 10);
           newRewards[rewardIndex].fundingReward.count = isNaN(count) ? 0 : count;
@@ -310,13 +369,13 @@ const FundingDetail = () => {
 
     const increaseCount = (reward) => {
         const newRewards = [...rewards];
-        const rewardIndex = newRewards.findIndex((r) => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
         if (rewardIndex !== -1) {
           newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) + 1;
           const count = newRewards[rewardIndex].fundingReward.count;
           if (count >= 1) {
-            setTotalQuantity((prevTotalQuantity) => prevTotalQuantity + 1);
-            setTotalPrice((prevTotalPrice) => prevTotalPrice + reward.fundingReward.rewardPrice);
+            setTotalQuantity(quantity => quantity + 1);
+            setTotalPrice(price => price + reward.fundingReward.rewardPrice);
           }
         }
         setRewards(newRewards);
@@ -328,7 +387,7 @@ const FundingDetail = () => {
                 <div css={fundingDetailHeader}>
                     <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
                     <div css={fundingDetailHeaderRight}>
-                        <div css={fundingDetailNearDeadline}>D-{funding.nearDeadline}</div>
+                        <div css={fundingDetailNearDeadline}>{funding.deadline === "종료" ? "종료" : funding.deadline === "오늘 마감" ?  "오늘 마감" : `D-${funding.deadline}`}</div>
                         <div css={fundingDetailFundingTitle}>{funding.fundingTitle}</div>
                         <div css={fundingDetailJoinPercent}>{funding.joinPercent}%</div>
                         <progress css={fundingDetailJoinPercentProgress} value={funding.joinPercent} max="100"/>
@@ -350,25 +409,25 @@ const FundingDetail = () => {
                                         ))}
                                         </ul>) : ""}
                                     {rewards.map(reward =>(
-                                        <div key={reward.fundingReward.rewardId}>
-                                            <div css={rewardNameAndDelete}>
-                                                <div>{reward.fundingReward.rewardName}</div>
-                                                <button>X</button>
-                                            </div>
-                                            <div css={rewardCountAndPriceContainer}>
-                                                <div css={rewardButtonAndPrice}>
-                                                    <button css={minusButton}
-                                                            onClick={() => decreaseCount(reward)}>-</button>
-                                                    <input  css={rewardCount}
-                                                            type="text"
-                                                            value={reward.fundingReward.count || 1} 
-                                                            onChange={(e) => countHandle(e, reward)} />
-                                                    <button css={plusButton}
-                                                            onClick={() => increaseCount(reward)}>+</button>
+                                            <div css={rewardsMain} key={reward.fundingReward.rewardId}>
+                                                <div css={rewardNameAndDelete}>
+                                                    <div css={rewardsName}>{reward.fundingReward.rewardName}</div>
+                                                    <button css={rewardsDeleteButton} onClick={() => deleteRewardHandle(reward)}>X</button>
                                                 </div>
-                                                <div>{reward.fundingReward.rewardPrice}원</div>
+                                                <div css={rewardCountAndPriceContainer}>
+                                                    <div css={rewardButtonAndPrice}>
+                                                        <button css={minusButton}
+                                                                onClick={() => decreaseCount(reward)}>-</button>
+                                                        <input  css={rewardCount}
+                                                                type="text"
+                                                                value={reward.fundingReward.count || 1} 
+                                                                onChange={(e) => countHandle(e, reward)} />
+                                                        <button css={plusButton}
+                                                                onClick={() => increaseCount(reward)}>+</button>
+                                                    </div>
+                                                    <div css={rewardsPrice}>{new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                </div>
                                             </div>
-                                        </div>
                                     ))}
                                 <div css={TotalReward}>
                                     <div css={TotalRewardCount}>총 수량 {totalQuantity}개</div>
@@ -378,6 +437,9 @@ const FundingDetail = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div css={joinFundingButtonContainer}>
+                            {funding.deadline === "종료" ? <button css={endFundingButton}>펀딩 종료하기</button> : <button css={joiFundingButton}>펀딩 참여하기</button>}
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ public class FundingMainRespDto {
 	private String pageTitle;
 	private String username;
 	private int recentSort;
-	private int nearDeadlineSort;
+	private String nearDeadlineSort;
 	private String eventStatus;
 	private int goalTotal;
 	private int totalRewardPrice;

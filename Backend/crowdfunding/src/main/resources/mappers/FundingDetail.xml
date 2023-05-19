@@ -5,7 +5,7 @@
 		<id property="fundingId" column="funding_id"/>
 		<result property="fundingTitle" column="funding_title"/>
 		<result property="username" column="username"/>
-		<result property="nearDeadline" column="near_deadline"/>
+		<result property="nearDeadline" column="deadline"/>
 		<result property="goalTotal" column="goal_total"/>
 		<result property="totalRewardPrice" column="total_reward_price"/>
 		<result property="storyTitle" column="story_title"/>
@@ -26,7 +26,9 @@
 			fpt.funding_id,
 		    fpt.funding_name as funding_title,
 		    ut.name as username,
-		    DATEDIFF(fpt.end_date, NOW()) as near_deadline,
+		    CONCAT(
+			IF(NOW() &lt; fpt.end_date,  DATEDIFF(fpt.end_date, NOW()), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) as deadline,
 		    fpt.goal_total,
 		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price,
 		    fpt.story_title,
