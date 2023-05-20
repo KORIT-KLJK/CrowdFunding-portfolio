@@ -600,6 +600,8 @@ const FundingDetail = () => {
         setRewards(newRewards);
       };
 
+      console.log(fundingJoinBreakdown.data.data.breakdownList);
+
     return (
         <div>
             <div css={fundingDetailContainer}>
@@ -684,7 +686,7 @@ const FundingDetail = () => {
                             <div css={rewardGuideInfo}>
                                 <div css={rewardGuideRewardName}>{reward.rewardName}</div>
                                 <div css={rewardGuideDetailContainer}>
-                                    <li css={rewardGuideDetailInfo}>현재 {reward.userCount}명 참여 수</li>
+                                    <li css={rewardGuideDetailInfo}>현재 {reward.userCount}명 참여</li>
                                     <li css={rewardGuideDetailInfo}>발송 예상일 {reward.endDate}</li>
                                 </div>
                             </div>

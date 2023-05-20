@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessInfo {
+	private String pageCategory;
 	private int businessInfoId;
 	private String companyName;
 	private String ceoName;

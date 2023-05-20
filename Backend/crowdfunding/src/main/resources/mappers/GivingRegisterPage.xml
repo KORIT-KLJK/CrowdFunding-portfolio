@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.GiveRegisterPageRepository">
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Center" id="CenterMap">
+		<id property="centerId" column="center_id"/>
+		<result property="centerName" column="center_name"/>
+		<result property="centerAddress" column="center_address"/>
+		<result property="centerPhoneNumber" column="center_phone_number"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.GiveRegisterPage" id="GiveRegisterPageMap">
+		<id property="givingPageId" column="giving_page_id"/>
+		<result property="title" column="giving_name"/>
+		<result property="endDate" column="end_date"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="story" column="story_content"/>
+		<result property="centerId" column="center_id"/>
+		<result property="imgUrl" column="main_img_url"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.TargetBenefit" id="TargerBenefitMap">
+		<id property="tbId" column="tb_id"/>
+		<result property="target" column="targer"/>
+		<result property="targetCount" column="target_count"/>
+		<result property="benefitEffect" column="benefit_effect"/>
+		<result property="givingPageId" column="giving_page_id"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.DonationUsePlan" id="DonationUsePlanMap">
+		<id property="dupId" column="dup_id"/>
+		<result property="giveUsing" column="content"/>
+		<result property="donationExpense" column="donation_expense"/>
+		<result property="givingPageId" column="giving_page_id"/>
+	</resultMap>
+	
+	<insert id="toSaveCenter"
+				parameterType="com.webproject.crowdfunding.entity.Center"
+				useGeneratedKeys="true"
+				keyProperty="centerId">
+		<if test="pageCategory == '기부'">
+			insert into center_tb
+			values
+			(0, #{centerName}, #{centerAddress}, #{centerPhoneNumber})
+		</if>
+	</insert>
+	  
+	<insert id="toSaveGiveRegisterPage"
+				parameterType="com.webproject.crowdfunding.entity.GiveRegisterPage"
+				useGeneratedKeys="true"
+				keyProperty="givingPageId">
+				
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '아동'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 1)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '노인'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 2)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '장애인'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 3)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '다문화'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 4)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '환경'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 5)
+	</if>
+	</insert>
+	
+	<insert id="toSaveTarget"
+				parameterType="com.webproject.crowdfunding.entity.TargetBenefit"
+				useGeneratedKeys="true"
+				keyProperty="tbId">
+		<if test="pageCategory == '기부'">
+			insert into target_benefit_tb
+			values
+			(0, #{target}, #{targetCount}, #{benefitEffect}, #{givingPageId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveDonation"
+				parameterType="com.webproject.crowdfunding.entity.DonationUsePlan"
+				useGeneratedKeys="true"
+				keyProperty="dupId">
+		<if test="pageCategory == '기부'">
+			insert into donation_use_plan_tb
+			values
+			(0, #{giveUsing}, #{donationExpense}, #{givingPageId})
+		</if>
+	</insert>
+	
+</mapper>

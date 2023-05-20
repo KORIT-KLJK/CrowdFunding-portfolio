@@ -16,7 +16,7 @@
 		<result property="imgUrl" column="img_url"/>
 		<result property="fundingCategoryId" column="funding_category_id"/>
 		<result property="rewardName" column="reward_name"/>
-		<result property="rewardPrice" column=""/>
+		<result property="rewardPrice" column="reward_price"/>
 	</resultMap>
 	
 	<resultMap type="com.webproject.crowdfunding.entity.FundingCategory" id="FundingCategoryMap">
@@ -31,7 +31,6 @@
 			fpt.funding_id AS page_id,
 			fpt.funding_summary_name,
 			fpt.funding_name AS page_title,
-			ut.name AS user_name,
 			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
 			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
 			CONCAT(
@@ -44,7 +43,6 @@
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
-			left outer join user_tb ut on(ut.user_id = fpt.user_id)
 			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
 			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
 			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
@@ -55,11 +53,10 @@
 		group by
 		   	page_id,
 			page_title,
-			user_name,
 			event_status
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort DESC;
+			recent_sort;
 		</if>	
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
@@ -82,7 +79,6 @@
 			fpt.funding_id AS page_id,
 			fpt.funding_summary_name,
 			fpt.funding_name AS page_title,
-			ut.name AS user_name,
 			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
 			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
 			CONCAT(
@@ -95,7 +91,6 @@
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
-			left outer join user_tb ut on(ut.user_id = fpt.user_id)
 			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
 			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
 			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
@@ -104,12 +99,11 @@
 		group by
 		   	page_id,
 			page_title,
-			user_name,
 			event_status
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort DESC;
+			recent_sort;
 		</if>	
 		
 		<if test="fundingSortingReward == '참여 금액 순'">
@@ -133,7 +127,6 @@
 			fpt.funding_id AS page_id,
 			fpt.funding_summary_name,
 			fpt.funding_name AS page_title,
-			ut.name AS user_name,
 			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
 			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
 			CONCAT(
@@ -146,7 +139,6 @@
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
-			left outer join user_tb ut on(ut.user_id = fpt.user_id)
 			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
 			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
 			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
@@ -155,12 +147,11 @@
 		group by
 		   	page_id,
 			page_title,
-			user_name,
 			event_status
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort DESC;
+			recent_sort;
 		</if>	
 		
 		<if test="fundingSortingReward == '참여 금액 순'">

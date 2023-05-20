@@ -240,10 +240,7 @@ const saveBtnContainer = css`
     justify-content: end;
 
 `;
-const saveBtn = css`
-    
 
-`;
 const submitBtnContainer = css`
     display: flex;
     justify-content: end;
@@ -258,34 +255,57 @@ const RegisterPage = () => {
         storyTitle: "",
         story: "",
         imgUrl: "",
-        goaltotal: 0,
+        goalTotal: 0,
+        endDate: "",
+        giveUsing: [],
+        donationExpense: [],
+        businessStartDate: "",
+        businessEndDate: "",
+        target: "",
+        targetCount: 0,
+        benefitEffect: "",
         rewardName: [],
         rewardPrice: [],
         companyName: "",
         ceoName: "",
+        nickName: "",
         companyAddress: "",
         companyPhoneNumber: "",
         email:""
     });
 
     console.log(inputParams)
-
+    
+    const [giveTds, setGiveTds] = useState([
+        {
+            id: 1
+        }
+    ]);
+    
     const [rewardTds, setRewardTds] = useState([
         {
             id: 1
         }
     ]);
+
+    const giveId = useRef(2);
     const rewardId = useRef(2);
     const [showTable, setShowTable] = useState(true);
     const mainCategoryList = ["기부", "펀딩"];
     const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
     const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
 
+    const [giveUsingMap, setGiveUsingMap] = useState(new Map());
+    const [giveUsingPriceMap, setGiveUsingPriceMap] = useState(new Map());
+
     const [rewardNameMap, setRewardNameMap] = useState(new Map());
     const [rewardPriceMap, setRewardPriceMap] = useState(new Map());
 
     const [rewardNameIsBlank, setRewarNameIsBlank] = useState(false);
     const [rewardPriceIsBlank, setRewarPriceIsBlank] = useState(false);
+
+    const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
+    const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
 
     const registerPage = async () => {
         const data = {
@@ -297,12 +317,27 @@ const RegisterPage = () => {
             }
         }
         try {
+            await axios.post("http://localhost:8080/registercenter", JSON.stringify(data), option)
             await axios.post("http://localhost:8080/registerpage", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/registerbusinessinfo", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/registerreward", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/registerrest", JSON.stringify(data), option)
         } catch (error) {
             
         }
     }
     
+    const handleGivingUsingChange = (id, e) => {
+        const newInputValues = new Map(giveUsingMap);
+        newInputValues.set(id, e.target.value);
+        setGiveUsingMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingIsBlank(false);
+        }else {
+            setGiveUsingIsBlank(true);
+        }
+    };
+
     const handleRewardNameChange = (id, e) => {
         const newInputValues = new Map(rewardNameMap);
         newInputValues.set(id, e.target.value);
@@ -314,6 +349,17 @@ const RegisterPage = () => {
         }
     };
 
+    const handleGivingUsingPriceChange = (id, e) => {
+        const newInputValues = new Map(giveUsingPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setGiveUsingPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingPriceIsBlank(false);
+        }else {
+            setGiveUsingPriceIsBlank(true);
+        }
+      };
+
     const handleRewardPriceChange = (id, e) => {
         const newInputValues = new Map(rewardPriceMap);
         newInputValues.set(id, parseInt(e.target.value));
@@ -324,6 +370,18 @@ const RegisterPage = () => {
             setRewarPriceIsBlank(true);
         }
       };
+
+    const madeGiveUsingList = () => {
+        const giveUsingList = Array.from(giveUsingMap.values())
+        const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
+
+        if(!giveUsingIsBlank && !givesingPriceIsBlank) {
+            alert("reward는 비워져있으면 안 됩니다.");
+        }else{
+            setInputParams({...inputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
+            setShowTable(false);
+        }
+    };
 
     const madeRewardList = () => {
         const nameList = Array.from(rewardNameMap.values())
@@ -340,8 +398,21 @@ const RegisterPage = () => {
 
 
     const changePageCategory = (e) => {
-        setInputParams({...inputParams, pageCategory:e.target.value})
-    }
+        const newPageCategory = e.target.value;
+        let newDetailCategory = inputParams.detailCategory;
+    
+        if (newPageCategory === "펀딩") {
+          newDetailCategory = "음식";
+        } else if (newDetailCategory !== "") {
+          newDetailCategory = "아동";
+        }
+    
+        setInputParams({
+          ...inputParams,
+          pageCategory: newPageCategory,
+          detailCategory: newDetailCategory,
+        });
+      };
 
     const changeDetailCategory = (e) => {
         setInputParams({...inputParams, detailCategory:e.target.value})
@@ -363,8 +434,32 @@ const RegisterPage = () => {
         setInputParams({...inputParams, imgUrl:e.target.value})
     }
 
-    const changegoalTotal = (e) => {
-        setInputParams({...inputParams, goaltotal:e.target.value})
+    const changeGoalTotal = (e) => {
+        setInputParams({...inputParams, goalTotal:e.target.value})
+    }
+
+    const changeEndDate = (e) => {
+        setInputParams({...inputParams, endDate:e.target.value})
+    }
+
+    const changeBusinessStartDate = (e) => {
+        setInputParams({...inputParams, businessStartDate:e.target.value})
+    }
+
+    const changeBusinessEndDate = (e) => {
+        setInputParams({...inputParams, businessEndDate:e.target.value})
+    }
+
+    const changeTarget = (e) => {
+        setInputParams({...inputParams, target:e.target.value})
+    }
+
+    const changeTargetCount = (e) => {
+        setInputParams({...inputParams, targetCount:e.target.value})
+    }
+
+    const changeBenefitEffect = (e) => {
+        setInputParams({...inputParams, benefitEffect:e.target.value})
     }
 
     const changeCompanyName = (e) => {
@@ -373,19 +468,37 @@ const RegisterPage = () => {
     const changeCeoName = (e) => {
         setInputParams({...inputParams, ceoName:e.target.value})
     }
+    const changeNickname = (e) => {
+        setInputParams({...inputParams, nickname:e.target.value})
+    }
     const changeCompanyAddress = (e) => {
         setInputParams({...inputParams, companyAddress:e.target.value})
     }
     const changePhoneNumber = (e) => {
-        setInputParams({...inputParams, phoneNumber:e.target.value})
+        setInputParams({...inputParams, companyPhoneNumber:e.target.value})
     }
     const changeEmail = (e) => {
         setInputParams({...inputParams, email:e.target.value})
     }
 
+    const addGiveUsingInputComponentHandle = () => {
+        setGiveTds([...giveTds, {id: giveId.current}]);
+        giveId.current += 1;
+    }
+
     const addRewardInputComponentHandle = () => {
         setRewardTds([...rewardTds, {id: rewardId.current}]);
         rewardId.current += 1;
+    }
+
+    const removeGiveUsingInputComponentHandle = (id,e) => {
+        setGiveTds([...giveTds.filter(giveTd => giveTd.id !== parseInt(e.target.value))]);
+        const newGiveUsing = new Map(giveUsingMap);
+        const newGiveUsingPrice = new Map(giveUsingPriceMap);
+        newGiveUsing.delete(id);
+        newGiveUsingPrice.delete(id);
+        setGiveUsingMap(newGiveUsing);
+        setGiveUsingPriceMap(newGiveUsingPrice);
     }
 
     const removeRewardInputComponentHandle = (id,e) => {
@@ -396,7 +509,6 @@ const RegisterPage = () => {
         newRewardPrice.delete(id);
         setRewardNameMap(newRewardName);
         setRewardPriceMap(newRewardPrice);
-
     }
 
 
@@ -474,9 +586,86 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>목표금액</div>
                     <div css={inputContainer}>
-                        <input onChange={changegoalTotal} css={input} type="text"/>원    
+                        <input onChange={changeGoalTotal} css={input} type="text"/>원    
                     </div> 
                 </div>
+
+                <div css={infoInput}>
+                    <div css={infoTitle}>종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeEndDate} css={input} type="text"/>    
+                    </div> 
+                </div>
+
+                {showTable && inputParams.pageCategory === '기부' ?
+                <>
+                    <div css={rewardInfoInputContainer}>
+                        <div css={rewardHeader}>
+                            <h1 css={rewardH1}>기부금 사용 계획</h1>
+                            <div css={btnContainer}>
+                                <button css={rewardBtn} onClick={addGiveUsingInputComponentHandle}>+</button>
+            
+                            </div>
+                        </div>
+                        <table css={rewardTable}>
+                            <thead>
+                                <tr css={rewardTr}>
+                                    <th css={rewardNameThAndTd}>사용 내역</th>
+                                    <th css={rewardPriceThAndTd}>사용 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {giveTds.map(giveTd => (
+                                    <tr css={rewardTr} key={giveTd.id}>
+                                        <td css={rewardNameThAndTd}><input onChange={(e)=> handleGivingUsingChange(giveTd.id,e)} css={rewardTdInput} type="text"/></td>
+                                        <td css={rewardPriceThAndTd}><input onChange={(e)=> handleGivingUsingPriceChange(giveTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={giveTd.id} onClick={(e)=>removeGiveUsingInputComponentHandle(giveTd.id,e)}>-</button></td>    
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div css={saveBtnContainer}>
+                            <button onClick={madeGiveUsingList}>저장하기</button>
+                        </div>
+                    </div>
+                </>
+                : ""}
+            {inputParams.pageCategory === '기부' ? 
+            <>
+                <div css={subTitle}>
+                    사업대상 및 기대효과
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 시작일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBusinessStartDate} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBusinessEndDate} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 대상</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTarget} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>대상 수</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTargetCount} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>기대 효과</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBenefitEffect} css={input} type="text"/>    
+                    </div> 
+                </div> 
+            </>
+                : ""}
 
                 {showTable && inputParams.pageCategory === '펀딩' ?
                     <div css={rewardInfoInputContainer}>
@@ -525,6 +714,16 @@ const RegisterPage = () => {
                         <input onChange={changeCeoName} css={input} type="text"/>    
                     </div> 
                 </div>
+                
+                {inputParams.pageCategory === '펀딩' ? 
+                    <div css={infoInput}>
+                        <div css={infoTitle}>닉네임</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeNickname} css={input} type="text"/>    
+                        </div> 
+                    </div>
+                : ""
+            }
                 <div css={infoInput}>
                     <div css={infoTitle}>주소</div>
                     <div css={inputContainer}>
