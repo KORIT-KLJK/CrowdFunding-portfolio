@@ -69,6 +69,13 @@ const storyContent = css`
     letter-spacing: -.01px;
 `;
 
+const givingStatusBox = css`
+    float: left;
+    width: 282px;
+    font-size: 15px;
+    padding-bottom: 25px;
+`;
+
 const givingInfoBox = css`
     margin: 0 1px;
     padding: 23px 29px 27px;
@@ -76,12 +83,6 @@ const givingInfoBox = css`
     border-right: 1px solid #e5e5e5;
 `;
 
-const givingStatusBox = css`
-    float: left;
-    width: 222px;
-    font-size: 15px;
-    padding-bottom: 25px;
-`;
 
 const graphStatus = css`
     padding-right: 2px;
@@ -145,7 +146,7 @@ const givingMoney = css`
 
 const givingButton = css`
     display: inline-block;
-    width: 282px;
+    width: 281px;
     height: 60px;
     padding-top: 17px;
     border: 1px solid rgba(0,0,0,.1);
@@ -187,8 +188,8 @@ const GivingDetail = () => {
                             </div>
                         </div>
                     </div>
-                    <div css={givingInfoBox}>
-                        <div css={givingStatusBox}>
+                    <div css={givingStatusBox}>
+                        <div css={givingInfoBox}>
                             <div css={graphStatus}>
                                 <span css={percent}>
                                     <strong css={percentCss}>{givingDetail.data.data.achievementRate}</strong>%
@@ -205,8 +206,8 @@ const GivingDetail = () => {
                             <div css={givingArea}>
                                 <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
                             </div>
-                            <div css={givingButton}>모금함 기부하기</div>
                         </div>
+                            <div css={givingButton}>모금함 기부하기</div>
                     </div>
                 </div>
         </>
