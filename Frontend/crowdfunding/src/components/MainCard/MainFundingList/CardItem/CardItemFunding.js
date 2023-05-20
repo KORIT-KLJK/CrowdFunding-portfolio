@@ -90,25 +90,24 @@ const fundingContainerMainPrice = css`
 
 
 const CardItemFunding = () => {
+    const navigate = useNavigate();
     const fundings = useQuery(["CardItemFunding"], async () => {
     
     const response = await axios.get("http://localhost:8080/main/cardItemFunding")
     return response;
     });
 
-    console.log(fundings)
+    if(fundings.isLoading) {
+        return <></>;
+    }
 
-    const navigate = useNavigate();
     const fundingDetailHandle = (pageId) => {
         navigate("/funding/" + pageId)
     }
 
     return (
         <div css={mainFundingContainer}>
-            {fundings.isLoading ?(
-                <div>불러오는중...</div>
-            ) : (
-                fundings.data.data.cardFundingList.map(funding => (
+                {fundings.data.data.cardFundingList.map(funding => (
                     <div css={fundingContainer} key={funding.pageId} onClick={() => fundingDetailHandle(funding.pageId)}>      
                     {/** navigate로 상세페이지 클릭이벤트는 파라미터로 해당 페이지 주소(pageId)를 받은뒤 onClick에 함수를 줘야됨 아님 무한루프돔. */}
                     <header>
@@ -125,7 +124,7 @@ const CardItemFunding = () => {
                     </main>
                 </div>
                 ))
-            )}
+            }
         </div>
     );
 };

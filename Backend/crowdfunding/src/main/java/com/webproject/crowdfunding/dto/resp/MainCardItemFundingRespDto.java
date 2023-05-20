@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class MainCardItemFundingRespDto {
 	private int pageId;
+	private String fundingSummaryName;
 	private String pageTitle;
 	private String userName;
 	private int joinPercent;
