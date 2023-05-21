@@ -159,6 +159,47 @@ const givingButton = css`
     text-align: center;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    cursor: pointer;
+`;
+
+const givingBanner = css`
+    width: 280px;
+    height: 129px;
+    border: solid #e5e5e5;
+    border-width: 0 1px;
+`;
+
+const bannerFont = css`
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    font-size: 0;
+    line-height: 0;
+`;
+
+const collectGroupBox = css`
+    border-top: 1px solid #e5e5e5;
+`;
+
+const collectGroupInfo = css`
+    padding: 28px 30px 23px 30px;
+`;
+
+const h3css = css`
+    margin-left: 1px;
+`;
+
+const givingGroupName = css`
+    overflow: hidden;
+    width: 170px;
+    margin-left: 16px;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: .01em;
+    line-height: 20px;
+    color: #444;
+    vertical-align: top;
 `;
 
 const GivingDetail = () => {
@@ -208,6 +249,21 @@ const GivingDetail = () => {
                             </div>
                         </div>
                             <div css={givingButton}>모금함 기부하기</div>
+                            <div css={givingBanner}>
+                                <span css= {bannerFont}>기부하신 금액은 수수료 없이
+                                    <strong>100% 전달</strong>
+                                    됩니다
+                                </span>
+                            </div>
+                            <div css={collectGroupBox}>
+                                <div css={collectGroupInfo}>
+                                    <h3 css={h3css}>
+                                        <span css={givingGroupName}>모금단체
+                                            <a></a>
+                                        </span>
+                                    </h3>
+                                </div>
+                            </div>
                     </div>
                 </div>
         </>
