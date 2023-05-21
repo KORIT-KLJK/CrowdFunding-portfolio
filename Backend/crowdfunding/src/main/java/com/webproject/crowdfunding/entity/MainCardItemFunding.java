@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MainCardItemFunding {
 	private int pageId;
+	private String fundingSummaryName;
 	private String pageTitle;
-	private String userName;
 	private int joinPercent;
 	private String imgUrl;
 	private int funderId;
@@ -24,8 +24,8 @@ public class MainCardItemFunding {
 	public MainCardItemFundingRespDto toSaveMainCardFundingRespDto() {
 		return MainCardItemFundingRespDto.builder()
 				.pageId(pageId)
+				.fundingSummaryName(fundingSummaryName)
 				.pageTitle(pageTitle)
-				.userName(userName)
 				.joinPercent(joinPercent)
 				.imgUrl(imgUrl)
 				.funderId(funderId)

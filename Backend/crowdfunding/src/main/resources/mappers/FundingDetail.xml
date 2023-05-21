@@ -40,7 +40,6 @@
 			fpt.funding_id,
 			fpt.funding_summary_name,
 		    fpt.funding_name as funding_title,
-		    ut.name as username,
 		    CONCAT(
 			IF(NOW() &lt; fpt.end_date,  DATEDIFF(fpt.end_date, NOW()), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
 			) as deadline,
@@ -52,7 +51,6 @@
 		    ROUND((sum(if(ft.funder_id is null, 0, rt.reward_price)) / fpt.goal_total) * 100) as join_percent
 		from
 			funding_page_tb fpt
-		    left outer join user_tb ut on(ut.user_id = fpt.user_id)
 		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
 		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
 		where
@@ -106,6 +104,8 @@
 			left outer join user_tb ut on(ut.user_id = ft.user_id)
 		where
 			fpt.funding_id = #{pageId}
+			AND ut.user_id IS NOT NULL
+			AND ut.name IS NOT NULL
 		group by
 			funding_id,
 		    user_id,

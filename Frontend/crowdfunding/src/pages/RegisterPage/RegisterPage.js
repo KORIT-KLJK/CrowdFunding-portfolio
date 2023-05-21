@@ -240,10 +240,7 @@ const saveBtnContainer = css`
     justify-content: end;
 
 `;
-const saveBtn = css`
-    
 
-`;
 const submitBtnContainer = css`
     display: flex;
     justify-content: end;
@@ -251,35 +248,71 @@ const submitBtnContainer = css`
 
 const RegisterPage = () => {
 
-    const [inputParams, setInputParams] = useState({ 
+    const [giveInputParams, setGiveInputParams] = useState({ 
         pageCategory: "기부",
         detailCategory : "아동",
         title: "",
         storyTitle: "",
         story: "",
         imgUrl: "",
-        goaltotal: 0,
-        rewardName: [],
-        rewardPrice: [],
+        goalTotal: 0,
+        endDate: "",
+        giveUsing: [],
+        donationExpense: [],
+        businessStartDate: "",
+        businessEndDate: "",
+        target: "",
+        targetCount: 0,
+        benefitEffect: "",
         companyName: "",
         ceoName: "",
+        nickName: "",
         companyAddress: "",
         companyPhoneNumber: "",
         email:""
     });
 
-    console.log(inputParams)
+    const [fundingInputParams, setFundingInputParams] = useState({ 
+        pageCategory: "펀딩",
+        detailCategory : "음식",
+        title: "",
+        storyTitle: "",
+        story: "",
+        imgUrl: "",
+        goalTotal: 0,
+        endDate: "",
+        rewardName: [],
+        rewardPrice: [],
+        companyName: "",
+        ceoName: "",
+        nickName: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
+    });
 
+    
+    const [giveTds, setGiveTds] = useState([
+        {
+            id: 1
+        }
+    ]);
+    
     const [rewardTds, setRewardTds] = useState([
         {
             id: 1
         }
     ]);
+
+    const giveId = useRef(2);
     const rewardId = useRef(2);
     const [showTable, setShowTable] = useState(true);
     const mainCategoryList = ["기부", "펀딩"];
     const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
     const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
+
+    const [giveUsingMap, setGiveUsingMap] = useState(new Map());
+    const [giveUsingPriceMap, setGiveUsingPriceMap] = useState(new Map());
 
     const [rewardNameMap, setRewardNameMap] = useState(new Map());
     const [rewardPriceMap, setRewardPriceMap] = useState(new Map());
@@ -287,22 +320,57 @@ const RegisterPage = () => {
     const [rewardNameIsBlank, setRewarNameIsBlank] = useState(false);
     const [rewardPriceIsBlank, setRewarPriceIsBlank] = useState(false);
 
-    const registerPage = async () => {
+    const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
+    const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
+
+    const giveRegisterPage = async () => {
         const data = {
-            ...inputParams
+            ...giveInputParams
         }
+
         const option = {
             headers: {
                 "Content-Type": "application/json"
             }
         }
         try {
-            await axios.post("http://localhost:8080/registerpage", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/giveregistercenter", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/giveregisterpage", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/giveregisterrest", JSON.stringify(data), option)
         } catch (error) {
             
         }
     }
-    
+
+    const fundingRegisterPage = async () => {
+        const data = {
+            ...fundingInputParams
+        }
+
+        const option = {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/fundingregisterpage", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/fundingregisterbusinessinfo", JSON.stringify(data), option)
+            await axios.post("http://localhost:8080/fundingregisterreward", JSON.stringify(data), option)
+        } catch (error) {
+            
+        }
+    }
+    const handleGivingUsingChange = (id, e) => {
+        const newInputValues = new Map(giveUsingMap);
+        newInputValues.set(id, e.target.value);
+        setGiveUsingMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingIsBlank(false);
+        }else {
+            setGiveUsingIsBlank(true);
+        }
+    };
+
     const handleRewardNameChange = (id, e) => {
         const newInputValues = new Map(rewardNameMap);
         newInputValues.set(id, e.target.value);
@@ -313,6 +381,17 @@ const RegisterPage = () => {
             setRewarNameIsBlank(true);
         }
     };
+
+    const handleGivingUsingPriceChange = (id, e) => {
+        const newInputValues = new Map(giveUsingPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setGiveUsingPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingPriceIsBlank(false);
+        }else {
+            setGiveUsingPriceIsBlank(true);
+        }
+      };
 
     const handleRewardPriceChange = (id, e) => {
         const newInputValues = new Map(rewardPriceMap);
@@ -325,6 +404,18 @@ const RegisterPage = () => {
         }
       };
 
+    const madeGiveUsingList = () => {
+        const giveUsingList = Array.from(giveUsingMap.values())
+        const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
+
+        if(!giveUsingIsBlank && !givesingPriceIsBlank) {
+            alert("reward는 비워져있으면 안 됩니다.");
+        }else{
+            setGiveInputParams({...giveInputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
+            setShowTable(false);
+        }
+    };
+
     const madeRewardList = () => {
         const nameList = Array.from(rewardNameMap.values())
         const priceList = Array.from(rewardPriceMap.values())
@@ -332,60 +423,151 @@ const RegisterPage = () => {
         if(!rewardNameIsBlank && !rewardPriceIsBlank) {
             alert("reward는 비워져있으면 안 됩니다.");
         }else{
-            setInputParams({...inputParams, rewardName: nameList, rewardPrice: priceList})
+            setFundingInputParams({...fundingInputParams, rewardName: nameList, rewardPrice: priceList})
             setShowTable(false);
         }
     };
 
 
 
-    const changePageCategory = (e) => {
-        setInputParams({...inputParams, pageCategory:e.target.value})
-    }
+    const changeGivePageCategory = (e) => {
+        const givePageCategory = e.target.value;
+        let giveDetailCategory = giveSubCategoryList.detailCategory;
+      
+        if (givePageCategory === "기부") {
+            giveDetailCategory = "아동";
+        }else if(givePageCategory === "펀딩") {
+            giveDetailCategory = "음식";
+            setFundingInputParams({pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+        }
+      
+        setGiveInputParams({
+          ...giveInputParams,
+          pageCategory: givePageCategory,
+          detailCategory: giveDetailCategory,
+        });
+      };
+
+    const changeFundingPageCategory = (e) => {
+        const fundingPageCategory = e.target.value;
+        let fundingDetailCategory = fundSubCateogoryList.detailCategory;
+    
+        if (fundingPageCategory === "펀딩") {
+            fundingDetailCategory = "음식";
+        }else if(fundingPageCategory === "기부") {
+            fundingDetailCategory = "아동"
+            setGiveInputParams({pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+        }
+    
+        setFundingInputParams({
+            ...fundingInputParams,
+            pageCategory: fundingPageCategory,
+            detailCategory: fundingDetailCategory,
+        });
+      };
 
     const changeDetailCategory = (e) => {
-        setInputParams({...inputParams, detailCategory:e.target.value})
+        setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
+        setFundingInputParams({...fundingInputParams, detailCategory:e.target.value})
     }
 
     const changeTitle = (e) => {
-        setInputParams({...inputParams, title:e.target.value})
+        setGiveInputParams({...giveInputParams, title:e.target.value})
+        setFundingInputParams({...fundingInputParams, title:e.target.value})
     }
 
     const changeStoryTitle = (e) => {
-        setInputParams({...inputParams, storyTitle:e.target.value})
+        setGiveInputParams({...giveInputParams, storyTitle:e.target.value})
+        setFundingInputParams({...fundingInputParams, storyTitle:e.target.value})
     }
 
     const changeStory = (e) => {
-        setInputParams({...inputParams, story:e.target.value})
+        setGiveInputParams({...giveInputParams, story:e.target.value})
+        setFundingInputParams({...fundingInputParams, story:e.target.value})
     }
 
     const changeImgUrl = (e) => {
-        setInputParams({...inputParams, imgUrl:e.target.value})
+        setGiveInputParams({...giveInputParams, imgUrl:e.target.value})
+        setFundingInputParams({...fundingInputParams, imgUrl:e.target.value})
     }
 
-    const changegoalTotal = (e) => {
-        setInputParams({...inputParams, goaltotal:e.target.value})
+    const changeGoalTotal = (e) => {
+        setGiveInputParams({...giveInputParams, goalTotal:e.target.value})
+        setFundingInputParams({...fundingInputParams, goalTotal:e.target.value})
+    }
+
+    const changeEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, endDate:e.target.value})
+        setFundingInputParams({...fundingInputParams, endDate:e.target.value})
+    }
+
+    const changeBusinessStartDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessStartDate:e.target.value})
+    }
+
+    const changeBusinessEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessEndDate:e.target.value})
+    }
+
+    const changeTarget = (e) => {
+        setGiveInputParams({...giveInputParams, target:e.target.value})
+    }
+
+    const changeTargetCount = (e) => {
+        setGiveInputParams({...giveInputParams, targetCount:e.target.value})
+    }
+
+    const changeBenefitEffect = (e) => {
+        setGiveInputParams({...giveInputParams, benefitEffect:e.target.value})
     }
 
     const changeCompanyName = (e) => {
-        setInputParams({...inputParams, companyName:e.target.value})
+        setGiveInputParams({...giveInputParams, companyName:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyName:e.target.value})
     }
+
     const changeCeoName = (e) => {
-        setInputParams({...inputParams, ceoName:e.target.value})
+        setGiveInputParams({...giveInputParams, ceoName:e.target.value})
+        setFundingInputParams({...fundingInputParams, ceoName:e.target.value})
     }
+
+    const changeNickname = (e) => {
+        setFundingInputParams({...fundingInputParams, nickname:e.target.value})
+    }
+
     const changeCompanyAddress = (e) => {
-        setInputParams({...inputParams, companyAddress:e.target.value})
+        setGiveInputParams({...giveInputParams, companyAddress:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyAddress:e.target.value})
     }
+
     const changePhoneNumber = (e) => {
-        setInputParams({...inputParams, phoneNumber:e.target.value})
+        setGiveInputParams({...giveInputParams, companyPhoneNumber:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyPhoneNumber:e.target.value})
     }
+
     const changeEmail = (e) => {
-        setInputParams({...inputParams, email:e.target.value})
+        setGiveInputParams({...giveInputParams, email:e.target.value})
+        setFundingInputParams({...fundingInputParams, email:e.target.value})
+    }
+
+    const addGiveUsingInputComponentHandle = () => {
+        setGiveTds([...giveTds, {id: giveId.current}]);
+        giveId.current += 1;
     }
 
     const addRewardInputComponentHandle = () => {
         setRewardTds([...rewardTds, {id: rewardId.current}]);
         rewardId.current += 1;
+    }
+
+    const removeGiveUsingInputComponentHandle = (id,e) => {
+        setGiveTds([...giveTds.filter(giveTd => giveTd.id !== parseInt(e.target.value))]);
+        const newGiveUsing = new Map(giveUsingMap);
+        const newGiveUsingPrice = new Map(giveUsingPriceMap);
+        newGiveUsing.delete(id);
+        newGiveUsingPrice.delete(id);
+        setGiveUsingMap(newGiveUsing);
+        setGiveUsingPriceMap(newGiveUsingPrice);
     }
 
     const removeRewardInputComponentHandle = (id,e) => {
@@ -396,25 +578,206 @@ const RegisterPage = () => {
         newRewardPrice.delete(id);
         setRewardNameMap(newRewardName);
         setRewardPriceMap(newRewardPrice);
-
     }
-
 
 
     return (
         <div css={mainContainer}>
-            <div css={mainTitleContainer}>
-                <h1 css={mainTitle}>페이지 등록1</h1>
-            </div>
-            
-            <div css={infoInputContainer}>
+            {giveInputParams.pageCategory === '기부' ? 
+            <>
+                <div css={mainTitleContainer}>
+                    <h1 css={mainTitle}>기부 페이지 등록</h1>
+                </div>
+                <div css={infoInputContainer}>
+                    <div css={subTitle}>
+                        기부 카테고리 설정
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 페이지 카테고리</div>
+                        <div css={inputContainer}>
+                        <select onChange={changeGivePageCategory} css={comboBox}>
+                            {mainCategoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                                ))}
+                        </select> 
+                        </div> 
+                    </div>
+                </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 상세 카테고리</div>
+                        <div css={inputContainer}>
+                            {giveInputParams.pageCategory === '기부' ? 
+                        <select onChange={changeDetailCategory} css={comboBox}>
+                            {giveSubCategoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                                ))}
+                                </select> :<select onChange={changeDetailCategory} css={comboBox}>
+                            {fundSubCateogoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                            ))}
+                            </select>}
+                        </div> 
+                    </div>
+                    <div css={subTitle}>
+                        기부 페이지 설정
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 제목</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeTitle} css={input} type="text"/>    
+                        </div> 
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 스토리 제목</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeStoryTitle} css={input} type="text"/>    
+                        </div> 
+                    </div>
+                    <div css={storyInfoInput}>
+                        <div css={storyInfoTitle}>기부 스토리 내용</div>
+                        <div css={storyInputContainer}>
+                        <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
+                            </textarea> 
+                        </div> 
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 메인 이미지</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeImgUrl} css={input} type="text"/>    
+                        </div> 
+                    </div>
+                
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 목표 금액</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeGoalTotal} css={input} type="text"/>원    
+                        </div> 
+                    </div>
+
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 종료일</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeEndDate} css={input} type="text"/>    
+                        </div> 
+                    </div>
+                    {showTable && giveInputParams.pageCategory === '기부' ?
+                    <div css={rewardInfoInputContainer}>
+                        <div css={rewardHeader}>
+                            <h1 css={rewardH1}>기부금 사용 계획</h1>
+                            <div css={btnContainer}>
+                                <button css={rewardBtn} onClick={addGiveUsingInputComponentHandle}>+</button>
+
+                            </div>
+                        </div>
+                        <table css={rewardTable}>
+                            <thead>
+                                <tr css={rewardTr}>
+                                    <th css={rewardNameThAndTd}>사용 내역</th>
+                                    <th css={rewardPriceThAndTd}>사용 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {giveTds.map(giveTd => (
+                                    <tr css={rewardTr} key={giveTd.id}>
+                                        <td css={rewardNameThAndTd}><input onChange={(e)=> handleGivingUsingChange(giveTd.id,e)} css={rewardTdInput} type="text"/></td>
+                                        <td css={rewardPriceThAndTd}><input onChange={(e)=> handleGivingUsingPriceChange(giveTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={giveTd.id} onClick={(e)=>removeGiveUsingInputComponentHandle(giveTd.id,e)}>-</button></td>    
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div css={saveBtnContainer}>
+                            <button onClick={madeGiveUsingList}>저장하기</button>
+                        </div>
+                    </div>
+                : ""}
                 <div css={subTitle}>
-                    카테고리 설정
+                    사업대상 및 기대효과
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>페이지 카테고리</div>
+                    <div css={infoTitle}>사업 시작일</div>
                     <div css={inputContainer}>
-                    <select onChange={changePageCategory} css={comboBox}>
+                        <input onChange={changeBusinessStartDate} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBusinessEndDate} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 대상</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTarget} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>대상 수</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTargetCount} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>기대 효과</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBenefitEffect} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={subTitle}>
+                    기부 신청인 등록
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>단체명</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyName} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>대표자</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCeoName} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>주소</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyAddress} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>고객센터</div>
+                    <div css={inputContainer}>
+                        <input onChange={changePhoneNumber} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>이메일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeEmail} css={input} type="text"/>    
+                    </div> 
+                </div>
+            <div css={submitBtnContainer}>
+                <button onClick={giveRegisterPage}>기부 페이지 등록하기</button>
+            </div>
+        </> :          
+        <>
+            <div css={mainTitleContainer}>
+                <h1 css={mainTitle}>펀딩 페이지 등록</h1>
+            </div>
+            <div css={infoInputContainer}>
+                <div css={subTitle}>
+                    펀딩 카테고리 설정
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 페이지 카테고리</div>
+                    <div css={inputContainer}>
+                    <select onChange={changeFundingPageCategory} css={comboBox}>
                         {mainCategoryList.map((item) => (
                             <option value={item} key={item}>
                                 {item}
@@ -424,9 +787,9 @@ const RegisterPage = () => {
                     </div> 
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>상세 카테고리</div>
+                    <div css={infoTitle}>펀딩 상세 카테고리</div>
                     <div css={inputContainer}>
-                    {inputParams.pageCategory === '펀딩' ? 
+                    {fundingInputParams.pageCategory === '펀딩' ? 
                     <select onChange={changeDetailCategory} css={comboBox}>
                         {fundSubCateogoryList.map((item) => (
                             <option value={item} key={item}>
@@ -443,42 +806,48 @@ const RegisterPage = () => {
                     </div> 
                 </div>
                 <div css={subTitle}>
-                    페이지 설정
+                    펀딩 페이지 설정
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>제목</div>
+                    <div css={infoTitle}>펀딩 제목</div>
                     <div css={inputContainer}>
                         <input onChange={changeTitle} css={input} type="text"/>    
                     </div> 
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>스토리 제목</div>
+                    <div css={infoTitle}>펀딩 스토리 제목</div>
                     <div css={inputContainer}>
                         <input onChange={changeStoryTitle} css={input} type="text"/>    
                     </div> 
                 </div>
                 <div css={storyInfoInput}>
-                    <div css={storyInfoTitle}>스토리</div>
+                    <div css={storyInfoTitle}>펀딩 스토리 내용</div>
                     <div css={storyInputContainer}>
-                       <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
+                    <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
                         </textarea> 
                     </div> 
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>이미지</div>
+                    <div css={infoTitle}>펀딩 메인 이미지</div>
                     <div css={inputContainer}>
                         <input onChange={changeImgUrl} css={input} type="text"/>    
                     </div> 
                 </div>
-               
+            
                 <div css={infoInput}>
-                    <div css={infoTitle}>목표금액</div>
+                    <div css={infoTitle}>펀딩 목표 금액</div>
                     <div css={inputContainer}>
-                        <input onChange={changegoalTotal} css={input} type="text"/>원    
+                        <input onChange={changeGoalTotal} css={input} type="text"/>원    
                     </div> 
                 </div>
 
-                {showTable && inputParams.pageCategory === '펀딩' ?
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeEndDate} css={input} type="text"/>    
+                    </div> 
+                </div>
+                {showTable && fundingInputParams.pageCategory === '펀딩' ?
                     <div css={rewardInfoInputContainer}>
                         <div css={rewardHeader}>
                             <h1 css={rewardH1}>리워드 추가</h1>
@@ -511,10 +880,10 @@ const RegisterPage = () => {
                     
                 : ""}
                 <div css={subTitle}>
-                    신청인 등록
+                    펀딩 신청인 등록
                 </div>
                 <div css={infoInput}>
-                    <div css={infoTitle}>단체명</div>
+                    <div css={infoTitle}>상호명</div>
                     <div css={inputContainer}>
                         <input onChange={changeCompanyName} css={input} type="text"/>    
                     </div> 
@@ -523,6 +892,12 @@ const RegisterPage = () => {
                     <div css={infoTitle}>대표자</div>
                     <div css={inputContainer}>
                         <input onChange={changeCeoName} css={input} type="text"/>    
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>닉네임</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeNickname} css={input} type="text"/>    
                     </div> 
                 </div>
                 <div css={infoInput}>
@@ -545,9 +920,10 @@ const RegisterPage = () => {
                 </div>
             </div>
             <div css={submitBtnContainer}>
-                <button onClick={registerPage}>등록하기</button>
+                <button onClick={fundingRegisterPage}>펀딩 페이지 등록하기</button>
             </div>
-        </div>
+        </>}
+    </div>
     );
 };
 

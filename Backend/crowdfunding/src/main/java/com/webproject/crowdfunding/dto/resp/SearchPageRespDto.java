@@ -10,7 +10,7 @@ import lombok.Data;
 public class SearchPageRespDto {
 	private int pageId;
 	private String pageTitle;
-	private String userName;
+	private String fundingSummaryName;
 	private String eventStatus;
 	private int pageTotalAmount;
 	private String imgUrl;

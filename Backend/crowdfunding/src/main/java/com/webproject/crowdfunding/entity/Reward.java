@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reward {
+	private String pageCategory;
 	private int rewardId;
 	private String rewardName;
 	private int rewardPrice;
