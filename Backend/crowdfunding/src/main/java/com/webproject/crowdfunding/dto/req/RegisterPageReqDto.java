@@ -64,7 +64,6 @@ public class RegisterPageReqDto {
 				.imgUrl(imgUrl)
 				.goalTotal(goalTotal)
 				.endDate(endDate)
-				.nickname(nickname)
 				.build();
 	}
 	

@@ -31,6 +31,7 @@ public class GiveRegsterPageService {
 		System.out.println(centerEntity.getCenterId());
 		giveRegisterPageEntity = registerPageReqDto.toGiveRegisterEntity();
 		giveRegisterPageEntity.setCenterId(centerEntity.getCenterId());
+		System.out.println(giveRegisterPageEntity);
 		giveRegisterPageRepository.toSaveGiveRegisterPage(giveRegisterPageEntity);
 	}
 	

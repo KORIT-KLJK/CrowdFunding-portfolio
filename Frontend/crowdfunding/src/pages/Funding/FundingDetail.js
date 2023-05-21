@@ -507,7 +507,6 @@ const FundingDetail = () => {
         return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
     })
 
-
     if(fundingDetail.isLoading) {
         return <></>
     }

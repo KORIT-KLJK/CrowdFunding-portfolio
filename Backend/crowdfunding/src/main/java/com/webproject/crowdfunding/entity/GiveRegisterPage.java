@@ -22,5 +22,4 @@ public class GiveRegisterPage {
 	private String imgUrl;
 	private int goalTotal;
 	private LocalDate endDate;
-	private String nickname;
 }

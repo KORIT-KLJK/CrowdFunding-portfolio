@@ -5,7 +5,7 @@
 <resultMap type="com.webproject.crowdfunding.entity.Page" id="PageMap">
 	<id property="pageId" column="page_id"/>
 	<result property="pageTitle" column="page_title"/>
-	<result property="username" column="user_name"/>
+	<result property="fundingSummaryName" column="funding_summary_name"/>
 	<result property="eventStatus" column="event_status"/>
 	<result property="pageTotalAmount" column="page_total_amount"/>
 	<result property="imgUrl" column="img_url"/>

@@ -17,43 +17,27 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class RegisterPageController {
+public class GiveRegisterController {
 
-	private final FundingRegisterPageService fundingRegisterPageService;
 	private final GiveRegsterPageService giveRegsterPageService;
 	
 	@ValidAspect
-	@PostMapping("/registercenter")
+	@PostMapping("/giveregistercenter")
 	public ResponseEntity<?> registerCenter(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
 		giveRegsterPageService.registerCenter(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
 	@ValidAspect
-	@PostMapping("/registerpage")
+	@PostMapping("/giveregisterpage")
 	public ResponseEntity<?> registerPage(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		System.out.println(registerPageReqDto);
-		fundingRegisterPageService.registerPage(registerPageReqDto);
 		giveRegsterPageService.giveRegisterPage(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
-	@ValidAspect
-	@PostMapping("/registerbusinessinfo")
-	public ResponseEntity<?> registerBusinessInfo(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		fundingRegisterPageService.registerBusinessInfo(registerPageReqDto);
-		return ResponseEntity.ok().body(true);
-	}
 	
 	@ValidAspect
-	@PostMapping("/registerreward")
-	public ResponseEntity<?> registerReward(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		fundingRegisterPageService.registerReward(registerPageReqDto);
-		return ResponseEntity.ok().body(true);
-	}
-	
-	@ValidAspect
-	@PostMapping("/registerrest")
+	@PostMapping("/giveregisterrest")
 	public ResponseEntity<?> registerBenefit(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
 		giveRegsterPageService.registerBenefitAndTarget(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
