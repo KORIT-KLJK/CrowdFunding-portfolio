@@ -7,9 +7,9 @@ import Recommend from '../../components/Recommend/Recommend';
 import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
 import CardItemGiving from '../../components/MainCard/MainDonationList/CardItem/CardItemGiving';
 import MainFundingList from '../../components/MainCard/MainFundingList/MainFundingList';
+import Statistics from '../../components/Statistics/Statistics';
 
 const mainContainer = css`
-    padding: 10px;
 `;
 
 const mainBody = css`
@@ -38,6 +38,7 @@ const Main = () => {
                     <Recommend />
                     <MainGivingList />
                     <MainFundingList />
+                    <Statistics />
                 </main>
             </div>
             <footer>
