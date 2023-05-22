@@ -14,7 +14,7 @@ const Search = () => {
 
     const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"기부", searchSort:"전체", searchTema:"최신순"});
     const [refresh, setRefresh] = useState(true);
-    const [findGivingData, setFindGivingDate] = useState({
+    const [findGivingData, setFindGivingData] = useState({
         img_url: "",
         givingPageTitle:"",
         centerName:"",

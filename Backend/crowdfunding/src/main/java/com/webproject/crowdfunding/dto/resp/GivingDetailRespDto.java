@@ -18,4 +18,9 @@ public class GivingDetailRespDto {
 	private int givingTotal;
 	private String storyTitle;
 	private String storyContent;
+	private int centerId;
+	private String centerName;
+	private String centerAddress;
+	private String centerPhoneNumber;
+	private String centerCEO;
 }

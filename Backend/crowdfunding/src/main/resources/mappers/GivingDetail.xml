@@ -16,13 +16,26 @@
 		<result property="registerDate" column="register_date"/>
 		<result property="endDate" column="end_date"/>
 		<result property="dDay" column="d_day"/>
+		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.GivingGroupInfo" id="GivingGroupInfoMap">
+		<id property="centerId" column="center_id"/>
+		<result property="centerName" column="center_name"/>
+		<result property="centerAddress" column="center_address"/>
+		<result property="centerPhoneNumber" column="center_phone_number"/>
+		<result property="centerCEO" column="center_ceo"/>
 	</resultMap>
 	
 	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT
 		    gpt.giving_page_id AS page_id,
 		    gpt.giving_name AS page_title,
+		    ct.center_id,
 		    ct.center_name,
+		    ct.center_address,
+		    ct.center_phone_number,
+		    ct.center_ceo,
 		    gpt.main_img_url AS img_url,
 		    gt.giving_total AS giving_total,
 		    gpt.story_title,
@@ -39,11 +52,45 @@
 		    ROUND(SUM(gt.giving_total) / goal_total * 100) AS achievement_rate
 		FROM
 		    giving_page_tb gpt
-		    LEFT OUTER JOIN center_tb ct ON (ct.center_id = gpt.center_id)
+		    left outer join center_tb ct ON (ct.center_id = gpt.center_id)
 		    LEFT OUTER JOIN giver_tb gt ON (gt.giving_page_id = gpt.giving_page_id)
 		    LEFT OUTER JOIN giving_category_tb gct ON (gct.giving_category_id = gpt.category_id)
+
 		WHERE
 		    gpt.giving_page_id = #{pageId}
+	</select>
+	
+	<select id="getMostGivings" parameterType="Integer" resultMap="GivingDetailMap">
+		select
+			giving_page_id as page_id,
+		    giving_name as page_title,
+		    main_img_url as img_url
+		from
+		    giving_page_tb
+		where
+		    (
+		        giving_page_id &gt; #{pageId}
+		        and giving_page_id &lt;= #{pageId} + 5
+		        and #{pageId} >= 1 and #{pageId} &lt;= 13
+		    )
+		    or (
+		        giving_page_id &gt;= 1 and giving_page_id &lt;= 5
+		        and #{pageId} = 14
+		    )
+		    or (
+		        giving_page_id &gt;= #{pageId} - 4 and giving_page_id &lt;= 18
+		        and #{pageId} = 15
+		    )
+		    or (
+		        giving_page_id &gt;= #{pageId} - 4 and giving_page_id &lt;= #{pageId} - 1
+		        and #{pageId} >= 16 and #{pageId} &lt;= 18
+		    )
+		    or (
+		        giving_page_id &gt;= 1 and giving_page_id &lt;= 5
+		        and #{pageId} = 19
+		    )
+		order by
+		    giving_page_id;
 	</select>
 	
 </mapper>

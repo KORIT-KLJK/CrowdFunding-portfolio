@@ -157,5 +157,9 @@ progress::-webkit-progress-value {
 progress::-webkit-progress-bar {
   background-color: #e8e8e8;
 }
+
+strong {
+  font-weight: bold;
+}
 `;
 

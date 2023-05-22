@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from 'axios';
-import React from 'react';
-import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const mainContainer = css`
     position: relative;
@@ -74,13 +74,13 @@ const givingStatusBox = css`
     width: 282px;
     font-size: 15px;
     padding-bottom: 25px;
+    border-right: 1px solid #e5e5e5;
 `;
 
 const givingInfoBox = css`
     margin: 0 1px;
     padding: 23px 29px 27px;
     border-bottom: 0;
-    border-right: 1px solid #e5e5e5;
 `;
 
 
@@ -169,50 +169,138 @@ const givingBanner = css`
     border-width: 0 1px;
 `;
 
-const bannerFont = css`
-    top: 0;
-    left: 0;
-    width: 1px;
-    height: 1px;
-    font-size: 0;
-    line-height: 0;
-`;
-
 const collectGroupBox = css`
+    width: 280px;
     border-top: 1px solid #e5e5e5;
 `;
 
 const collectGroupInfo = css`
-    padding: 28px 30px 23px 30px;
-`;
-
-const h3css = css`
-    margin-left: 1px;
+    padding: 28px 10px 28px 10px;
+    background-color: #dbdbdb33;
 `;
 
 const givingGroupName = css`
     overflow: hidden;
     width: 170px;
     margin-left: 16px;
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 600;
     letter-spacing: .01em;
     line-height: 20px;
     color: #444;
+    font: bold;
     vertical-align: top;
+`;
+
+const givingGroupBanner = css`
+    width: 281px;
+    padding: 20px;
+    height: 70px;
+    font-size: 15px;
+    border-width: 0 1px;
+`;
+
+const givingGroupInfo = css`
+    font-size: 13px;
+    position: flex;
+    margin-top: 20px;
+    margin-left: 16px;
+`;
+
+const strongColor = css`
+    color: #08a838;
+`;
+
+const todayCommendBox = css`
+    padding: 30px;
+    border-top: 1px solid #e5e5e5;
+`;
+
+const todayCommendLogo = css`
+    overflow: hidden;
+    width: 97px;
+    height: 28px;
+    margin: 0 auto;
+    border: 1px solid #e5e5e5;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 26px;
+    text-align: center;
+    letter-spacing: .04em;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+`;
+
+const todayCommendUl = css`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5px;
+    list-style: none;
+`;
+
+const todayCommendLi = css`
+    padding: 6px;
+    display: list-item;
+    text-align: -webkit-match-parent;
+    cursor: pointer;
+`;
+
+const todayImgBox = css`
+    padding-top: 5px;
+    float: left;
+    position: relative;
+    margin-right: 14px;
+`;
+
+const todayImg = css`
+    width: 70px;
+    aspect-ratio: auto 70 / 57;
+    height: 57px;
+`;
+
+const todayTextBox = css`
+    display: block;
+    overflow: hidden;
+    line-height: 20px;
+`;
+
+const todayText = css`
+    display: inline-block;
+    padding-top: 1px;
+    vertical-align: middle;
 `;
 
 const GivingDetail = () => {
     const { pageId } = useParams();
+    const [searchParams, setSearchParams] = useState();
+    const navigate = useNavigate();
+
     const givingDetail = useQuery(["givingDetail"], async () => {
         return await axios.get(`http://localhost:8080/givingDetail/${pageId}`);
     });
+    
+    const mostGivings = useQuery(["mostGivings"], async () => {
+        return await axios.get(`http://localhost:8080/givings/most/${pageId}`);
+    });
 
-    if(givingDetail.isLoading){
+    useEffect(() => {
+        givingDetail.refetch();
+        mostGivings.refetch();
+    }, [pageId]);
+
+    const givingDetailHandle = (pageId) => {
+        navigate("/giving/" + pageId)
+    }
+    
+    if(givingDetail.isLoading || mostGivings.isLoading){
         return <></>
     }
 
-    console.log(givingDetail.data.data)
+    const toGivingPage = (pageId) => {
+        navigate(`/giving/${pageId}`);
+    }
 
     return (
         <>
@@ -249,20 +337,36 @@ const GivingDetail = () => {
                             </div>
                         </div>
                             <div css={givingButton}>모금함 기부하기</div>
-                            <div css={givingBanner}>
-                                <span css= {bannerFont}>기부하신 금액은 수수료 없이
-                                    <strong>100% 전달</strong>
-                                    됩니다
-                                </span>
+                            <div css={givingGroupBanner}>
+                                <div>기부하신 금액은 수수료없이
+                                    <strong css={strongColor}>100% 전달</strong>
+                                    됩니다.
+                                </div>
                             </div>
                             <div css={collectGroupBox}>
                                 <div css={collectGroupInfo}>
-                                    <h3 css={h3css}>
-                                        <span css={givingGroupName}>모금단체
-                                            <a></a>
-                                        </span>
-                                    </h3>
+                                    <div css={givingGroupName}>기부단체정보</div>
+                                    <div css={givingGroupInfo}>단체명: {givingDetail.data.data.centerName}</div>
+                                    <div css={givingGroupInfo}>대표자: {givingDetail.data.data.centerCEO}</div>
+                                    <div css={givingGroupInfo}>기부단체주소지: {givingDetail.data.data.centerAddress}</div>
+                                    <div css={givingGroupInfo}>전화번호: {givingDetail.data.data.centerPhoneNumber}</div>
+                                    <div></div>
                                 </div>
+                            </div>
+                            <div css={todayCommendBox}>
+                                <div css={todayCommendLogo}>기부 목록</div>
+                                    <ul css={todayCommendUl}>
+                                        {mostGivings.data.data.map(mostGiving => 
+                                            <li css={todayCommendLi} key={mostGiving.pageId} onClick={() => toGivingPage(mostGiving.pageId)}>
+                                                <div css={todayImgBox}>
+                                                    <img css={todayImg} src={mostGiving.imgUrl} alt={mostGiving.pageTitle} />
+                                                </div>
+                                                <div css={todayTextBox}>
+                                                    <div css={todayText}>{mostGiving.pageTitle}</div>
+                                                </div>
+                                            </li>
+                                        )}
+                                    </ul>
                             </div>
                     </div>
                 </div>

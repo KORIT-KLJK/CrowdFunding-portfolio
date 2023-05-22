@@ -38,6 +38,7 @@ public class Giving {
 	private String storyContent;
 	
 	private GivingCategory givingCategory;
+	private GivingGroupInfo givingGroupInfo;
 
 	public GivingMainRespDto toMainRespDto() {
 		return GivingMainRespDto.builder()
@@ -71,9 +72,20 @@ public class Giving {
 				.givingTotal(givingTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
+				.centerId(givingGroupInfo.getCenterId())
+				.centerName(givingGroupInfo.getCenterName())
+				.centerAddress(givingGroupInfo.getCenterAddress())
+				.centerPhoneNumber(givingGroupInfo.getCenterPhoneNumber())
+				.centerCEO(givingGroupInfo.getCenterCEO())
 				.build();
-				
-				
+	}
+	
+	public GivingDetailRespDto toMostGiving() {
+		return GivingDetailRespDto.builder()
+				.pageId(pageId)
+				.pageTitle(pageTitle)
+				.imgUrl(imgUrl)
+				.build();
 	}
 	
 }

@@ -20,4 +20,9 @@ public class GivingDetailController {
 		return ResponseEntity.ok(givingDetailService.givingDetail(pageId));
 	}
 	
+	@GetMapping("/givings/most/{pageId}")
+	public ResponseEntity<?> getMostGivings(@PathVariable int pageId) {
+		return ResponseEntity.ok(givingDetailService.getMostGivings(pageId));
+	}
+	
 }
