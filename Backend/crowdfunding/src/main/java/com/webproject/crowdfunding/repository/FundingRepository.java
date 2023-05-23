@@ -12,4 +12,5 @@ import com.webproject.crowdfunding.entity.FundingCategory;
 public interface FundingRepository {
 	public List<FundingCategory> getFundingCategory();
 	public List<Funding> saveFunding(Map<String, Object> eventStatusMap);
+	public int getTotalCount(Map<String, Object> totalMap);
 }

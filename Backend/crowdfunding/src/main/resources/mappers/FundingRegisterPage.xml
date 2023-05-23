@@ -1,35 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webproject.crowdfunding.repository.FundingRegisterPageRepository">
-	<resultMap type="com.webproject.crowdfunding.entity.FundingRegisterPage" id="FundingRegisterPageMap">
-		<id property="fundingId" column="funding_id"/>
-		<result property="title" column="funding_name"/>
-		<result property="storyTitle" column="story_title"/>
-		<result property="story" column="story_content"/>
-		<result property="imgUrl" column="main_img_url"/>
-		<result property="goalTotal" column="goal_total"/>
-		<result property="endDate" column="endDate"/>
-		<result property="nickname" column="funding_summary_name"/>
-	</resultMap>
-	
-	<resultMap type="com.webproject.crowdfunding.entity.BusinessInfo" id="BusinessInfoMap">
-		<id property="businessInfoId" column="business_info_id"/>
-		<result property="companyName" column="company_name"/>
-		<result property="ceoName" column="ceo_name"/>
-		<result property="companyAddress" column="company_address"/>
-		<result property="companyPhoneNumber" column="company_phone_number"/>
-		<result property="ceoEmail" column="ceo_email"/>
-		<result property="fundingId" column="funding_id"/>
-	</resultMap>
-	
-	
-	<resultMap type="com.webproject.crowdfunding.entity.Reward" id="RewardMap">
-		<id property="rewardId" column="reward_id"/>
-		<result property="rewardName" column="reward_name"/>
-		<result property="rewardPrice" column="reward_price"/>
-		<result property="fundingId" column="funding_id"/>
-	</resultMap>
-	  
+
 	<insert id="toSaveRegisterPage"
 				parameterType="com.webproject.crowdfunding.entity.FundingRegisterPage"
 				useGeneratedKeys="true"
@@ -90,7 +62,6 @@
 	</insert>
 	
 </mapper>
-
 
 
 

@@ -21,26 +21,13 @@ public class GiveRegisterController {
 
 	private final GiveRegsterPageService giveRegsterPageService;
 	
-	@ValidAspect
-	@PostMapping("/giveregistercenter")
-	public ResponseEntity<?> registerCenter(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		giveRegsterPageService.registerCenter(registerPageReqDto);
-		return ResponseEntity.ok().body(true);
-	}
 	
-	@ValidAspect
 	@PostMapping("/giveregisterpage")
-	public ResponseEntity<?> registerPage(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
+	public ResponseEntity<?> registerPage(RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
 		giveRegsterPageService.giveRegisterPage(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
-	
-	@ValidAspect
-	@PostMapping("/giveregisterrest")
-	public ResponseEntity<?> registerBenefit(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		giveRegsterPageService.registerBenefitAndTarget(registerPageReqDto);
-		return ResponseEntity.ok().body(true);
-	}
+
 	
 }

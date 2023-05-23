@@ -22,20 +22,15 @@ public class GiveRegsterPageService {
 	private GiveRegisterPage giveRegisterPageEntity;
 	
 	
-	public void registerCenter (RegisterPageReqDto registerPageReqDto) {
+	public void giveRegisterPage (RegisterPageReqDto registerPageReqDto) {
 		centerEntity = registerPageReqDto.toCenterEntity();
+		System.out.println(centerEntity);
 		giveRegisterPageRepository.toSaveCenter(centerEntity);
-	}
-	
-	public void giveRegisterPage(RegisterPageReqDto registerPageReqDto) {
-		System.out.println(centerEntity.getCenterId());
+		
 		giveRegisterPageEntity = registerPageReqDto.toGiveRegisterEntity();
 		giveRegisterPageEntity.setCenterId(centerEntity.getCenterId());
-		System.out.println(giveRegisterPageEntity);
 		giveRegisterPageRepository.toSaveGiveRegisterPage(giveRegisterPageEntity);
-	}
-	
-	public void registerBenefitAndTarget(RegisterPageReqDto registerPageReqDto) {
+		
 		List<DonationUsePlan> donationEntity = registerPageReqDto.toDonationUsePlanEntity();
 		System.out.println(donationEntity);
 		TargetBenefit targetBenefitEntity = registerPageReqDto.toTargetBenefitEntity();

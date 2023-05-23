@@ -6,12 +6,13 @@ import { HiHome } from 'react-icons/hi';
 import * as S from './style'
 import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const Search = () => {
     const queryClient = useQueryClient();
-
+    const navigate = useNavigate();
     const [searchParam, setSearchParam] = useState({page:1, searchValue:"", searchCategory:"기부", searchSort:"전체", searchTema:"최신순"});
     const [refresh, setRefresh] = useState(true);
     const [findGivingData, setFindGivingDate] = useState({
@@ -89,6 +90,14 @@ const Search = () => {
         setRefresh(true);
     }
 
+    const getPageNavigateHandler = (pageId) => {
+        if(categoryName === "기부") {
+            navigate("/giving/" + pageId);
+        }else {
+            navigate("/funding/" + pageId);
+        }
+    }
+
 
     const pageNation = () => {
         if(getPageData.isLoading) {
@@ -139,7 +148,6 @@ const Search = () => {
             </>
         )
     }
-
     return (
         <div css={S.searchMainContainer}>
             <div css={S.searchBox}>
@@ -171,7 +179,7 @@ const Search = () => {
                         </div>
                     </div>
                     {getPageData.isLoading ? "" : getPageData.data.data.pageList.map(page=> (
-                             <div key={page.pageId} css={S.searchResultPanel}>
+                             <div key={page.pageId} css={S.searchResultPanel} onClick={() => getPageNavigateHandler(page.pageId)}>
                              <div css={S.panelImgContainer}>
                                  <img css={S.panelImg} src={page.imgUrl} alt={page.imgUrl}/>
                              </div>
