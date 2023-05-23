@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import GivingModal from "../../components/Modal/GivingModal";
 
 const mainContainer = css`
     position: relative;
@@ -148,7 +149,7 @@ const givingButton = css`
     display: inline-block;
     width: 281px;
     height: 60px;
-    padding-top: 17px;
+    padding-top: 19px;
     border: 1px solid rgba(0,0,0,.1);
     background: #10c838;
     font-size: 22px;
@@ -160,13 +161,6 @@ const givingButton = css`
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     cursor: pointer;
-`;
-
-const givingBanner = css`
-    width: 280px;
-    height: 129px;
-    border: solid #e5e5e5;
-    border-width: 0 1px;
 `;
 
 const collectGroupBox = css`
@@ -275,6 +269,7 @@ const todayText = css`
 const GivingDetail = () => {
     const { pageId } = useParams();
     const [searchParams, setSearchParams] = useState();
+    const [isOpen, setOpen] = useState(false);
     const navigate = useNavigate();
 
     const givingDetail = useQuery(["givingDetail"], async () => {
@@ -282,7 +277,7 @@ const GivingDetail = () => {
     });
     
     const mostGivings = useQuery(["mostGivings"], async () => {
-        return await axios.get(`http://localhost:8080/givings/most/${pageId}`);
+        return await axios.get(`http://localhost:8080/giving/most/${pageId}`);
     });
 
     useEffect(() => {
@@ -301,6 +296,25 @@ const GivingDetail = () => {
     const toGivingPage = (pageId) => {
         navigate(`/giving/${pageId}`);
     }
+
+    const openModal = () => {
+        setOpen(true);
+    }
+
+    const closeModal = () => {
+        setOpen(false);
+    }
+
+    const modalHandleClick = () => {
+        setOpen(true);
+    }
+
+    const outsideModalClick = (e) => {
+        if (e.target.classList.contains('modal')) {
+            setOpen(false);
+        }
+    }
+
 
     return (
         <>
@@ -336,7 +350,10 @@ const GivingDetail = () => {
                                 <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
                             </div>
                         </div>
-                            <div css={givingButton}>모금함 기부하기</div>
+                            <div css={givingButton} onClick={openModal}>
+                                <GivingModal isOpen={isOpen} isClose={closeModal} givingDetail={givingDetail.data.data} />
+                                모금함 기부하기
+                            </div>
                             <div css={givingGroupBanner}>
                                 <div>기부하신 금액은 수수료없이
                                     <strong css={strongColor}>100% 전달</strong>

@@ -62,35 +62,17 @@
 	
 	<select id="getMostGivings" parameterType="Integer" resultMap="GivingDetailMap">
 		select
+			giving_page_id * FLOOR(RAND() * 10) as page_rand_index,
 			giving_page_id as page_id,
-		    giving_name as page_title,
-		    main_img_url as img_url
+			giving_name as page_title,
+			main_img_url as img_url
 		from
-		    giving_page_tb
+			giving_page_tb
 		where
-		    (
-		        giving_page_id &gt; #{pageId}
-		        and giving_page_id &lt;= #{pageId} + 5
-		        and #{pageId} >= 1 and #{pageId} &lt;= 13
-		    )
-		    or (
-		        giving_page_id &gt;= 1 and giving_page_id &lt;= 5
-		        and #{pageId} = 14
-		    )
-		    or (
-		        giving_page_id &gt;= #{pageId} - 4 and giving_page_id &lt;= 18
-		        and #{pageId} = 15
-		    )
-		    or (
-		        giving_page_id &gt;= #{pageId} - 4 and giving_page_id &lt;= #{pageId} - 1
-		        and #{pageId} >= 16 and #{pageId} &lt;= 18
-		    )
-		    or (
-		        giving_page_id &gt;= 1 and giving_page_id &lt;= 5
-		        and #{pageId} = 19
-		    )
+			not giving_page_id = 9
 		order by
-		    giving_page_id;
+			page_rand_index
+		limit 0, 5;
 	</select>
 	
 </mapper>

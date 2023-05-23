@@ -39,7 +39,7 @@ public class FundingRegisterController {
 	
 	@ValidAspect
 	@PostMapping("/fundingregisterreward")
-	public ResponseEntity<?> registerReward(@Valid @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
+	public ResponseEntity<?> registerReward( @RequestBody RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
 		fundingRegisterPageService.registerReward(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
 	}
