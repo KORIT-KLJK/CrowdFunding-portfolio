@@ -5,7 +5,7 @@
 <resultMap type="com.webproject.crowdfunding.entity.Page" id="PageMap">
 	<id property="pageId" column="page_id"/>
 	<result property="pageTitle" column="page_title"/>
-	<result property="fundingSummaryName" column="funding_summary_name"/>
+	<result property="userName" column="user_name"/>
 	<result property="eventStatus" column="event_status"/>
 	<result property="pageTotalAmount" column="page_total_amount"/>
 	<result property="imgUrl" column="img_url"/>
@@ -171,13 +171,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -189,7 +188,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			    ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 			Having
@@ -207,13 +206,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -225,7 +223,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			    ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 			Having
@@ -243,13 +241,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -261,7 +258,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			   	ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 			Having
@@ -356,13 +353,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -374,7 +370,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			    ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 			Having
@@ -392,13 +388,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -410,7 +405,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			    ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 		
@@ -429,13 +424,12 @@
 				ft.funding_id AS page_id,
 			    ft.register_date,
 			    ft.funding_name AS page_title,
-			    ut.name AS user_name,
+			    ft.funding_summary_name,
 			    IF(NOW() &lt; ft.end_date, '진행중', '종료') AS event_status,
 			    sum(fdt.reward_price)as page_total_amount,
 			    ft.main_img_url AS img_url
 			from
 				funding_page_tb ft
-			    left outer join user_tb ut on(ut.user_id = ft.user_id)
 				left outer join reward_tb rwt on(rwt.funding_id = ft.funding_id)
 			    left outer join (select 
 						rt.reward_id, 
@@ -448,7 +442,7 @@
 			group by
 				ft.funding_id,
 			    ft.funding_name,
-			    ut.name,
+			    ft.funding_summary_name,
 			    event_status,
 			    ft.main_img_url
 			Having

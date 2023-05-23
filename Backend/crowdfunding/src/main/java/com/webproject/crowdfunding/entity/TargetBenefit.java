@@ -1,7 +1,5 @@
 package com.webproject.crowdfunding.entity;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +15,7 @@ public class TargetBenefit {
 	private String target;
 	private int targetCount;
 	private String benefitEffect;
-	private LocalDate businessStartDate;
-	private LocalDate businessEndDate;
+	private String businessStartDate;
+	private String businessEndDate;
 	private int givingPageId;
 }

@@ -605,6 +605,7 @@ const FundingDetail = () => {
         <div>
             <div css={fundingDetailContainer}>
                 <div css={fundingDetailHeader}>
+                    <img css={fundingDetailImg} src={`http://localhost:8080/image/post/${funding.imgUrl}`} />
                     <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
                     <div css={fundingDetailHeaderRight}>
                         <div css={fundingDetailNearDeadline}>{funding.deadline === "종료" ? "종료" : funding.deadline === "오늘 마감" ?  "오늘 마감" : `D-${funding.deadline}`}</div>

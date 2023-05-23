@@ -4,6 +4,8 @@ import React, { useRef, useState } from 'react';
 import * as S from './style'
 import { async } from 'q';
 import axios from 'axios';
+import { useMutation } from 'react-query';
+import { format } from 'date-fns';
 
 
 const mainContainer = css`
@@ -247,7 +249,8 @@ const submitBtnContainer = css`
 `;
 
 const RegisterPage = () => {
-
+    const [ imgFiles, setImgFiles ] = useState([]);
+    const fileId = useRef(1);
     const [giveInputParams, setGiveInputParams] = useState({ 
         pageCategory: "기부",
         detailCategory : "아동",
@@ -266,7 +269,7 @@ const RegisterPage = () => {
         benefitEffect: "",
         companyName: "",
         ceoName: "",
-        nickName: "",
+        nickname: "",
         companyAddress: "",
         companyPhoneNumber: "",
         email:""
@@ -285,12 +288,11 @@ const RegisterPage = () => {
         rewardPrice: [],
         companyName: "",
         ceoName: "",
-        nickName: "",
+        nickname: "",
         companyAddress: "",
         companyPhoneNumber: "",
         email:""
     });
-
     
     const [giveTds, setGiveTds] = useState([
         {
@@ -303,7 +305,6 @@ const RegisterPage = () => {
             id: 1
         }
     ]);
-
     const giveId = useRef(2);
     const rewardId = useRef(2);
     const [showTable, setShowTable] = useState(true);
@@ -323,43 +324,66 @@ const RegisterPage = () => {
     const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
     const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
 
-    const giveRegisterPage = async () => {
-        const data = {
-            ...giveInputParams
-        }
+    const giveRegisterPage = useMutation(async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", giveInputParams.pageCategory);
+        formData.append("detailCategory", giveInputParams.detailCategory)
+        formData.append("title", giveInputParams.title)
+        formData.append("storyTitle", giveInputParams.storyTitle)
+        formData.append("story", giveInputParams.story)
+        imgFiles.forEach(imgFile => {
+            formData.append("imgUrl", imgFile.file);
+        })
+        formData.append("goalTotal", giveInputParams.goalTotal);
+        formData.append("endDate", giveInputParams.endDate);
+        formData.append("giveUsing", giveInputParams.giveUsing);
+        formData.append("donationExpense", giveInputParams.donationExpense);
+        formData.append("businessStartDate", giveInputParams.businessStartDate);
+        formData.append("businessEndDate", giveInputParams.businessEndDate);
+        formData.append("target", giveInputParams.target);
+        formData.append("targetCount", giveInputParams.targetCount);
+        formData.append("benefitEffect", giveInputParams.benefitEffect);
+        formData.append("companyName", giveInputParams.companyName)
+        formData.append("ceoName", giveInputParams.ceoName)
+        formData.append("companyAddress", giveInputParams.companyAddress)
+        formData.append("companyPhoneNumber", giveInputParams.companyPhoneNumber)
+        formData.append("email", giveInputParams.email)
 
         const option = {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         }
-        try {
-            await axios.post("http://localhost:8080/giveregistercenter", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/giveregisterpage", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/giveregisterrest", JSON.stringify(data), option)
-        } catch (error) {
-            
-        }
-    }
+            return await axios.post("http://localhost:8080/giveregisterpage", formData, option)
+    });
 
-    const fundingRegisterPage = async () => {
-        const data = {
-            ...fundingInputParams
-        }
-
+    const fundingRegisterPage = useMutation(async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", fundingInputParams.pageCategory);
+        formData.append("detailCategory", fundingInputParams.detailCategory)
+        formData.append("title", fundingInputParams.title)
+        formData.append("storyTitle", fundingInputParams.storyTitle)
+        formData.append("story", fundingInputParams.story)
+        imgFiles.forEach(imgFile => {
+            formData.append("imgUrl", imgFile.file);
+        })
+        formData.append("endDate", fundingInputParams.endDate);
+        formData.append("rewardName", fundingInputParams.rewardName)
+        formData.append("rewardPrice", fundingInputParams.rewardPrice)
+        formData.append("companyName", fundingInputParams.companyName)
+        formData.append("ceoName", fundingInputParams.ceoName)
+        formData.append("nickname", fundingInputParams.nickname)
+        formData.append("companyAddress", fundingInputParams.companyAddress)
+        formData.append("companyPhoneNumber", fundingInputParams.companyPhoneNumber)
+        formData.append("email", fundingInputParams.email)
         const option = {
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         }
-        try {
-            await axios.post("http://localhost:8080/fundingregisterpage", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/fundingregisterbusinessinfo", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/fundingregisterreward", JSON.stringify(data), option)
-        } catch (error) {
-            
-        }
-    }
+        return await axios.post("http://localhost:8080/fundingregisterpage", formData, option)
+    });
+
     const handleGivingUsingChange = (id, e) => {
         const newInputValues = new Map(giveUsingMap);
         newInputValues.set(id, e.target.value);
@@ -487,9 +511,39 @@ const RegisterPage = () => {
     }
 
     const changeImgUrl = (e) => {
-        setGiveInputParams({...giveInputParams, imgUrl:e.target.value})
-        setFundingInputParams({...fundingInputParams, imgUrl:e.target.value})
+        console.log(e.target.files)
+        console.log(e.target.file)
+        const newImgFiles = [];
+
+        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setImgFiles([...imgFiles, ...newImgFiles]);
     }
+
+//    const addFileHandle = (e) => {
+//        const newImgFiles = [];
+//
+//        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
+//        for(const file of e.target.files) {
+//            const fileData = {
+//                id: fileId.current,
+//                file
+//            }
+//            fileId.current += 1;
+//            newImgFiles.push(fileData)      // 비동기 처리로 인해 순서가 섞일 수도 있기 때문에 새로운 배열에다 넣어줌.
+//        }
+//
+//        setImgFiles([...imgFiles, ...newImgFiles]);
+//        e.target.value = null;  // 파일을 옮기고 나면 null로 처리를 해준다.
+//    }
 
     const changeGoalTotal = (e) => {
         setGiveInputParams({...giveInputParams, goalTotal:e.target.value})
@@ -580,6 +634,14 @@ const RegisterPage = () => {
         setRewardPriceMap(newRewardPrice);
     }
 
+    const giveRegisterSubmitHandle = () => {
+        giveRegisterPage.mutate();
+    }
+
+    const fundRegisterSubmitHandle = () => {
+        fundingRegisterPage.mutate();
+    }
+
 
     return (
         <div css={mainContainer}>
@@ -649,7 +711,7 @@ const RegisterPage = () => {
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 메인 이미지</div>
                         <div css={inputContainer}>
-                            <input onChange={changeImgUrl} css={input} type="text"/>    
+                            <input css={input} type="file" onChange={changeImgUrl} accept={".jpg, .png"}/>    
                         </div> 
                     </div>
                 
@@ -763,7 +825,7 @@ const RegisterPage = () => {
                     </div> 
                 </div>
             <div css={submitBtnContainer}>
-                <button onClick={giveRegisterPage}>기부 페이지 등록하기</button>
+                <button onClick={giveRegisterSubmitHandle}>기부 페이지 등록하기</button>
             </div>
         </> :          
         <>
@@ -830,7 +892,7 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 메인 이미지</div>
                     <div css={inputContainer}>
-                        <input onChange={changeImgUrl} css={input} type="text"/>    
+                    <input css={input} type="file" onChange={changeImgUrl} accept={".jpg, .png"}/>     
                     </div> 
                 </div>
             
@@ -920,7 +982,7 @@ const RegisterPage = () => {
                 </div>
             </div>
             <div css={submitBtnContainer}>
-                <button onClick={fundingRegisterPage}>펀딩 페이지 등록하기</button>
+                <button onClick={fundRegisterSubmitHandle}>펀딩 페이지 등록하기</button>
             </div>
         </>}
     </div>

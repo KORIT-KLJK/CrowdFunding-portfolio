@@ -1,8 +1,5 @@
 package com.webproject.crowdfunding.entity;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +18,6 @@ public class FundingRegisterPage {
 	private String story;
 	private String imgUrl;
 	private int goalTotal;
-	private LocalDate endDate;
+	private String endDate;
 	private String nickname;
 }
