@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		http.authorizeRequests()
-			.antMatchers("/auth/**", "/image/**", "/mail/**")
+			.antMatchers("/**", "/image/")
 			.permitAll() // code8144: 토큰을 활용하는 경우 모든 요청에 대해 접근이 가능하도록 함
 			.anyRequest()
 			.authenticated()

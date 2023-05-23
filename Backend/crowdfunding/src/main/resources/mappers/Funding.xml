@@ -24,6 +24,14 @@
 		<result property="categoryName" column="category_name"/>
 	</resultMap>
 	
+	<select id="getTotalCount" parameterType="hashMap" resultType="integer">
+		select
+			count(*) as total_count
+		from
+			funding_page_tb
+		where 
+			1 = 1
+	</select>
 	
 	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
 	<if test="fundingSortingStatus == '전체'">
@@ -52,25 +60,39 @@
 		</if>
 		group by
 		   	page_id,
-			page_title,
-			event_status
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort;
+			recent_sort,
+			page_id
+		limit 0, #{index};
 		</if>	
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
-			total_reward_price DESC;
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			join_percent DESC;
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
 		order by
-		    DATEDIFF(fpt.end_date, NOW())
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
 		</if>
 	</if>
 
@@ -98,27 +120,41 @@
 			DATEDIFF(fpt.end_date, NOW()) >= 0
 		group by
 		   	page_id,
-			page_title,
-			event_status
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort;
+			recent_sort,
+			page_id
+		limit 0, #{index};
 		</if>	
 		
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
-			total_reward_price DESC;
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
-		<if test="fundingSortingReward == '참여울 순'">
+		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			join_percent DESC;
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
 		order by
-		    DATEDIFF(fpt.end_date, NOW())
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
 		</if>
 	</if>
 		
@@ -146,27 +182,41 @@
 			DATEDIFF(fpt.end_date, NOW()) &lt; 0
 		group by
 		   	page_id,
-			page_title,
-			event_status
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort;
+			recent_sort,
+			page_id
+		limit 0, #{index};
 		</if>	
 		
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
-			total_reward_price DESC;
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			join_percent DESC;
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
 		order by
-		    DATEDIFF(fpt.end_date, NOW())
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
 		</if>
 	</if>
 

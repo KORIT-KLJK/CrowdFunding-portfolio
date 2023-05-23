@@ -22,18 +22,24 @@ public class FundingService {
 	public Map<String, Object> toSaveFunding(FundingEventReqDto fundingEventReqDto) {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
 
+		int index = fundingEventReqDto.getPage() * 20;
+		System.out.println(index);
 		Map<String, Object> eventStatusMap = new HashMap<>();
+		eventStatusMap.put("index", index);
 		eventStatusMap.put("fundingSortingReward", fundingEventReqDto.getFundingSortingReward());
 		eventStatusMap.put("fundingSortingStatus", fundingEventReqDto.getFundingSortingStatus());
-		System.out.println(eventStatusMap);
+		
 		fundingRepository.saveFunding(eventStatusMap).forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());
 		});
 		
+		System.out.println(eventStatusMap);
+		
+		int totalCount = fundingRepository.getTotalCount(eventStatusMap);
 		
 		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("totalCount", totalCount);
 		responseMap.put("fundingList", fundingList);
-		System.out.println(responseMap);
 		return responseMap;
 	}
 	

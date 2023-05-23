@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Page {
 	private int pageId;
 	private String pageTitle;
-	private String fundingSummaryName;
+	private String userName;
 	private String eventStatus;
 	private int pageTotalAmount;
 	private String imgUrl;
@@ -25,7 +25,7 @@ public class Page {
 		return SearchPageRespDto.builder()
 				.pageId(pageId)
 				.pageTitle(pageTitle)
-				.fundingSummaryName(fundingSummaryName)
+				.userName(userName)
 				.eventStatus(eventStatus)
 				.pageTotalAmount(pageTotalAmount)
 				.imgUrl(imgUrl)

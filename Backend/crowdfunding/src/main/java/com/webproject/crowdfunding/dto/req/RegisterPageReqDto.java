@@ -1,8 +1,16 @@
 package com.webproject.crowdfunding.dto.req;
 
-import java.time.LocalDate;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.webproject.crowdfunding.entity.BusinessInfo;
 import com.webproject.crowdfunding.entity.Center;
@@ -11,23 +19,26 @@ import com.webproject.crowdfunding.entity.FundingRegisterPage;
 import com.webproject.crowdfunding.entity.GiveRegisterPage;
 import com.webproject.crowdfunding.entity.Reward;
 import com.webproject.crowdfunding.entity.TargetBenefit;
+import com.webproject.crowdfunding.service.FundingRegisterPageService;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 public class RegisterPageReqDto {
 	private String pageCategory;
 	private String detailCategory;
 	private String title;
 	private String storyTitle;
 	private String story;
-	private String imgUrl;
+	private MultipartFile imgUrl;
 	private int goalTotal;
-	private LocalDate endDate;
+	private String endDate;
 	private List<String> giveUsing;
 	private List<Integer> donationExpense;
-	private LocalDate businessStartDate;
-	private LocalDate businessEndDate;
+	private String businessStartDate;
+	private String businessEndDate;
 	private String target;
 	private int targetCount;
 	private String benefitEffect;
@@ -39,30 +50,69 @@ public class RegisterPageReqDto {
 	private String companyAddress;
 	private String companyPhoneNumber;
 	private String email;
+	@Value("${file.path}")
+	private String filePath;
 	
 	public FundingRegisterPage toRegisterEntity() {
+		MultipartFile file = imgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "post/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "post");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return FundingRegisterPage.builder()
 				.pageCategory(pageCategory)
 				.detailCategory(detailCategory)
 				.title(title)
 				.storyTitle(storyTitle)
 				.story(story)
-				.imgUrl(imgUrl)
 				.goalTotal(goalTotal)
+				.imgUrl(tempFileName)
 				.endDate(endDate)
 				.nickname(nickname)
 				.build();
 	}
 	
 	public GiveRegisterPage toGiveRegisterEntity() {
+		MultipartFile file = imgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "post/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "post");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return GiveRegisterPage.builder()
 				.pageCategory(pageCategory)
 				.detailCategory(detailCategory)
 				.title(title)
 				.storyTitle(storyTitle)
 				.story(story)
-				.imgUrl(imgUrl)
 				.goalTotal(goalTotal)
+				.imgUrl(tempFileName)
 				.endDate(endDate)
 				.build();
 	}
@@ -73,6 +123,7 @@ public class RegisterPageReqDto {
 				.centerName(companyName)
 				.centerAddress(companyAddress)
 				.centerPhoneNumber(companyPhoneNumber)
+				.centerCeo(ceoName)	
 				.build();
 	}
 	

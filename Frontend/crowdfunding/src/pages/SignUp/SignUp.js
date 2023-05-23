@@ -43,7 +43,6 @@ export const signUpButton = css`
     margin-top: 20px;
 `;
 
-
 const SignUp = () => {
     // 팝업창 상태 관리
     const [isPopupOpen, setIsPopupOpen] = useState(false);

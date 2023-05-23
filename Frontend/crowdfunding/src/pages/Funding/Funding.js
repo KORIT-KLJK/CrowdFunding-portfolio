@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from "axios";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 export const welcomeFunding = css`
@@ -280,10 +280,26 @@ export const fundingContainerFooterPrice = css`
     font-weight: 600;
 `;
 
+export const pageNationContainer = css`
+    padding: 20px 13px;
+`;
+
+export const pageNationIndex = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #dbdbdb;
+    width: 1200px;
+    height: 60px;
+    background-color: #dbdbdb44;
+
+    cursor: pointer;
+`;
+
 
 const Funding = () => {
     const navigate = useNavigate();
-    const [ searchParam, setSearchParam ] = useState({fundingSortingReward: "최신 순", fundingSortingStatus: "전체"});
+    const [ searchParam, setSearchParam ] = useState({page: 1, fundingSortingReward: "최신 순", fundingSortingStatus: "전체"});
     const [ refresh, setRefresh ] = useState(true);
     const [ statusHiddenFlag, setStatusHiddenFlag ] = useState(false);
     const [ rewardHiddenFlag, setRewardHiddenFlag ] = useState(false);
@@ -340,7 +356,7 @@ const Funding = () => {
 
     const sortingStatusHandle = (e) => {
         const statusText = e.target.textContent;
-        setSearchParam({...searchParam, fundingSortingStatus: statusText})
+        setSearchParam({...searchParam, fundingSortingStatus: statusText, page: 1})
         setSortingStatus(statusText);
         setStatusHiddenFlag(false);
         setRefresh(true);
@@ -348,7 +364,7 @@ const Funding = () => {
 
     const sortingRewardHandle = (e) => {
         const rewardText = e.target.textContent;
-        setSearchParam({ ...searchParam, fundingSortingReward: rewardText});
+        setSearchParam({ ...searchParam, fundingSortingReward: rewardText, page: 1});
         setSortingReward(rewardText);
         setRewardHiddenFlag(false);
         setRefresh(true);
@@ -358,7 +374,12 @@ const Funding = () => {
         navigate("/funding/" + pageId);
     }
 
-    console.log(fundingData)
+    const loadMore = () => {
+        if(!refresh) {
+            setSearchParam({ ...searchParam, page: searchParam.page + 1});
+            setRefresh(true);
+        }
+    };
 
     return (
         <div>
@@ -404,6 +425,7 @@ const Funding = () => {
                         <div css={fundingContainer} onClick={() => {fundingDetailHandle(funding.pageId)}}>
                             <header>
                                 <div css={imgBox}>
+                                    <img css={img} src={`http://localhost:8080/image/post/${funding.imgUrl}`} />
                                     <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
                                         <div css={checkFunding({funding})}>
                                             <div css={fundingTxt}>펀딩</div>
@@ -427,6 +449,11 @@ const Funding = () => {
                         </div>
                     ))}
                 </main>
+                <div>
+                    <div css={pageNationContainer}>
+                        <div css={pageNationIndex} onClick={loadMore}>더보기</div>
+                    </div>
+                </div>
                 <footer>
                     웹페이지 정보
                 </footer>
