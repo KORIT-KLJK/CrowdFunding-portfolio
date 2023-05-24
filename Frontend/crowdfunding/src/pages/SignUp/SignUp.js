@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import PopupPostCode from './PopupPostCode';
 import PopupDom from './PopupDom';
 import axios from 'axios';
+import { useMutation } from 'react-query';
 
 
 export const mainContainer = css`
@@ -63,7 +64,7 @@ const SignUp = () => {
         const { name, value } = e.target;
         setAddress({...address, [name]: value})
     }
-    
+
     const checkDuplicateEmail = async () => {
         const data = {
             email: signUp.email
@@ -77,18 +78,18 @@ const SignUp = () => {
         try {
             await axios.post("http://localhost:8080/auth/checkemail", JSON.stringify(data), option)
             setErrorMessages({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
+            setEmailSubmitDisabled(false);
         }catch(error) {
             setErrorMessages({email: error.response.data.errorData.email})
+            setEmailSubmitDisabled(true);
         }
-        setEmailSubmitDisabled(false);
     }
 
-    const signUpSubmit = async () => {
-        if (emailSubmitDisabled) {
-            setErrorMessages({email: "이메일 중복확인을 해주세요."})
+    const register = useMutation(async () => {
+        if (signUp.password !== signUp.confirmPassword) {
+            setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."});
             return;
         }
-        
         const data = {
             ...signUp, ...address
         }
@@ -102,17 +103,13 @@ const SignUp = () => {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
             await axios.post("http://localhost:8080/auth/address", JSON.stringify(data), option)
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""})
+            alert("회원가입 완료")
+            window.location.replace("/login")
         }catch(error) {
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
             console.log(error)
         }
-
-        if (signUp.password !== signUp.confirmPassword) {
-            setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."})
-            return;
-        }
-
-    };
+    });
 
     // 팝업창 열기
     const openPostCode = () => {
@@ -123,6 +120,11 @@ const SignUp = () => {
     const closePostCode = () => {
         setIsPopupOpen(false)
     }
+
+    const signUpSubmit = () => {
+        register.mutate();
+    }
+
     return (
         <div>
             <header>
@@ -183,7 +185,7 @@ const SignUp = () => {
                     <div css={errorMsg}>{errorMessage.address}</div>
                     <input css={inputAddress} type="text" placeholder="상세주소" onChange={onChangeAddressHandler} name="detailAddress" />
                     <div css={errorMsg}>{errorMessage.detailAddress}</div>
-                    <button css={signUpButton} onClick={signUpSubmit}>가입하기</button>
+                    <button css={signUpButton} onClick={signUpSubmit} disabled={emailSubmitDisabled}>가입하기</button>
                 </div>
             </main>
             <footer>
