@@ -12,14 +12,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/funding")
 public class FundingDetailController {
 	
 	private final FundingDetailService fundingDetailService;
 
 	@GetMapping("/fundingdetail/{pageId}")
 	public ResponseEntity<?> fundingDetail(@PathVariable int pageId) {
-
+		
 		return ResponseEntity.ok(fundingDetailService.fundingDetail(pageId));
 	}
 	

@@ -92,9 +92,9 @@ public class JwtTokenProvider {
 	}
 	// iuejeong: 요청할 때 토큰을 Bearer ~~~~~~~~~~라는 값으로 보내는데, 토큰값만 넘겨주기 위해 앞에 Bearer를 잘라주는 과정.
 	public String getToken(String token) {
-		String type = "Bearer";
+		String type = "Bearer ";
 		if(StringUtils.hasText(token) && token.startsWith(type)) {
-			return token.substring(type.length() + 1);
+			return token.substring(type.length());
 			
 		}
 		return null;

@@ -306,9 +306,9 @@ export const joinFundContainer = css`
 
 
 export const joinFundIdentifyContainer = css`
+    border-radius: 9px;
     margin-top: 200px;
-    width: 1000px;
-    height: 600px;
+    width: 700px;
     background-color: white;
 `;
 
@@ -317,6 +317,108 @@ export const joinFundIdentifyMain = css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 40px;
+`;
+
+export const joinFundHeader = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0px;
+    width: 100%;
+    border-bottom: 1px solid #dbdbdb;
+`;
+
+export const joinFundTitle = css`
+    font-size: 20px;
+`;
+
+export const joinFundNickname = css`
+    margin-top: 10px;
+    font-size: 12px;
+    color: #888888;
+`;
+
+export const joinFundBorderBottom = css`
+    width: 100%;
+    border-bottom: 1px solid #dbdbdb;
+`;
+
+export const joinFundRewardContainer = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+`;
+
+export const joinFundRewardName = css`
+    width: 100%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+`;
+
+export const joinFundCount = css`
+    margin-right: 10px;
+    font-size: 18px;
+    color: #888888;
+`;
+
+export const joinFundCountAndPrice = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`;
+
+export const joinFundPrice = css`
+    font-size: 20px;
+    color: #1f9eff;
+`;
+
+export const joinIdentifyButtonContainer = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    width: 400px;
+`;
+
+export const joinIdentifyButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #10c838;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+`;
+
+export const joinCancelButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #dbdbdb;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
 `;
 
 export const storyHeadLine = css`
@@ -550,6 +652,16 @@ const FundingDetail = () => {
         return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
     })
 
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.get("http://localhost:8080/principal", option)
+    })
+
+
     if(fundingDetail.isLoading) {
         return <></>
     }
@@ -565,6 +677,12 @@ const FundingDetail = () => {
     if(fundingJoinBreakdown.isLoading) {
         return <></>
     }
+
+    if(principalUser.isLoading) {
+        return <></>
+    }
+
+    console.log(principalUser);
 
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
@@ -672,19 +790,21 @@ const FundingDetail = () => {
     const joinFunding = () => {
         if (!authenticated) {
             navigate('/login');
-        }else {
+        } else if (rewards.length === 0) {
+            alert("리워드 수량과 옵션을 확인해주세요.");
+        } else {
             setIsOpen(true);
         }
     }
 
-    rewards.map(reward => (
-        console.log(reward.fundingReward.count)
-    ))
+    const joinCancelButtonHandle = () => {
+        setIsOpen(false);
+    }
+
     return (
         <div>
             <div css={fundingDetailContainer}>
                 <div css={fundingDetailHeader}>
-                    <img css={fundingDetailImg} src={`http://localhost:8080/image/post/${funding.imgUrl}`} />
                     <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
                     <div css={fundingDetailHeaderRight}>
                         <div css={fundingDetailNearDeadline}>{funding.deadline === "종료" ? "종료" : funding.deadline === "오늘 마감" ?  "오늘 마감" : `D-${funding.deadline}`}</div>
@@ -746,16 +866,25 @@ const FundingDetail = () => {
                                 <div css={joinFundContainer}>
                                     <div css={joinFundIdentifyContainer}>
                                         <div css={joinFundIdentifyMain}>
-                                            <div>펀딩 참여 확인</div>
-                                            <div>참여 리워드 종류</div>
+                                            <div css={joinFundHeader}>
+                                                <div css={joinFundTitle}>{funding.fundingTitle}</div>
+                                                <div css={joinFundNickname}>By Unicef</div>
+                                            </div>
+                                            <div css={joinFundBorderBottom}>
                                             {rewards.map(reward => (
-                                                <div key={reward.fundingReward.rewardId}>
-                                                    <div>{reward.fundingReward.rewardName}</div>
-                                                    <div>{reward.fundingReward.count}개</div>
-                                                    <div>{reward.fundingReward.count}개</div>
-                                                    <div>{new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                <div css={joinFundRewardContainer} key={reward.fundingReward.rewardId}>
+                                                    <div css={joinFundRewardName}>{reward.fundingReward.rewardName}</div>
+                                                    <div css={joinFundCountAndPrice}>
+                                                        <div css={joinFundCount}>수량: {reward.fundingReward.count}개</div>
+                                                        <div css={joinFundPrice}>가격: {new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                    </div>
                                                 </div>
                                             ))}
+                                            </div>
+                                            <div css={joinIdentifyButtonContainer}>
+                                                <button css={joinIdentifyButton}>동의함</button>
+                                                <button css={joinCancelButton} onClick={joinCancelButtonHandle}>동의 안 함</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

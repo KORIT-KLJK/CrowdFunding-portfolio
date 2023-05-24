@@ -48,6 +48,7 @@ public class Funding {
 	}
 	
 	public FundingDetailRespDto getDetailFunding() {
+		
 		return FundingDetailRespDto.builder()
 				.fundingId(fundingId)
 				.fundingSummaryName(fundingSummaryName)
