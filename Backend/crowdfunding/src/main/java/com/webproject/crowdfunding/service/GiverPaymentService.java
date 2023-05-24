@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class GiverPaymentService {
 	private final GiverPaymentRepository giverPaymentRepository;
 	
-	public int paymentGiver(@RequestBody GiverPaymentReqDto giverPaymentReqDto) {
-	
+	public int paymentGiver(@RequestBody GiverPaymentReqDto giverPaymentReqDto) {	
 		return giverPaymentRepository.toGiverPayment(giverPaymentReqDto.toGiverPaymentEntity());
 	}
-	
 }

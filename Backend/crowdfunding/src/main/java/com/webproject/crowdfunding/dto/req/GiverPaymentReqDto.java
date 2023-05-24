@@ -6,15 +6,15 @@ import lombok.Data;
 
 @Data
 public class GiverPaymentReqDto {
+	private int pageId;
 	private int userId;
 	private int givingTotal;
-	private int pageId;
 	
 	public GiverPayment toGiverPaymentEntity() {
 		return GiverPayment.builder()
+				.pageId(pageId)
 				.userId(userId)
 				.givingTotal(givingTotal)
-				.pageId(pageId)
 				.build();
 	}
 }

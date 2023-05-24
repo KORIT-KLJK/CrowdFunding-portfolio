@@ -4,7 +4,7 @@ import axios from "axios";
 import { async } from "q";
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 const modalContainer = css`
     position: fixed;
@@ -159,7 +159,8 @@ const givingBtn = css`
 
 const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
     const [ givingTotal, setGivingTotal ] = useState(0);
-    const queryClient = useQueryClient();
+
+    ReactModal.setAppElement('#root');
 
     const principalUser = useQuery(["principalUser"], async () => {
         const option = {
@@ -170,30 +171,35 @@ const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
         return await axios.get("http://localhost:8080/principal", option)
     })
 
-    console.log(principalUser)
 
-    const giverSubmit = useMutation(async () => {
+    const giverPost = useMutation(async () => {
         const data = {
-            userId: queryClient.getQueryData("principal").data.userId,
+            userId: principalUser.data.data.userId,
             givingTotal,
             pageId: givingDetail.pageId
         }
         const option = {
             headers: {
+                "Content-Type" : "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post(`http://localhost:8080/giver/payment/${givingDetail.pageId}`, data, option);
+        const response = await axios.post("http://localhost:8080/giver/payment", JSON.stringify(data), option);
         return response;
     });
+
+    if(principalUser.isLoading) {
+        return <></>
+    }
 
     const givingTotalInputHandle = (e) => {
         setGivingTotal(e.target.value);
     }
+     
 
     return (
         <ReactModal isOpen={isOpen}>
-            <div css={modalContainer} onClick={(e) => e.stopPropagation()}>
+            <div css={modalContainer}>
                 <div css={modalBackDrop}>
                     <div css={modalHeaderBox}>
                         <div css={modalPageTitle}>{givingDetail.pageTitle}<br /><span css={pageTitleUnicef}>By Unicef</span></div>
@@ -214,7 +220,7 @@ const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
                         </ul>
                     </div>
                     <div>
-                        <button css={givingBtn} onClick={giverSubmit}>확인</button>
+                        <button css={givingBtn} onClick={() => giverPost.mutate()}>확인</button>
                     </div>
                 </div>
             </div>

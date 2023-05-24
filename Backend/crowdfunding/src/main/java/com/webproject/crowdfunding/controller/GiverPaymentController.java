@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webproject.crowdfunding.dto.req.GiverPaymentReqDto;
+import com.webproject.crowdfunding.service.GiverPaymentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,9 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/giver")
 public class GiverPaymentController {
 	
+	private final GiverPaymentService giverPaymentService;
+	
 	@PostMapping("/payment")
-	public ResponseEntity<?> payment(@RequestBody GiverPaymentReqDto givingPaymentReqDto) {
-		return null;
+	public ResponseEntity<?> payment(@RequestBody GiverPaymentReqDto giverPaymentReqDto) {
+		System.out.println(giverPaymentReqDto);
+		
+		return ResponseEntity.ok().body(giverPaymentService.paymentGiver(giverPaymentReqDto));
 	}
 	
 }

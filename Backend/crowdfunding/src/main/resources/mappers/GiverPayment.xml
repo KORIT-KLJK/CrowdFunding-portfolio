@@ -4,10 +4,9 @@
 
 	<insert id="toGiverPayment" parameterType="com.webproject.crowdfunding.entity.GiverPayment">
 		insert into
-			giver_tb
-			(user_id, giving_total, giving_page_id)
-		values 
-			(0, #{userId}, #{givingTotal}, #{pageId})
+	        giver_tb
+	    values 
+	        (0, #{pageId}, #{userId}, #{givingTotal}, now())
 	</insert>
 
 </mapper>
