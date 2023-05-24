@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { authenticatedState } from '../../../pages/Login/AuthAtom';
 
 const mainHeader = css`
     border-bottom: 1px solid #e8e8e8;
@@ -59,6 +61,7 @@ const loginButton = css`
     z-index: 1;
     margin-top: 26px;
     color: #333;
+    cursor: pointer;
 `;
 
 const searchButton = css`
@@ -80,6 +83,28 @@ const headerUserBar = css`
 `;
 
 const HeaderMain = () => {
+    const [authenticated, setAuthenticated] = useRecoilState(authenticatedState);
+    const accessToken = localStorage.getItem("accessToken");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (accessToken) {
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
+      }
+    }, []);
+
+    const loginNavigateHandle = () => {
+        if (authenticated) {
+            localStorage.removeItem('accessToken');
+            setAuthenticated(false);
+            navigate('/login');
+        }else {
+            navigate('/login');
+        }
+    }
+
     return (
         <div css={mainHeader}>
             <div>
@@ -90,7 +115,7 @@ const HeaderMain = () => {
                         <div css={menuFunding}><Link to="/funding">펀딩</Link></div>
                     </div>
                     <div css={headerRight}>
-                        <div css={loginButton}><Link to="/login">로그인</Link></div>
+                        <div css={loginButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</div>
                         <span css={headerUserBar}></span>
                         <button css={searchButton}><Link to="/search">검색</Link></button>
                     </div>
