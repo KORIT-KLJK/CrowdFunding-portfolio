@@ -20,7 +20,7 @@ public class GivingDetailController {
 	
 	private final GivingDetailService givingDetailService;
 	
-	@GetMapping("/givingDetail/{pageId}")
+	@GetMapping("/giving/detail/{pageId}")
 	public ResponseEntity<?> givingDetail(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.givingDetail(pageId));
 	}
@@ -30,9 +30,8 @@ public class GivingDetailController {
 		return ResponseEntity.ok(givingDetailService.getMostGivings(pageId));
 	}
 	
-	@ValidAspect
 	@PostMapping("/giving/modal/{pageId}")
-	public ResponseEntity<?> givingModal(@RequestBody GivingModalPayReqDto givingModalReqDto, BindingResult bindingResult) {
+	public ResponseEntity<?> givingModal(@RequestBody GivingModalPayReqDto givingModalReqDto) {
 		return null;
 	}
 	

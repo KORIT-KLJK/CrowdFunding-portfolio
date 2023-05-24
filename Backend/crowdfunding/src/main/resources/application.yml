@@ -18,4 +18,4 @@ jwt:
   secret: Wt8gosS4cOPOT3GAm8PoE6446oYlmionWG2slRLVg3i4O4LpQg3LQokTqYOT0cgn
   
 file:
-  path: C:\aws_project\workspace\CrowdFunding-portfolio\Backend\crowdfunding/upload/
+  path: C:/aws_project/workspace/CrowdFunding-portfolio/Backend/crowdfunding/upload/

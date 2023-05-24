@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import axios from "axios";
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
+import { useMutation, useQuery } from "react-query";
 
 const modalContainer = css`
     position: fixed;
@@ -155,6 +157,30 @@ const givingBtn = css`
 `;
 
 const GivingModal = ({ isOpen, isClose, givingDetail }) => {
+    const [ givingTotal, setGivingTotal ] = useState(0);
+
+    const givingSubmit = useMutation(async () => {
+        const data = {
+            userId: null,
+            givingTotal,
+            pageId: givingDetail.pageId
+        }
+        const option = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        }
+        const response = await axios.post(`http://localhost:8080/giving/modal/${givingDetail.pageId}`, {}, option);
+        return response;
+    });
+
+    const givingSubmitHandle = () => {
+        
+    }
+
+    const givingTotalInputHandle = (e) => {
+        setGivingTotal(e.target.value);
+    }
 
     return (
         <ReactModal isOpen={isOpen}>
@@ -174,16 +200,16 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
                         <ul css={modalGiverInfoUl}>                     
                             <li>
                                 <span css={giverInfo}>기부 금액</span>
-                                <input css={inputUserInfo} placeholder="원" type="text" style={{ textAlign: 'right' }} />
+                                <input css={inputUserInfo} placeholder="원" type="text" style={{ textAlign: 'right' }} onChange={givingTotalInputHandle} />
                             </li>
                         </ul>
                     </div>
                     <div>
-                        <button css={givingBtn}>확인</button>
+                        <button css={givingBtn} onClick={givingSubmitHandle}>확인</button>
                     </div>
                 </div>
             </div>
-            </ReactModal>
+        </ReactModal>
     );
 }
 

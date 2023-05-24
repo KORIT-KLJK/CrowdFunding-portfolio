@@ -22,6 +22,7 @@ public class FundingDetailService {
 	private final FundingDetailRepository fundingDetailRepository;
 	
 	public FundingDetailRespDto fundingDetail(int pageId) {
+		
 		return fundingDetailRepository.fundingDetail(pageId).getDetailFunding();
 	}
 	

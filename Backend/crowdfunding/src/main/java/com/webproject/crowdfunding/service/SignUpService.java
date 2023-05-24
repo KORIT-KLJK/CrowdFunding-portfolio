@@ -9,7 +9,7 @@ import com.webproject.crowdfunding.entity.Authority;
 import com.webproject.crowdfunding.entity.User;
 import com.webproject.crowdfunding.exception.CustomException;
 import com.webproject.crowdfunding.exception.ErrorMap;
-import com.webproject.crowdfunding.repository.SignUpRepository;
+import com.webproject.crowdfunding.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SignUpService {
 	
-	private final SignUpRepository signUpRepository;
+	private final UserRepository signUpRepository;
 	private User userEntity;
 	
 	 public void duplicatedEmail(String email) {

@@ -12,4 +12,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GivingModalPayService {
+	private final GivingModalPayRepository givingModalPayRepository;
+	
+//	public List<GivingModalPayReqDto> getModalPay
+
 }
