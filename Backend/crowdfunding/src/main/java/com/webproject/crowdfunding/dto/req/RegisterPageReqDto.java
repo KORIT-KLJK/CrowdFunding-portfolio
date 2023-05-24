@@ -150,7 +150,6 @@ public class RegisterPageReqDto {
 	        		.build();
 	        donationUsePlans.add(donationPlan);
 	    }
-	    System.out.println(donationUsePlans);
 	    return donationUsePlans;
 	}
 	

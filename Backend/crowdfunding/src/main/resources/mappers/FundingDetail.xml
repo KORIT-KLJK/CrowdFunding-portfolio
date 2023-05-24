@@ -34,6 +34,17 @@
 		<result property="ceoEmail" column="ceo_email"/>
 		<result property="fundingId" column="funding_id"/>
 	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Address" id="AddressMap">
+		<id property="addressId" column="address_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="zonecode" column="zonecode"/>
+		<result property="address" column="address"/>
+		<result property="buildingName" column="building_name"/>
+		<result property="bname" column="bname"/>
+		<result property="detailAddress" column="detail_address"/>
+		<result property="addressType" column="address_type"/>
+	</resultMap>
 
 	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
 		select
@@ -111,5 +122,30 @@
 		    user_id,
 		    username
 	</select>
+	
+	<select id="getAddressId" parameterType="integer" resultMap="AddressMap">
+		select
+			at.address_id,
+			at.user_id,
+			at.zonecode,
+			at.address,
+			at.building_name,
+			at.bname,
+			at.detail_address,
+			at.address_type
+		from
+			address_tb at
+		where
+			at.user_id = #{userId};
+	</select>
+	
+	<insert id="toSaveFunder"
+				parameterType="com.webproject.crowdfunding.entity.Funder"
+				keyProperty="funderId"
+				useGeneratedKeys="true">
+		insert into funder_tb
+		values
+		(0, #{userId}, NOW(), #{addressId}, #{rewardId})
+	</insert>
 	
 </mapper>

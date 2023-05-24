@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import { authenticatedState } from "../Login/AuthAtom";
@@ -636,6 +636,29 @@ const FundingDetail = () => {
         }
     }, []);
 
+    const joinFund = useMutation(async (funder) => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.post("http://localhost:8080/funding/payment", funder, option);
+    }, {
+        onSuccess: () => {
+            alert("펀딩에 성공하였습니다.");
+            setIsOpen(false);
+        }
+    });
+
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.get("http://localhost:8080/principal", option)
+    })
+
     const fundingDetail = useQuery(["fundingDetail"], async () => {
         return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`);
     });
@@ -652,14 +675,21 @@ const FundingDetail = () => {
         return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
     })
 
-    const principalUser = useQuery(["principalUser"], async () => {
+    const getAddress = useQuery(["getAddress"], async () => {
         const option = {
+            params: {
+                userId: principalUser.data.data.userId
+            },
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.get("http://localhost:8080/principal", option)
+        return await axios.get("http://localhost:8080/funding/address", option);
     })
+
+    if(principalUser.isLoading) {
+        return <></>
+    }
 
 
     if(fundingDetail.isLoading) {
@@ -669,20 +699,14 @@ const FundingDetail = () => {
     if(fundingBusinessInfo.isLoading) {
         return <></>
     }
-
+    
     if(fundingDetailReward.isLoading) {
         return <></>
     }
-
+    
     if(fundingJoinBreakdown.isLoading) {
         return <></>
     }
-
-    if(principalUser.isLoading) {
-        return <></>
-    }
-
-    console.log(principalUser);
 
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
@@ -797,6 +821,19 @@ const FundingDetail = () => {
         }
     }
 
+
+    const joinSubmitHandle = () => {
+        const rewardIds = [];
+        const counts = [];
+        rewards.map(reward => (rewardIds.push(reward.fundingReward.rewardId), counts.push(reward.fundingReward.count)));
+        joinFund.mutate({
+            userId: principalUser.data.data.userId,
+            addressId: getAddress.data.data.addressId,
+            rewardIds: rewardIds,
+            counts: counts
+        });
+    }
+
     const joinCancelButtonHandle = () => {
         setIsOpen(false);
     }
@@ -882,7 +919,7 @@ const FundingDetail = () => {
                                             ))}
                                             </div>
                                             <div css={joinIdentifyButtonContainer}>
-                                                <button css={joinIdentifyButton}>동의함</button>
+                                                <button css={joinIdentifyButton} onClick={joinSubmitHandle}>동의함</button>
                                                 <button css={joinCancelButton} onClick={joinCancelButtonHandle}>동의 안 함</button>
                                             </div>
                                         </div>

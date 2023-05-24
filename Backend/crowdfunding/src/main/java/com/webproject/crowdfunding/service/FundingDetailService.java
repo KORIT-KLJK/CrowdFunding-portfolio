@@ -7,10 +7,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.webproject.crowdfunding.dto.req.FunderReqDto;
 import com.webproject.crowdfunding.dto.resp.BreakdownRespDto;
 import com.webproject.crowdfunding.dto.resp.BusinessInfoRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.RewardRespDto;
+import com.webproject.crowdfunding.entity.Address;
+import com.webproject.crowdfunding.entity.Funder;
 import com.webproject.crowdfunding.repository.FundingDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -53,6 +56,26 @@ public class FundingDetailService {
 		breakdownMap.put("breakdownList", breakdownList);
 		
 		return breakdownMap;
+	}
+	
+	public Address getAddressId(int userId) {
+		System.out.println(userId);
+		return fundingDetailRepository.getAddressId(userId);
+	}
+	
+	public int saveFunder(FunderReqDto funderReqDto) {
+		List<Funder> funderEntity = funderReqDto.toFunderEntity();
+		funderEntity.forEach(funder -> {
+			fundingDetailRepository.toSaveFunder(
+					Funder.builder()
+					.funderId(funder.getFunderId())
+					.userId(funder.getUserId())
+					.addressId(funder.getAddressId())
+					.rewardId(funder.getRewardId())
+					.build());
+		});
+		System.out.println(funderEntity);
+		return 0;
 	}
 	
 }

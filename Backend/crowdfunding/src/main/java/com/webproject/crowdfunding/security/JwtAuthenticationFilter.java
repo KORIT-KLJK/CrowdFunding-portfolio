@@ -27,8 +27,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		String accessToken = httpRequest.getHeader("Authorization");	// iuejeong: 기존 토큰을 가져옴
 		accessToken = jwtTokenProvider.getToken(accessToken);			// iuejeong: 가져온 것은 subString
 		boolean validationFlag = jwtTokenProvider.validateToken(accessToken);	// iuejeong: subString 이후 유효성 검사 진행(예외가 일어나고 true, false 검사)
-		System.out.println(validationFlag);
-		System.out.println(accessToken);
 		// iuejeong: false일 경우, Authentication 객체를 생성하지 못했기 때문에 403 error가 뜰 것임
 		if(validationFlag) {
 			Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);

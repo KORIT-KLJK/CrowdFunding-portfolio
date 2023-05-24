@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DonationUsePlan {
-	private int dupId;
-	private String pageCategory;
-	private String giveUsing;
-	private int donationExpense;
-	private int givingPageId;
+public class Funder {
+	private int funderId;
+	private int userId;
+	private int addressId;
+	private int rewardId;
 }

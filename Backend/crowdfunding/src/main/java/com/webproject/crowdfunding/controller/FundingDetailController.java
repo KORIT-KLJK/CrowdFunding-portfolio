@@ -3,9 +3,14 @@ package com.webproject.crowdfunding.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webproject.crowdfunding.dto.req.FunderReqDto;
+import com.webproject.crowdfunding.entity.Reward;
 import com.webproject.crowdfunding.service.FundingDetailService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,4 +45,31 @@ public class FundingDetailController {
 		return ResponseEntity.ok(fundingDetailService.getBreakdown(pageId));
 	}
 	
+	@GetMapping("/funding/address")
+	public ResponseEntity<?> getAddress(@RequestParam int userId) {
+		System.out.println(userId);
+		return ResponseEntity.ok(fundingDetailService.getAddressId(userId));
+	}
+	
+	@PostMapping("/funding/payment")
+	public ResponseEntity<?> toPaymentInfo(@RequestBody FunderReqDto funderReqDto) {
+		System.out.println(funderReqDto);
+		return ResponseEntity.ok(fundingDetailService.saveFunder(funderReqDto));
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

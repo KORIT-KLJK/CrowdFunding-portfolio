@@ -21,6 +21,7 @@ public class User {
 	private String name;
 	private String birthday;
 	private String gender;
+	private int addressId;
 	
 	private List<Authority> authorities;
 	
