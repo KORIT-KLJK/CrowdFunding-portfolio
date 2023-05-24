@@ -32,7 +32,7 @@ const Login = () => {
         try{
             const response = await axios.post("http://localhost:8080/auth/login", JSON.stringify(loginUser), option);
             setErrorMessages({email: "", password: ""});
-            const accessToken = response.data.grantType + " " + response.data.accessToken;
+            const accessToken = response.data.accessToken;
             localStorage.setItem("accessToken", accessToken); 
             setAuthenticated(true);
         } catch(error) {
