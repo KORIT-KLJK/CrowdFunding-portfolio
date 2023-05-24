@@ -30,7 +30,6 @@ public class LoginService {
 		// iuejeong: 인증이 성공을 하게 되면 Authentication 객체가 생성이 된다.
 		// iuejeong: 토큰의 대한 정보를 넣고, 생성을 하기 위해 인증 성공한 정보를 return값에 넣어준다.
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		System.out.println(authentication);
 		return jwtTokenProvider.generateToken(authentication);
 	}
 	

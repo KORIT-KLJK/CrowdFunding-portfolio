@@ -8,6 +8,7 @@ import com.webproject.crowdfunding.entity.User;
 
 // iuejeong: xml file로 대체
 // iuejeong: interface를 써야 Mapper를 쓸 수 있고, mybatis에서 받는다.
+
 @Mapper
 public interface SignUpRepository {
 	public User findUserByEmail(String email);

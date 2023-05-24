@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { authenticatedState } from './AuthAtom';
+import { useMutation } from 'react-query';
 
 export const mainContainer = css`
     width: 700px;
@@ -22,7 +23,7 @@ const Login = () => {
         setLoginUser({...loginUser, [name]: value})
     }
 
-    const loginHandleSubmit = async() => {
+    const login = useMutation(async() => {
         const option = {
             headers: {
                 "Content-Type": "application/json"
@@ -37,6 +38,14 @@ const Login = () => {
         } catch(error) {
             setErrorMessages({email: "", password: "", ...error.response.data.errorData});
         }
+    }, {
+        onSuccess: () => {
+            window.location.replace("/")
+        }
+    })
+
+    const loginHandleSubmit = () => {
+        login.mutate();
     }
 
     return (

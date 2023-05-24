@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from "recoil";
+import { authenticatedState } from "../Login/AuthAtom";
 
 export const fundingDetailContainer = css`
     width: 100%;
@@ -266,7 +268,7 @@ export const joinFundingButtonContainer = css`
     padding: 30px 0px;
 `;
 
-export const joiFundingButton = css`
+export const joinFundingButton = css`
     width: 100%;
     height: 55px;
     border-radius: 3px;
@@ -286,6 +288,35 @@ export const endFundingButton = css`
     font-size: 19px;
     font-weight: 600;
     color: white;
+`;
+
+export const joinFundContainer = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+
+    background-color: #000000aa;   
+`;
+
+
+export const joinFundIdentifyContainer = css`
+    margin-top: 200px;
+    width: 1000px;
+    height: 600px;
+    background-color: white;
+`;
+
+export const joinFundIdentifyMain = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 export const storyHeadLine = css`
@@ -490,6 +521,18 @@ const FundingDetail = () => {
     const [ rewards, setRewards ] = useState([]);
     const [ totalQuantity, setTotalQuantity ] = useState(0);
     const [ totalPrice, setTotalPrice ] = useState(0);
+    const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+    const [ isOpen, setIsOpen ] = useState(false);
+    const accessToken = localStorage.getItem("accessToken");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (accessToken) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+    }, []);
 
     const fundingDetail = useQuery(["fundingDetail"], async () => {
         return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`);
@@ -541,49 +584,73 @@ const FundingDetail = () => {
           setSelectRewardHidden(false);
         } else {
           setSelectRewardHidden(false);
-          setRewards([...rewards, { fundingReward }]);
+          setRewards([...rewards, { fundingReward: { ...fundingReward, count: 1 } }]);
           setTotalQuantity(quantity => quantity + 1);
-          setTotalPrice(price => price + fundingReward.rewardPrice);
+          setTotalPrice(price => price + fundingReward.rewardPrice)
         }
     }
 
     const deleteRewardHandle = (reward) => {
+        const deletedRewardCount = reward.fundingReward.count || 1;
+        const deletedRewardPrice = reward.fundingReward.rewardPrice;
+        console.log(deletedRewardPrice);
         const newRewards = rewards.filter(r => r.fundingReward.rewardId !== reward.fundingReward.rewardId);
         setRewards(newRewards);
-        setTotalQuantity(quantity => quantity - (reward.fundingReward.count || 1));
-        setTotalPrice(price => price - (reward.fundingReward.rewardPrice * (reward.fundingReward.count || 1)));
-    }
+      
+        setTotalQuantity(quantity => quantity - deletedRewardCount);
+        setTotalPrice(price => price - deletedRewardPrice);
+
+        reward.fundingReward.count = 1;
+      }
     
     const decreaseCount = (reward) => {
         const newRewards = [...rewards];
         const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
         
         if (rewardIndex !== -1) {
-          newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) - 1;
-          const count = newRewards[rewardIndex].fundingReward.count;
-          if (count >= 1) {
+          const count = newRewards[rewardIndex].fundingReward.count || 1;
+          if (count > 1) {
+            const rewardPrice = reward.fundingReward.rewardPrice;
+            const priceDecrease = rewardPrice / count;
+            newRewards[rewardIndex].fundingReward.count = count - 1;
+            newRewards[rewardIndex].fundingReward.rewardPrice -= priceDecrease;
             setTotalQuantity(quantity => quantity - 1);
-            setTotalPrice(price => price - reward.fundingReward.rewardPrice);
+            setTotalPrice(price => price - priceDecrease);
           }
         }
         
         setRewards(newRewards);
-    }
+      }
+
 
     const countHandle = (e, reward) => {
         const newRewards = [...rewards];
         const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
-        if (rewardIndex !== -1) {
-          const count = parseInt(e.target.value, 10);
-          newRewards[rewardIndex].fundingReward.count = isNaN(count) ? 0 : count;
-          setRewards(newRewards);
 
-          const updatedTotalQuantity = newRewards.reduce((total, r) => total + (r.fundingReward.count || 1), 1);
-          const updatedTotalPrice = newRewards.reduce((total, r) => total + ((r.fundingReward.count || 1) * r.fundingReward.rewardPrice), 0);
-          setTotalQuantity(updatedTotalQuantity);
-          setTotalPrice(updatedTotalPrice);
+        if (rewardIndex !== -1) {
+            const count = parseInt(e.target.value, 10);
+            const prevCount = newRewards[rewardIndex].fundingReward.count || 1;
+
+            if (!isNaN(count) && count >= 1) {
+            const diffCount = count - prevCount;
+            newRewards[rewardIndex].fundingReward.count = count;
+
+            if (diffCount !== 0) {
+                const prevPrice = newRewards[rewardIndex].fundingReward.rewardPrice;
+                const newPrice = prevPrice * (count / prevCount);
+                newRewards[rewardIndex].fundingReward.rewardPrice = newPrice;
+            }
+
+            setRewards(newRewards);
+
+            const updatedTotalQuantity = newRewards.reduce((total, r) => total + (r.fundingReward.count || 1), 0);
+            const updatedTotalPrice = newRewards.reduce((total, r) => total + (r.fundingReward.rewardPrice), 0);
+            console.log(updatedTotalPrice);
+            setTotalQuantity(updatedTotalQuantity);
+            setTotalPrice(updatedTotalPrice);
+            }
         }
-    }
+    };
 
     const increaseCount = (reward) => {
         const newRewards = [...rewards];
@@ -592,15 +659,27 @@ const FundingDetail = () => {
           newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) + 1;
           const count = newRewards[rewardIndex].fundingReward.count;
           if (count >= 1) {
+            const rewardPrice = reward.fundingReward.rewardPrice;
+            const priceIncrease = rewardPrice / (newRewards[rewardIndex].fundingReward.count - 1);
+            newRewards[rewardIndex].fundingReward.rewardPrice += priceIncrease;
             setTotalQuantity(quantity => quantity + 1);
-            setTotalPrice(price => price + reward.fundingReward.rewardPrice);
-          }
+            setTotalPrice(price => price + priceIncrease);
         }
+    }
         setRewards(newRewards);
-      };
+    };
 
-      console.log(fundingJoinBreakdown.data.data.breakdownList);
+    const joinFunding = () => {
+        if (!authenticated) {
+            navigate('/login');
+        }else {
+            setIsOpen(true);
+        }
+    }
 
+    rewards.map(reward => (
+        console.log(reward.fundingReward.count)
+    ))
     return (
         <div>
             <div css={fundingDetailContainer}>
@@ -641,7 +720,7 @@ const FundingDetail = () => {
                                                                 onClick={() => decreaseCount(reward)}>-</button>
                                                         <input  css={rewardCount}
                                                                 type="text"
-                                                                value={reward.fundingReward.count || 1} 
+                                                                value={reward.fundingReward.count || 1}
                                                                 onChange={(e) => countHandle(e, reward)} />
                                                         <button css={plusButton}
                                                                 onClick={() => increaseCount(reward)}>+</button>
@@ -652,15 +731,35 @@ const FundingDetail = () => {
                                     ))}
                                 <div css={TotalReward}>
                                     <div css={TotalRewardCount}>총 수량 {totalQuantity}개</div>
-                                    <div css={TotalRewardPriceContainer}>
-                                        <div css={TotalRewardPriceTxt}>총 금액</div>
-                                        <div css={TotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
-                                    </div>
+                                        <div css={TotalRewardPriceContainer}>
+                                            <div css={TotalRewardPriceTxt}>총 금액</div>
+                                            <div css={TotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
                         <div css={joinFundingButtonContainer}>
-                            {funding.deadline === "종료" ? <button css={endFundingButton}>펀딩 종료하기</button> : <button css={joiFundingButton}>펀딩 참여하기</button>}
+                            {funding.deadline === "종료" ?
+                            <button css={endFundingButton}>펀딩 종료하기</button> :
+                            <button css={joinFundingButton} onClick={joinFunding}>펀딩 참여하기</button>}
+                            {isOpen ?
+                                <div css={joinFundContainer}>
+                                    <div css={joinFundIdentifyContainer}>
+                                        <div css={joinFundIdentifyMain}>
+                                            <div>펀딩 참여 확인</div>
+                                            <div>참여 리워드 종류</div>
+                                            {rewards.map(reward => (
+                                                <div key={reward.fundingReward.rewardId}>
+                                                    <div>{reward.fundingReward.rewardName}</div>
+                                                    <div>{reward.fundingReward.count}개</div>
+                                                    <div>{reward.fundingReward.count}개</div>
+                                                    <div>{new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            : ""}
                         </div>
                     </div>
                 </div>
