@@ -752,6 +752,7 @@ const FundingDetail = () => {
                                                 <div key={reward.fundingReward.rewardId}>
                                                     <div>{reward.fundingReward.rewardName}</div>
                                                     <div>{reward.fundingReward.count}개</div>
+                                                    <div>{reward.fundingReward.count}개</div>
                                                     <div>{new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
                                                 </div>
                                             ))}
