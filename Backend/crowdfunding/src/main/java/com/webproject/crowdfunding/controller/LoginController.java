@@ -4,8 +4,10 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webproject.crowdfunding.aop.ValidAspect;
@@ -28,4 +30,8 @@ public class LoginController {
 		return ResponseEntity.ok(loginService.login(loginReqDto));
 	}
 	
+	@GetMapping("/auth/authenticated")
+	public ResponseEntity<?> authenticated(@RequestHeader(value = "Authorization") String accessToken) {
+		return ResponseEntity.ok().body(loginService.authenticated(accessToken));
+	}
 }

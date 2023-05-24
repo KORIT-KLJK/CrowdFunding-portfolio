@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.webproject.crowdfunding.entity.User;
 import com.webproject.crowdfunding.exception.CustomException;
 import com.webproject.crowdfunding.exception.ErrorMap;
-import com.webproject.crowdfunding.repository.SignUpRepository;
+import com.webproject.crowdfunding.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
 
-	public final SignUpRepository signUpRepository;
+	public final UserRepository signUpRepository;
 	
 	// iuejeong: 로그인 정보를 담고 있는 부분
 	@Override

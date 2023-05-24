@@ -34,4 +34,7 @@ public class LoginService {
 		return jwtTokenProvider.generateToken(authentication);
 	}
 	
+	public boolean authenticated(String accessToken) {
+		return jwtTokenProvider.validateToken(jwtTokenProvider.getToken(accessToken));
+	}
 }

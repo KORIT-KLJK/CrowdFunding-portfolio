@@ -273,7 +273,7 @@ const GivingDetail = () => {
     const navigate = useNavigate();
 
     const givingDetail = useQuery(["givingDetail"], async () => {
-        return await axios.get(`http://localhost:8080/givingDetail/${pageId}`);
+        return await axios.get(`http://localhost:8080/giving/detail/${pageId}`);
     });
     
     const mostGivings = useQuery(["mostGivings"], async () => {
