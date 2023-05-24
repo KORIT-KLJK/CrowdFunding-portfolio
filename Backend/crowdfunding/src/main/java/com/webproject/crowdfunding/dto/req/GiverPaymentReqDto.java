@@ -1,17 +1,17 @@
 package com.webproject.crowdfunding.dto.req;
 
-import com.webproject.crowdfunding.entity.GivingModalPay;
+import com.webproject.crowdfunding.entity.GiverPayment;
 
 import lombok.Data;
 
 @Data
-public class GivingModalPayReqDto {
+public class GiverPaymentReqDto {
 	private int userId;
 	private int givingTotal;
 	private int pageId;
 	
-	public GivingModalPay toGivingModalPayEntity() {
-		return GivingModalPay.builder()
+	public GiverPayment toGiverPaymentEntity() {
+		return GiverPayment.builder()
 				.userId(userId)
 				.givingTotal(givingTotal)
 				.pageId(pageId)

@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
+import { async } from "q";
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const modalContainer = css`
     position: fixed;
@@ -156,12 +157,24 @@ const givingBtn = css`
     cursor: pointer;
 `;
 
-const GivingModal = ({ isOpen, isClose, givingDetail }) => {
+const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
     const [ givingTotal, setGivingTotal ] = useState(0);
+    const queryClient = useQueryClient();
 
-    const givingSubmit = useMutation(async () => {
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers : {
+                Authorization : `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        }
+        return await axios.get("http://localhost:8080/principal", option)
+    })
+
+    console.log(principalUser)
+
+    const giverSubmit = useMutation(async () => {
         const data = {
-            userId: null,
+            userId: queryClient.getQueryData("principal").data.userId,
             givingTotal,
             pageId: givingDetail.pageId
         }
@@ -170,13 +183,9 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post(`http://localhost:8080/giving/modal/${givingDetail.pageId}`, {}, option);
+        const response = await axios.post(`http://localhost:8080/giver/payment/${givingDetail.pageId}`, data, option);
         return response;
     });
-
-    const givingSubmitHandle = () => {
-        
-    }
 
     const givingTotalInputHandle = (e) => {
         setGivingTotal(e.target.value);
@@ -205,7 +214,7 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
                         </ul>
                     </div>
                     <div>
-                        <button css={givingBtn} onClick={givingSubmitHandle}>확인</button>
+                        <button css={givingBtn} onClick={giverSubmit}>확인</button>
                     </div>
                 </div>
             </div>
@@ -213,4 +222,4 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
     );
 }
 
-export default GivingModal;
+export default GiverPayment;

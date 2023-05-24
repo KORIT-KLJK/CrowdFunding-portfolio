@@ -48,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		http.authorizeRequests()
-			.antMatchers("/auth/**", "/image/**", "/funding/**")
+			.antMatchers("/auth/**", "/image/**", "/funding/**", "/giving/**", "/**")
 			.permitAll() // code8144: 토큰을 활용하는 경우 모든 요청에 대해 접근이 가능하도록 함
-			.anyRequest()
+			.antMatchers("/giving/payment/**")
 			.authenticated()
 			.and() // code8144: 토큰을 활용하면 세션이 필요가 없으므로 STATELESS로 설정하여 Session을 사용하지 않는다
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

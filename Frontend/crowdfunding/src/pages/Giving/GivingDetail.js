@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import GivingModal from "../../components/Modal/GivingModal";
+import GivingModal from "../../components/Modal/GiverPayment";
 
 const mainContainer = css`
     position: relative;
