@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React from 'react';
-import CardItem from './CardItem/CardItemGiving';
 import { FaGreaterThan } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import CardItemGiving from './CardItem/CardItemGiving';

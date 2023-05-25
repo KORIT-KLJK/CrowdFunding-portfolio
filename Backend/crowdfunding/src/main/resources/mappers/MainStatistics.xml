@@ -1,45 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.MainStatistics">
-	<resultMap type="" id="">
-	
+<mapper namespace="com.webproject.crowdfunding.repository.MainStatisticsRepository">
+	<!--  
+			테이블의 기준으로 한 쿼리문이 완성되기때문에 해당 쿼리문에 맞춰 select문과 rusultMap을 만들어 줬음.
+			resultMap의 type은 Entity를 호출 하도록 해야함. column은 db의 column 이름이고 property는 
+			호출한 Entity의 변수명과 동일하며 마이바티스를 통해 서로 값을 담아 주고 있음.
+	-->
+	<resultMap type="com.webproject.crowdfunding.entity.MainStatisticsGiver" id="StatisticsGiverMap">
+		<result property="giverTotal" column="giver_total"/>
+		<result property="givingTotalSum" column="giving_total_sum"/>
+	</resultMap>
+	<resultMap type="com.webproject.crowdfunding.entity.MainStatisticsFunder" id="StatisticsFunderMap">
+		<result property="funderTotal" column="funder_total"/>
+		<result property="fundingPriceTotal" column="funding_price_total"/>
 	</resultMap>
 	
-	<select id="getGivings" parameterType="hashMap" resultMap="GivingMap">
-       select
-          gpt.giving_page_id as page_id,
-           gpt.giving_name as page_title,
-           ct.center_name,
-           gpt.main_img_url as img_url,
-           gt.giving_total as giving_total,
-           gpt.category_id,
-           gpt.goal_total,
-           gct.giving_category_id,
-           gct.giving_category_name,
-           if(now() &lt; end_date, '진행중', '종료') as event_status,
-           round(sum(gt.giving_total) / goal_total * 100) as achievement_rate,
-           tdg.today_givers,
-           tdg.today_donations
-       from
-          giving_page_tb gpt
-          left outer join center_tb ct on(ct.center_id = gpt.center_id)
-          left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
-          left outer join giving_category_tb gct on(gct.giving_category_id = gpt.category_id)
-           left outer join (SELECT 
-                        giving_page_id,
-                        COUNT(DISTINCT giver_id) AS today_givers, 
-                        SUM(giving_total) AS today_donations
-                     FROM 
-                        giver_tb
-                     WHERE 
-                        DATE(giving_date) = CURDATE()
-                     group by
-                        giving_page_id) tdg on(tdg.giving_page_id = gpt.giving_page_id)
-       where
-           1 = 1
-       group by
-          gpt.giving_page_id
-       order by
-           
+	<select id="getGivingTotal" parameterType="Integer" resultMap="StatisticsGiverMap">
+   		select
+			count(distinct user_id) as giver_total,	
+		    sum(giving_total) as giving_total_sum
+		from
+			giver_tb
+		where
+			giving_date = DATE(NOW());
    </select>
+   <!--  -->
+   <select id="getFundingTotal" parameterType="Integer" resultMap="StatisticsFunderMap">
+   		select
+			count(distinct ft.user_id) as funder_total,
+		    sum(rt.reward_price) as funding_price_total
+		from
+			funder_tb ft
+		    left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+		where
+			DATE(order_date) = DATE(NOW());
+   </select>
+ 
 </mapper>
