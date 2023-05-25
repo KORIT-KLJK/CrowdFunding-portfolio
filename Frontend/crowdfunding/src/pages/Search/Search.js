@@ -190,7 +190,8 @@ const Search = () => {
                                  </div>
                                  <div css={S.centerName}> <HiHome/> {page.userName}</div>
                              </div>
-                             <div css={S.panelTotalAmount}>총 <div css={S.Amount}>{page.pageTotalAmount}</div> 원</div>
+                             <div css={S.panelTotalAmount}>총 <div css={S.Amount}>{new Intl.NumberFormat("en-US")
+                                .format(page.pageTotalAmount)}</div> 원</div>
                          </div>
                     ))}
                    
@@ -206,3 +207,4 @@ const Search = () => {
 
 export default Search;<div>
 <input type="text"/></div>
+

@@ -31,14 +31,14 @@ const StatisticsTitle = css`
     width: 145px;
     border-radius: 15px;
     background-color: #0eaa30;
-    font-size: 17px;
+    font-size: 19px;
     color: hsla(0, 0%, 100%, .85);
 `;
 
 const StatisticsTitleSub = css`
     width: 1140px;
-    margin-top: 24px;
-    font-size: 24px;
+    margin-top: 20px;
+    font-size: 30px;
     color: #fff;
 `;
 
@@ -50,30 +50,36 @@ const StatisticsList = css`
     flex-flow: wrap;
     position: relative;
     right: 0;
+    top: 8px;
     text-align: right;
 `;
 
 const StaticsItem = css`
     display: flex;
-    justify-content: right;
-    align-items: center;
     margin-bottom: 15px;
-    vertical-align: top;
 `;
 
 const DonationStatisticsTitle = css`
     margin-right: 20px;
-    margin-left: 38px;
-    font-size: 18px;
+    margin-left: 45px;
+    font-size: 24px;
     line-height: 36px;
+    color: hsla(0, 0%, 100%, .85);
+`;
+const DonationStatisticsSubTitle = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
     color: hsla(0, 0%, 100%, .85);
 `;
 
 const DonationStatisticsData = css`
     width: 150px;
     overflow: hidden;
-    font-size: 18px;
+    font-size: 19px;
     line-height: 36px;
+    margin-right: 5px;
     color: hsla(0, 0%, 100%, .85);
     text-align: right;
 
@@ -99,8 +105,6 @@ const GivingStatistics = () => {
         return <></>;
     }
 
-    console.log(statisticsFunding);
-
     const statisticsData = statistics.data.data;
     const statisticsFundingData = statisticsFunding.data.data;
     
@@ -114,22 +118,30 @@ const GivingStatistics = () => {
                 <div css={StatisticsList}>
                             <div css={StaticsItem}>
                                 <div css={DonationStatisticsTitle}>기부 참여</div>
-                                <div>
-                                    <span css={DonationStatisticsData}>{statisticsData.giverTotal} 명</span>
+                                <div css={DonationStatisticsSubTitle}>
+                                    <span css={DonationStatisticsData}>{statisticsData.giverTotal}</span>
+                                    명
                                 </div>
                                 <div css={DonationStatisticsTitle}>기부 금액</div>
-                                <div>
-                                    <div css={DonationStatisticsData}>{statisticsData.givingTotalSum} 원</div>
+                                <div css={DonationStatisticsSubTitle}>
+                                    <div css={DonationStatisticsData}>
+                                        {new Intl.NumberFormat("en-US")
+                                            .format(statisticsData.givingTotalSum)}
+                                    </div>
+                                    원
                                 </div>
                             </div>
                             <div css={StaticsItem}>
                                 <div css={DonationStatisticsTitle}>펀딩 참여</div>
-                                <div>
-                                    <span css={DonationStatisticsData}>{statisticsFundingData.funderTotal} 명</span>
+                                <div css={DonationStatisticsSubTitle}>
+                                    <span css={DonationStatisticsData}>{statisticsFundingData.funderTotal}</span>
+                                    명
                                 </div>
                                 <div css={DonationStatisticsTitle}>참여 금액</div>
-                                <div>
-                                    <div css={DonationStatisticsData}>{statisticsFundingData.fundingPriceTotal} 원</div>
+                                <div css={DonationStatisticsSubTitle}>
+                                    <div css={DonationStatisticsData}>{new Intl.NumberFormat("en-US")
+                                            .format(statisticsFundingData.fundingPriceTotal)}</div>
+                                    원
                                 </div>
                             </div> 
                 </div>
