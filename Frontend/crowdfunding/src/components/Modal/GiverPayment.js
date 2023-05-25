@@ -2,9 +2,12 @@
 import { css } from "@emotion/react";
 import axios from "axios";
 import { async } from "q";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { authenticatedState } from "../../pages/Login/AuthAtom";
 
 const modalContainer = css`
     position: fixed;
@@ -157,8 +160,12 @@ const givingBtn = css`
     cursor: pointer;
 `;
 
-const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
+const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
     const [ givingTotal, setGivingTotal ] = useState(0);
+    const navigate = useNavigate();
+
+
+    const queryClient = useQueryClient();
 
     ReactModal.setAppElement('#root');
 
@@ -170,7 +177,6 @@ const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
         }
         return await axios.get("http://localhost:8080/principal", option)
     })
-
 
     const giverPost = useMutation(async () => {
         const data = {
@@ -185,25 +191,36 @@ const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
             }
         }
         const response = await axios.post("http://localhost:8080/giver/payment", JSON.stringify(data), option);
+        queryClient.fetchQuery("givingDetail");
+        setIsOpen(false);
         return response;
     });
 
-    if(principalUser.isLoading) {
-        return <></>
-    }
+    const handleConfirm = async () => {
+            const confirmed = window.confirm("기부 하시겠습니까?");
+            if (confirmed) {
+                giverPost.mutate();
+            } else {
+                setIsOpen(false);
+            }
+        };
+
+        if(principalUser.isLoading) {
+            return <></>
+        } 
 
     const givingTotalInputHandle = (e) => {
         setGivingTotal(e.target.value);
     }
-     
 
+    
     return (
-        <ReactModal isOpen={isOpen}>
+        <ReactModal isOpen={isOpen} onRequestClose={() => setIsOpen(false)}>
             <div css={modalContainer}>
                 <div css={modalBackDrop}>
+                    <button css={modalCloseBtn} onClick={()=> {setTimeout(() => setIsOpen(false), 10) }}>✖</button>
                     <div css={modalHeaderBox}>
                         <div css={modalPageTitle}>{givingDetail.pageTitle}<br /><span css={pageTitleUnicef}>By Unicef</span></div>
-                        <button css={modalCloseBtn} onClick={isClose}>✖</button>
                     </div>
                     <div css={modalBodyBox}>
                         <div css={modalGivingMentBox}>
@@ -220,7 +237,7 @@ const GiverPayment = ({ isOpen, isClose, givingDetail }) => {
                         </ul>
                     </div>
                     <div>
-                        <button css={givingBtn} onClick={() => giverPost.mutate()}>확인</button>
+                        <button css={givingBtn} onClick={handleConfirm}>확인</button>
                     </div>
                 </div>
             </div>
