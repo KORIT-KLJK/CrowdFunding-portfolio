@@ -8,12 +8,16 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.FunderReqDto;
+import com.webproject.crowdfunding.dto.req.FundingDeleteReqDto;
+import com.webproject.crowdfunding.dto.req.FundingModifyReqDto;
 import com.webproject.crowdfunding.dto.resp.BreakdownRespDto;
 import com.webproject.crowdfunding.dto.resp.BusinessInfoRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.RewardRespDto;
 import com.webproject.crowdfunding.entity.Address;
 import com.webproject.crowdfunding.entity.Funder;
+import com.webproject.crowdfunding.entity.Funding;
+import com.webproject.crowdfunding.entity.Reward;
 import com.webproject.crowdfunding.repository.FundingDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -72,6 +76,23 @@ public class FundingDetailService {
 					.addressId(funder.getAddressId())
 					.rewardId(funder.getRewardId())
 					.build());
+		});
+		return 0;
+	}
+	
+	public int fundingModify(FundingModifyReqDto fundingModifyReqDto) {
+		Funding fundingToEntity = fundingModifyReqDto.fundingToEntity();
+		return fundingDetailRepository.saveFundingModify(fundingToEntity);
+	}
+	
+	public int fundingDelete(FundingDeleteReqDto fundingDeleteReqDto) {
+		List<Reward> rewards = fundingDeleteReqDto.deleteFundingToEntity();
+		System.out.println(rewards);
+		rewards.forEach(reward -> {
+			fundingDetailRepository.saveDeleteFunding(Reward.builder()
+													.fundingId(reward.getFundingId())
+													.rewardId(reward.getRewardId())
+													.build());
 		});
 		return 0;
 	}

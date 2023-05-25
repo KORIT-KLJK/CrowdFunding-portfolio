@@ -18,4 +18,6 @@ public interface FundingDetailRepository {
 	public List<Funding> getBreakdown(int pageId);
 	public Address getAddressId(int userId);
 	public int toSaveFunder(Funder funder);
+	public int saveFundingModify(Funding funding);
+	public int saveDeleteFunding(Reward reward);
 }

@@ -7,6 +7,63 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import { authenticatedState } from "../Login/AuthAtom";
 
+export const adminContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+`;
+
+export const fundingModifyButton = css`
+    border: none;
+    border-radius: 50%;
+    background-color: #1f9eff;
+    margin-right: 50px;
+    width: 120px;
+    height: 50px;
+    cursor: pointer;
+`;
+
+export const FundingModifyTitle = css`
+    font-size: 30px;
+`;
+
+export const fundingDeleteMessage = css`
+    padding-top: 40px;
+    font-size: 20px;
+`;
+
+export const modifyContainer = css`
+    padding-top: 40px;
+    width: 100%;
+`;
+
+export const modifyTitleTxt = css`
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 20px;
+`;
+
+export const midifyValue = css`
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #dbdbdb;
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+`;
+
+export const fundingDeleteButton = css`
+    border: none;
+    border-radius: 50%;
+    background-color: #888888;
+    margin-right: 50px;
+    width: 120px;
+    height: 50px;
+    cursor: pointer;
+`;
+
 export const fundingDetailContainer = css`
     width: 100%;
     padding-top: 70px;
@@ -325,13 +382,13 @@ export const joinFundHeader = css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px 0px;
     width: 100%;
-    border-bottom: 1px solid #dbdbdb;
 `;
 
 export const joinFundTitle = css`
-    font-size: 20px;
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
 `;
 
 export const joinFundNickname = css`
@@ -619,13 +676,25 @@ export const businessInfoDetailContent = css`
 
 const FundingDetail = () => {
     const { pageId } = useParams();
+    const [ refresh, setRefresh ] = useState(true);
     const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
     const [ rewards, setRewards ] = useState([]);
     const [ totalQuantity, setTotalQuantity ] = useState(0);
     const [ totalPrice, setTotalPrice ] = useState(0);
     const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
     const [ isOpen, setIsOpen ] = useState(false);
+    const [ modifyOpen, setModifyOpen ] = useState(false);
+    const [ deleteOpen, setDeleteOpen ] = useState(false);
     const accessToken = localStorage.getItem("accessToken");
+    const [ modify, setModify ] = useState({
+        fundingId: pageId,
+        fundingName: "",
+        endDate: 0,
+        goalTotal: 0
+    });
+    
+    const [ role, setRole ] = useState();
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -656,7 +725,11 @@ const FundingDetail = () => {
                 Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.get("http://localhost:8080/principal", option)
+        const response = await axios.get("http://localhost:8080/principal", option)
+        setRole(response.data.authorities.split(",").includes("ROLE_ADMIN"));
+        return response;
+    },{
+        enabled: !!accessToken
     })
 
     const fundingDetail = useQuery(["fundingDetail"], async () => {
@@ -686,13 +759,45 @@ const FundingDetail = () => {
             }
         }
         return await axios.get("http://localhost:8080/funding/address", option);
+    }, {
+        enabled: !!principalUser.data
     })
-    
-    
-    if(principalUser.isLoading) {
-        return <></>
-    }
 
+    const modifyInfo = useMutation(async () => {
+        const data = {
+            ...modify
+        }
+
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.put("http://localhost:8080/admin/funding/modify", data, option)
+    }, {
+        enabled: refresh,
+
+        onSuccess: () => {
+            alert("펀딩 내용이 성공적으로 수정 되었습니다.");
+            setRefresh(false)
+            setModifyOpen(false);
+        }
+    })
+
+    const deleteFunding = useMutation(async (deleteInfo) => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            data: deleteInfo
+        }
+        return await axios.delete("http://localhost:8080/admin/funding/delete", option)
+    }, {
+        onSuccess: () => {
+            alert("펀딩 내용이 성공적으로 삭제 되었습니다.")
+            navigate("/funding")
+        }
+    })
     if(fundingDetail.isLoading) {
         return <></>
     }
@@ -708,6 +813,11 @@ const FundingDetail = () => {
     if(fundingJoinBreakdown.isLoading) {
         return <></>
     }
+
+    if(principalUser.isLoading || getAddress.isLoading) {
+        return <></>;
+    }
+
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
     
@@ -838,11 +948,101 @@ const FundingDetail = () => {
         setIsOpen(false);
     }
 
+    const adminModifyHandleSubmit = () => {
+        setModifyOpen(true);
+    }
+
+    const modifyHandle = (e) => {
+        const {name, value} = e.target
+        setModify({...modify, [name]: value})
+    }
+
+    const modifyIdentifyHandleSubmit = () => {
+        modifyInfo.mutate();
+    }
+
+    const modifyCancelHandleSubmit = () => {
+        setModifyOpen(false);
+    }
+
+    const deleteIdentifyHandleSubmit = () => {
+        // funding_id, reward_id
+        // reward_tb에 trigger를 만들어줌.
+        // reward_tb가 삭제되기 전에 funder에 reward_id를 삭제.
+        // 후에 funding_page_tb에서 reward_tb에 있는 funding_id 삭제.
+        // 그럼 xml은?
+        // reward_tb 먼저 delete, reward_id가지고 funder_tb에 reward_id 삭제.
+        // 후에 funding_page_tb delete.
+        // 그럼 pageId와 rewardId만 넘기면 되겠지?
+        const rewardIds = [];
+        fundingDetailReward.data.data.rewardList.map(reward => 
+            rewardIds.push(reward.rewardId)
+        )
+        console.log(rewardIds)
+        console.log(pageId)
+        deleteFunding.mutate({
+            rewardIds: rewardIds,
+            fundingId: pageId
+        });
+    }
+
+    const deleteCancelHandleSubmit = () => {
+        setDeleteOpen(false);
+    }
+
+    const adminDeleteHandleSubmit = () => {
+        setDeleteOpen(true);
+    }
+
     return (
         <div>
-            <div>
-                
-            </div>
+            {role ?
+                <div css={adminContainer}>
+                    <button css={fundingModifyButton} onClick={adminModifyHandleSubmit}>펀딩 수정</button>
+                    {modifyOpen ?
+                        <div css={joinFundContainer}>
+                            <div css={joinFundIdentifyContainer}>
+                                <div css={joinFundIdentifyMain}>
+                                    <div css={FundingModifyTitle}>펀딩 수정</div>
+                                    <div css={joinFundHeader}>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>제목 수정</div>
+                                            <input css={midifyValue} defaultValue={funding.fundingTitle} onChange={modifyHandle} name="fundingName"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>종료일 수정</div>
+                                            <input css={midifyValue} onChange={modifyHandle} name="endDate"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>목표 금액 수정</div>
+                                            <input css={midifyValue} onChange={modifyHandle} name="goalTotal"/>
+                                        </div>
+                                    </div>
+                                    <div css={joinIdentifyButtonContainer}>
+                                        <button css={joinIdentifyButton} onClick={modifyIdentifyHandleSubmit}>확인</button>
+                                        <button css={joinCancelButton} onClick={modifyCancelHandleSubmit}>취소</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    : ""}
+                        <button css={fundingDeleteButton} onClick={adminDeleteHandleSubmit}>펀딩 삭제</button>
+                        {deleteOpen ?
+                            <div css={joinFundContainer}>
+                                <div css={joinFundIdentifyContainer}>
+                                    <div css={joinFundIdentifyMain}>
+                                        <div css={FundingModifyTitle}>펀딩 삭제</div>
+                                        <div css={fundingDeleteMessage}>펀딩을 정말 삭제 하시겠습니까?</div>
+                                        <div css={joinIdentifyButtonContainer}>
+                                            <button css={joinIdentifyButton} onClick={deleteIdentifyHandleSubmit}>확인</button>
+                                            <button css={joinCancelButton} onClick={deleteCancelHandleSubmit}>취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        : ""}
+                    </div>
+                : ""}
             <div css={fundingDetailContainer}>
                 <div css={fundingDetailHeader}>
                     <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
