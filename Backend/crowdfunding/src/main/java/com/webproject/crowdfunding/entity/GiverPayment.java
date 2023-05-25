@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GivingModalPay {
+public class GiverPayment {
 	private int userId;
 	private int givingTotal;
 	private int pageId;

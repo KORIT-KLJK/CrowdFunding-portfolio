@@ -37,7 +37,7 @@
 		    ct.center_phone_number,
 		    ct.center_ceo,
 		    gpt.main_img_url AS img_url,
-		    gt.giving_total AS giving_total,
+		    sum(gt.giving_total) AS giving_total,
 		    gpt.story_title,
 		    gpt.story_content,
 		    gpt.category_id,

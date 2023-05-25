@@ -2,9 +2,11 @@
 import { css } from "@emotion/react";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import GivingModal from "../../components/Modal/GivingModal";
+import GiverPayment from "../../components/Modal/GiverPayment";
+import { authenticatedState } from "../Login/AuthAtom";
+import { useRecoilState } from "recoil";
 
 const mainContainer = css`
     position: relative;
@@ -269,8 +271,10 @@ const todayText = css`
 const GivingDetail = () => {
     const { pageId } = useParams();
     const [searchParams, setSearchParams] = useState();
-    const [isOpen, setOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
+    const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+
 
     const givingDetail = useQuery(["givingDetail"], async () => {
         return await axios.get(`http://localhost:8080/giving/detail/${pageId}`);
@@ -298,20 +302,16 @@ const GivingDetail = () => {
     }
 
     const openModal = () => {
-        setOpen(true);
-    }
-
-    const closeModal = () => {
-        setOpen(false);
-    }
-
-    const modalHandleClick = () => {
-        setOpen(true);
+        if(!authenticated) {
+            navigate("/login")
+        }else {
+            setIsOpen(true);
+        }
     }
 
     const outsideModalClick = (e) => {
         if (e.target.classList.contains('modal')) {
-            setOpen(false);
+            setIsOpen(false);
         }
     }
 
@@ -351,7 +351,7 @@ const GivingDetail = () => {
                             </div>
                         </div>
                             <div css={givingButton} onClick={openModal}>
-                                <GivingModal isOpen={isOpen} isClose={closeModal} givingDetail={givingDetail.data.data} />
+                                <GiverPayment isOpen={isOpen} setIsOpen={setIsOpen} givingDetail={givingDetail.data.data} />
                                 모금함 기부하기
                             </div>
                             <div css={givingGroupBanner}>

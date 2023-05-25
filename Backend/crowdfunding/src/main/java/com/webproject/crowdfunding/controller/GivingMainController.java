@@ -15,7 +15,7 @@ public class GivingMainController {
 	private final GivingService givingService;
 	
 	@GetMapping("/giving/main")
-	public ResponseEntity<?> givingData(SearchGivingReqDto searchGivingReqDto) {	
+	public ResponseEntity<?> givingData(SearchGivingReqDto searchGivingReqDto) {
 		return ResponseEntity.ok(givingService.toSaveGiving(searchGivingReqDto));
 	}
 	

@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
-import React, { useState } from 'react';
+import { async } from "q";
+import React, { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { authenticatedState } from "../../pages/Login/AuthAtom";
 
 const modalContainer = css`
     position: fixed;
@@ -156,39 +160,67 @@ const givingBtn = css`
     cursor: pointer;
 `;
 
-const GivingModal = ({ isOpen, isClose, givingDetail }) => {
+const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
     const [ givingTotal, setGivingTotal ] = useState(0);
+    const navigate = useNavigate();
 
-    const givingSubmit = useMutation(async () => {
+
+    const queryClient = useQueryClient();
+
+    ReactModal.setAppElement('#root');
+
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers : {
+                Authorization : `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        }
+        return await axios.get("http://localhost:8080/principal", option)
+    })
+
+    const giverPost = useMutation(async () => {
         const data = {
-            userId: null,
+            userId: principalUser.data.data.userId,
             givingTotal,
             pageId: givingDetail.pageId
         }
         const option = {
             headers: {
+                "Content-Type" : "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post(`http://localhost:8080/giving/modal/${givingDetail.pageId}`, {}, option);
+        const response = await axios.post("http://localhost:8080/giver/payment", JSON.stringify(data), option);
+        queryClient.fetchQuery("givingDetail");
+        setIsOpen(false);
         return response;
     });
 
-    const givingSubmitHandle = () => {
-        
-    }
+    const handleConfirm = async () => {
+            const confirmed = window.confirm("기부 하시겠습니까?");
+            if (confirmed) {
+                giverPost.mutate();
+            } else {
+                setIsOpen(false);
+            }
+        };
+
+        if(principalUser.isLoading) {
+            return <></>
+        } 
 
     const givingTotalInputHandle = (e) => {
         setGivingTotal(e.target.value);
     }
 
+    
     return (
-        <ReactModal isOpen={isOpen}>
-            <div css={modalContainer} onClick={(e) => e.stopPropagation()}>
+        <ReactModal isOpen={isOpen} onRequestClose={() => setIsOpen(false)}>
+            <div css={modalContainer}>
                 <div css={modalBackDrop}>
+                    <button css={modalCloseBtn} onClick={()=> {setTimeout(() => setIsOpen(false), 10) }}>✖</button>
                     <div css={modalHeaderBox}>
                         <div css={modalPageTitle}>{givingDetail.pageTitle}<br /><span css={pageTitleUnicef}>By Unicef</span></div>
-                        <button css={modalCloseBtn} onClick={isClose}>✖</button>
                     </div>
                     <div css={modalBodyBox}>
                         <div css={modalGivingMentBox}>
@@ -205,7 +237,7 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
                         </ul>
                     </div>
                     <div>
-                        <button css={givingBtn} onClick={givingSubmitHandle}>확인</button>
+                        <button css={givingBtn} onClick={handleConfirm}>확인</button>
                     </div>
                 </div>
             </div>
@@ -213,4 +245,4 @@ const GivingModal = ({ isOpen, isClose, givingDetail }) => {
     );
 }
 
-export default GivingModal;
+export default GiverPayment;
