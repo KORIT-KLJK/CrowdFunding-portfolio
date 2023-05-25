@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { authenticatedState } from '../../../pages/Login/AuthAtom';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 const mainHeader = css`
     border-bottom: 1px solid #e8e8e8;
@@ -22,6 +24,7 @@ const header = css`
 const headerLogo = css`
     float: left;
     margin-top: 21px;
+    cursor: pointer;
 `;
 
 const headerMenuList = css`
@@ -88,17 +91,22 @@ const HeaderMain = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (accessToken) {
-        setAuthenticated(true);
-      } else {
-        setAuthenticated(false);
-      }
-    }, []);
+        if (accessToken) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+      }, []);
+
+
+    const mainHandleSubmit = () => {
+        navigate("/");
+    }
 
     const loginNavigateHandle = () => {
         if (authenticated) {
-            localStorage.removeItem('accessToken');
             setAuthenticated(false);
+            localStorage.removeItem('accessToken');
             navigate('/login');
         }else {
             navigate('/login');
@@ -109,7 +117,7 @@ const HeaderMain = () => {
         <div css={mainHeader}>
             <div>
                 <div css={header}>
-                    <div css={headerLogo}>LOGO</div>
+                    <div css={headerLogo} onClick={mainHandleSubmit}>LOGO</div>
                     <div css={headerMenuList}>
                         <div css={menuDonation}><Link to="/giving">기부</Link></div>
                         <div css={menuFunding}><Link to="/funding">펀딩</Link></div>

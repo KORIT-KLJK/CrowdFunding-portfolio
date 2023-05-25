@@ -35,12 +35,9 @@ const Login = () => {
             const accessToken = response.data.accessToken;
             localStorage.setItem("accessToken", accessToken); 
             setAuthenticated(true);
+            window.location.replace("/");
         } catch(error) {
             setErrorMessages({email: "", password: "", ...error.response.data.errorData});
-        }
-    }, {
-        onSuccess: () => {
-            window.location.replace("/")
         }
     })
 

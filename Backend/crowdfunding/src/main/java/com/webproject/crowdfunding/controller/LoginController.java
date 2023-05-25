@@ -31,6 +31,7 @@ public class LoginController {
 	
 	@GetMapping("/auth/authenticated")
 	public ResponseEntity<?> authenticated(@RequestHeader(value = "Authorization") String accessToken) {
+		System.out.println(accessToken);
 		return ResponseEntity.ok().body(loginService.authenticated(accessToken));
 	}
 }

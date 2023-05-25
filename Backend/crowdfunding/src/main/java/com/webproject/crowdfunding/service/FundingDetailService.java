@@ -59,7 +59,6 @@ public class FundingDetailService {
 	}
 	
 	public Address getAddressId(int userId) {
-		System.out.println(userId);
 		return fundingDetailRepository.getAddressId(userId);
 	}
 	
@@ -74,7 +73,6 @@ public class FundingDetailService {
 					.rewardId(funder.getRewardId())
 					.build());
 		});
-		System.out.println(funderEntity);
 		return 0;
 	}
 	

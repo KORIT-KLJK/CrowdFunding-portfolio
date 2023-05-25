@@ -21,7 +21,6 @@ public class SignUpService {
 	private User userEntity;
 	
 	 public void duplicatedEmail(String email) {
-		System.out.println(email);
 		if(signUpRepository.findUserByEmail(email) != null) {
 			throw new CustomException("Duplicated Email", 
 					ErrorMap.builder()
@@ -46,8 +45,6 @@ public class SignUpService {
 	}
 	
 	public void address(AddressReqDto addressReqDto) {
-		System.out.println(addressReqDto);
-		System.out.println(userEntity.getUserId());
 		Address addressEntity = addressReqDto.toEntity();
 		addressEntity.setUserId(userEntity.getUserId());
 		signUpRepository.saveAddress(addressEntity);

@@ -47,13 +47,12 @@ public class FundingDetailController {
 	
 	@GetMapping("/funding/address")
 	public ResponseEntity<?> getAddress(@RequestParam int userId) {
-		System.out.println(userId);
+		System.out.println("userId: " + userId);
 		return ResponseEntity.ok(fundingDetailService.getAddressId(userId));
 	}
 	
-	@PostMapping("/funding/payment")
+	@PostMapping("/auth/funding/payment")
 	public ResponseEntity<?> toPaymentInfo(@RequestBody FunderReqDto funderReqDto) {
-		System.out.println(funderReqDto);
 		return ResponseEntity.ok(fundingDetailService.saveFunder(funderReqDto));
 	}
 	

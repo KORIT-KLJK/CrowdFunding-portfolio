@@ -38,7 +38,6 @@ public class SignUpController {
 	@ValidAspect
 	@PostMapping("/auth/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
-		System.out.println(signUpReqDto);
 		signUpService.signUp(signUpReqDto);
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.
 		return ResponseEntity.ok().body(true);
@@ -47,7 +46,6 @@ public class SignUpController {
 	@ValidAspect
 	@PostMapping("/auth/address")
 	public ResponseEntity<?> address(@Valid @RequestBody AddressReqDto addressReqDto, BindingResult bindingResult) {
-		System.out.println(addressReqDto);
 		signUpService.address(addressReqDto);
 		return ResponseEntity.ok().body(true);
 	}

@@ -642,7 +642,7 @@ const FundingDetail = () => {
                 Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.post("http://localhost:8080/funding/payment", funder, option);
+        return await axios.post("http://localhost:8080/auth/funding/payment", funder, option);
     }, {
         onSuccess: () => {
             alert("펀딩에 성공하였습니다.");
@@ -674,7 +674,8 @@ const FundingDetail = () => {
     const fundingJoinBreakdown = useQuery(["fundingJoinBreakDown"], async () => {
         return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
     })
-
+    
+    
     const getAddress = useQuery(["getAddress"], async () => {
         const option = {
             params: {
@@ -686,11 +687,11 @@ const FundingDetail = () => {
         }
         return await axios.get("http://localhost:8080/funding/address", option);
     })
-
+    
+    
     if(principalUser.isLoading) {
         return <></>
     }
-
 
     if(fundingDetail.isLoading) {
         return <></>
@@ -707,7 +708,6 @@ const FundingDetail = () => {
     if(fundingJoinBreakdown.isLoading) {
         return <></>
     }
-
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
     
@@ -840,6 +840,9 @@ const FundingDetail = () => {
 
     return (
         <div>
+            <div>
+                
+            </div>
             <div css={fundingDetailContainer}>
                 <div css={fundingDetailHeader}>
                     <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
