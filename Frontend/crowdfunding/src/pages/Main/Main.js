@@ -7,7 +7,7 @@ import Recommend from '../../components/Recommend/Recommend';
 import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
 import CardItemGiving from '../../components/MainCard/MainDonationList/CardItem/CardItemGiving';
 import MainFundingList from '../../components/MainCard/MainFundingList/MainFundingList';
-import Statistics from '../../components/Statistics/Statistics';
+import GivingStatistics from '../../components/Statistics/GivingStatistics';
 
 const mainContainer = css`
 `;
@@ -38,7 +38,7 @@ const Main = () => {
                     <Recommend />
                     <MainGivingList />
                     <MainFundingList />
-                    <Statistics />
+                    <GivingStatistics />
                 </main>
             </div>
             <footer>

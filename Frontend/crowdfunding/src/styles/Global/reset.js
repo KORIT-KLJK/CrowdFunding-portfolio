@@ -5,9 +5,17 @@ export const Reset = css`
    v2.0 | 20110126
    License: none (public domain)
 */
+  @font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+  };
 
   * {
     box-sizing: border-box;
+    font-family: 'LINESeedKR-Bd';
+    font-size: auto;
   }
 
   * {
@@ -162,4 +170,6 @@ strong {
   font-weight: bold;
 }
 `;
+
+
 
