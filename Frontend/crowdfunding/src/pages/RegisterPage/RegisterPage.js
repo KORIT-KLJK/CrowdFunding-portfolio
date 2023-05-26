@@ -367,6 +367,7 @@ const RegisterPage = () => {
         imgFiles.forEach(imgFile => {
             formData.append("imgUrl", imgFile.file);
         })
+        formData.append("goalTotal", fundingInputParams.goalTotal);
         formData.append("endDate", fundingInputParams.endDate);
         formData.append("rewardName", fundingInputParams.rewardName)
         formData.append("rewardPrice", fundingInputParams.rewardPrice)

@@ -159,13 +159,15 @@
 			funding_id = #{fundingId}
 	</update>
 	
-	<delete id="saveDeleteFunding" parameterType="com.webproject.crowdfunding.entity.Reward">
+	<delete id="saveDeleteFundingId" parameterType="com.webproject.crowdfunding.entity.Reward">
 		delete
 		from
 			funding_page_tb
 		where
 			funding_id = #{fundingId};
-			
+	</delete>
+	
+	<delete id="saveDeleteRewardId">
 		delete
 		from
 			reward_tb

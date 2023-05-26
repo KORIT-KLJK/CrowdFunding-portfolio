@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.MainCardItemFundingRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.MainCardItemFunding" id="MainCardItemFundingMap">
+		<id property="pageId" column="page_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="joinPercent" column="join_percent"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="funderId" column="funder_id"/>
+		<result property="rewardPrice" column="reward_price"/>
+		<result property="rewardId" column="reward_id"/>
+	</resultMap>
+
+	<select id="saveCardItemFunding" parameterType="hashMap" resultMap="MainCardItemFundingMap">
+		select 
+		   fpt.funding_id AS page_id,
+		   fpt.funding_summary_name,
+		   fpt.funding_name AS page_title,
+		   IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+		   fpt.main_img_url AS img_url
+		from
+		   funding_page_tb fpt
+		   left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		   left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		group by
+		   page_id,
+		   page_title
+		limit 3;
+	</select>
+</mapper>

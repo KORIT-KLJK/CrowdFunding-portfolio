@@ -19,5 +19,6 @@ public interface FundingDetailRepository {
 	public Address getAddressId(int userId);
 	public int toSaveFunder(Funder funder);
 	public int saveFundingModify(Funding funding);
-	public int saveDeleteFunding(Reward reward);
+	public int saveDeleteFundingId(Funding funding);
+	public int saveDeleteRewardId(Reward reward);
 }

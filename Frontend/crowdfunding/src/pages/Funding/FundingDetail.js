@@ -817,7 +817,6 @@ const FundingDetail = () => {
     if(principalUser.isLoading || getAddress.isLoading) {
         return <></>;
     }
-
     const funding = fundingDetail.data.data;
     const businessInfo = fundingBusinessInfo.data.data;
     

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.FundingDetailRepository">
+	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingDetailMap">
+		<id property="fundingId" column="funding_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
+		<result property="fundingTitle" column="funding_title"/>
+		<result property="username" column="username"/>
+		<result property="nearDeadline" column="deadline"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="totalRewardPrice" column="total_reward_price"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="storyContent" column="story_content"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="joinPercent" column="join_percent"/>
+	</resultMap>
+
+	<resultMap type="com.webproject.crowdfunding.entity.Reward" id="RewardMap">
+		<id property="rewardId" column="reward_id"/>
+		<result property="fundingId" column="funding_id"/>
+		<result property="rewardName" column="reward_name"/>
+		<result property="rewardPrice" column="reward_price"/>
+		<result property="endDate" column="end_date"/>
+		<result property="userCount" column="user_count"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.BusinessInfo" id="BusinessInfoMap">
+		<id property="businessInfoId" column="business_info_id"/>
+		<result property="companyName" column="company_name"/>
+		<result property="ceoName" column="ceo_name"/>
+		<result property="companyAddress" column="company_address"/>
+		<result property="companyPhoneNumber" column="company_phone_number"/>
+		<result property="ceoEmail" column="ceo_email"/>
+		<result property="fundingId" column="funding_id"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.Address" id="AddressMap">
+		<id property="addressId" column="address_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="zonecode" column="zonecode"/>
+		<result property="address" column="address"/>
+		<result property="buildingName" column="building_name"/>
+		<result property="bname" column="bname"/>
+		<result property="detailAddress" column="detail_address"/>
+		<result property="addressType" column="address_type"/>
+	</resultMap>
+
+	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
+		select
+			fpt.funding_id,
+			fpt.funding_summary_name,
+		    fpt.funding_name as funding_title,
+		    CONCAT(
+			IF(NOW() &lt; fpt.end_date,  DATEDIFF(fpt.end_date, NOW()), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) as deadline,
+		    fpt.goal_total,
+		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price,
+		    fpt.story_title,
+		    fpt.story_content,
+		    fpt.main_img_url as img_url,
+		    ROUND((sum(if(ft.funder_id is null, 0, rt.reward_price)) / fpt.goal_total) * 100) as join_percent
+		from
+			funding_page_tb fpt
+		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
+		where
+			fpt.funding_id = #{pageId};
+	</select>
+	
+	<select id="getReward" parameterType="integer" resultMap="RewardMap">
+		select
+			rt.reward_id,
+			rt.funding_id,
+			rt.reward_name,
+			rt.reward_price,
+			fpt.end_date,
+			count(distinct ut.user_id) as user_count
+		from 
+			reward_tb rt
+			left outer join funding_page_tb fpt on(fpt.funding_id = rt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join user_tb ut on(ut.user_id = ft.user_id)
+		where
+			rt.funding_id = #{pageId}
+		group by
+			reward_id;
+	</select>
+	
+	<select id="getBusinessInfo" parameterType="integer" resultMap="BusinessInfoMap">
+		select
+			bt.business_info_id,
+		    bt.company_name,
+		    bt.ceo_name,
+		    bt.company_address,
+		    bt.company_phone_number,
+		    bt.ceo_email,
+		    bt.funding_id
+		from
+			business_info_tb bt
+		where
+			bt.funding_id = #{pageId};
+	</select>
+	
+	<select id="getBreakdown" parameterType="integer" resultMap="FundingDetailMap">
+		select
+			fpt.funding_id,
+		    ut.user_id,
+		    ut.name as username,
+		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price
+		from
+			funding_page_tb fpt
+		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join user_tb ut on(ut.user_id = ft.user_id)
+		where
+			fpt.funding_id = #{pageId}
+			AND ut.user_id IS NOT NULL
+			AND ut.name IS NOT NULL
+		group by
+			funding_id,
+		    user_id,
+		    username
+	</select>
+	
+	<select id="getAddressId" parameterType="integer" resultMap="AddressMap">
+		select
+			at.address_id,
+			at.user_id,
+			at.zonecode,
+			at.address,
+			at.building_name,
+			at.bname,
+			at.detail_address,
+			at.address_type
+		from
+			address_tb at
+		where
+			at.user_id = #{userId};
+	</select>
+	
+	<insert id="toSaveFunder"
+				parameterType="com.webproject.crowdfunding.entity.Funder"
+				keyProperty="funderId"
+				useGeneratedKeys="true">
+		insert into funder_tb
+		values
+		(0, #{userId}, NOW(), #{addressId}, #{rewardId})
+	</insert>
+	
+	<update id="saveFundingModify">
+		update
+			funding_page_tb
+		set
+			funding_name = #{fundingTitle},
+			end_date = #{endDate},
+			goal_total = #{goalTotal}
+		where
+			funding_id = #{fundingId}
+	</update>
+	
+	<delete id="saveDeleteFunding" parameterType="com.webproject.crowdfunding.entity.Reward">
+		delete
+		from
+			funding_page_tb
+		where
+			funding_id = #{fundingId};
+	</delete>
+	
+	<delete id="saveDeleteFunding" parameterType="com.webproject.crowdfunding.entity.Reward">
+		delete
+		from
+			reward_tb
+		where
+			reward_id = #{rewardId};
+	</delete>
+	
+</mapper>

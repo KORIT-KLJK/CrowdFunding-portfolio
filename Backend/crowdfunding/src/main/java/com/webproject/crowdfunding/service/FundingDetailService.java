@@ -86,11 +86,11 @@ public class FundingDetailService {
 	}
 	
 	public int fundingDelete(FundingDeleteReqDto fundingDeleteReqDto) {
-		List<Reward> rewards = fundingDeleteReqDto.deleteFundingToEntity();
-		System.out.println(rewards);
+		Funding fundingEntity = fundingDeleteReqDto.deleteFundingIdToEntity();
+		List<Reward> rewards = fundingDeleteReqDto.deleteRewardIdToEntity();
+		fundingDetailRepository.saveDeleteFundingId(fundingEntity);
 		rewards.forEach(reward -> {
-			fundingDetailRepository.saveDeleteFunding(Reward.builder()
-													.fundingId(reward.getFundingId())
+			fundingDetailRepository.saveDeleteRewardId(Reward.builder()
 													.rewardId(reward.getRewardId())
 													.build());
 		});
