@@ -85,6 +85,7 @@ const categoryItem = css`
   border: 0;
   background-color: transparent;
   font-size: 15px;
+  color: #cef9cf;
   cursor: pointer;
   &:focus {
     border: 1px solid #047ff1;
@@ -93,9 +94,15 @@ const categoryItem = css`
 `;
 
 const categoryImgCss = css`
-  position: relative;
-  width: 50px;
-  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  border: 1px solid #0dab30;
+  border-radius: 50%;
+  width: 62px;
+  height: 62px;
+  background-color: #0eb432;
 `;
 
 const categoryButton = css`
