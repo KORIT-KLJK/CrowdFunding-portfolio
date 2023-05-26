@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { authenticatedState } from './AuthAtom';
 import { useMutation } from 'react-query';
+import { FcGoogle } from 'react-icons/fc';
 
 const mainContainer = css`
     width: 1334px;
@@ -73,6 +74,10 @@ const Login = () => {
         login.mutate();
     }
 
+    const googleAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    }
+
     return (
         <div css={mainContainer}>
             <div css={loginContainer}>
@@ -85,6 +90,8 @@ const Login = () => {
                                 <input placeholder="Password" type="password" onChange={informationHandle} name="password" />
                                 <div>{errorMessages.password}</div>
                                 <button onClick={loginHandleSubmit}>Sign in</button>
+                                <div>다른 계정으로 로그인</div>
+                                <button onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
                             </div>
                         </div>                       
                     </li>

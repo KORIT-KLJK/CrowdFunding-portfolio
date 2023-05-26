@@ -1,4 +1,4 @@
-package com.webproject.crowdfunding.dto;
+package com.webproject.crowdfunding.dto.req;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -8,10 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.webproject.crowdfunding.entity.User;
 
-import lombok.Data;
-
-@Data
-public class SignUpReqDto {
+public class OAuth2SignUpReqDto {
 	@Email
 	@NotBlank(message="이메일을 입력하세요")
 	private String email;
@@ -31,6 +28,7 @@ public class SignUpReqDto {
     @Pattern(regexp = "^(male|female)$",
             message = "성별을 체크해주세요.")
 	private String gender;
+    private String provider;
 	
 	public User toEntity() {
 		return User.builder()
@@ -39,6 +37,7 @@ public class SignUpReqDto {
 				.name(name)
 				.birthday(birthday)
 				.gender(gender)
+				.provider(provider)
 				.build();
 	}
 }

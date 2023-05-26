@@ -525,7 +525,13 @@ export const fundingStoryTitle = css`
 `;
 
 export const fundingStoryContent = css`
+    margin-top: 16px;
+    width: 628px;
     font-size: 18px;
+    color: #666;
+    line-height: 32px;
+    text-align: justify;
+    letter-spacing: -.01px;
 `;
 
 export const rewardGuide = css`
