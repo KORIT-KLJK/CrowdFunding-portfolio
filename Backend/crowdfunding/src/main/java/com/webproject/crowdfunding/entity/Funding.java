@@ -1,5 +1,7 @@
 package com.webproject.crowdfunding.entity;
 
+import java.time.LocalDate;
+
 import com.webproject.crowdfunding.dto.resp.BreakdownRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.FundingMainRespDto;
@@ -17,6 +19,7 @@ public class Funding {
 	private int fundingId;
 	private int userId;
 	private String fundingTitle;
+	private LocalDate endDate;
 	private String fundingSummaryName;
 	private String username;
 	private int recentSort;

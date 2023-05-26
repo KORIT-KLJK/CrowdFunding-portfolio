@@ -11,7 +11,7 @@ const AuthRoute = ({ path, element }) => {
     const accessToken = localStorage.getItem("accessToken");
     const navigate = useNavigate();
 
-    const { data, isLoading } = useQuery(["authenticated"], async () => {
+    const authenticated = useQuery(["authenticated"], async () => {
      const option = {
         headers: {
             Authorization: `Bearer ${accessToken}`
@@ -32,7 +32,14 @@ const AuthRoute = ({ path, element }) => {
         const response = await axios.get("http://localhost:8080/principal", option)
         return response;
         },{
-        enabled: !!accessToken
+            onSuccess: (response) => {
+                const roles = response.data.authorities.split(",");
+                if (path !== "/" && path.startsWith("/admin") && !roles.includes("ROLE_ADMIN")) {
+                    alert("접근 권한이 없습니다.");
+                    navigate("/");
+                }
+            },
+            enabled: !!accessToken
     });
 
     useEffect(() => {
@@ -41,36 +48,26 @@ const AuthRoute = ({ path, element }) => {
         }
     }, [refresh]);
     
-    if (principal.data) {
-        const roles = principal.data.data.authorities.split(",");
-        if (path.startsWith("/admin") && !roles.includes("ROLE_ADMIN")) {
-            alert("접근 권한이 없습니다.");
-            return navigate("/");
-        }
+    
+
+    if(authenticated.isLoading || principal.isLoading) {
+        return <div>로딩중...</div>;
     }
 
-    if(isLoading) {
-        return (<div>로딩중...</div>);
-    }
+    const permitAll = ["/login", "/signup"];
 
-    
-    
-    if(!isLoading) {
-        const permitAll = ["/login", "/signup"];
-
-        if(!data.data) {
-            if(permitAll.includes(path)){
-                return element;
-            }
-            return navigate("/login");
-        }
-
+    if(!authenticated.data.data) {
         if(permitAll.includes(path)){
-            return navigate("/");
+            return element;
         }
+        navigate("/login");
+    }
+
+    if(permitAll.includes(path)){
+        navigate("/");
+    }
 
     return element;
-    }
 };
 
 export default AuthRoute;
