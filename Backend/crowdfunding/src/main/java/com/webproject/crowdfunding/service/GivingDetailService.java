@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.webproject.crowdfunding.dto.req.GivingModifyReqDto;
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
+import com.webproject.crowdfunding.entity.Giving;
 import com.webproject.crowdfunding.repository.GivingDetailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,16 @@ public class GivingDetailService {
 		});;
 		
 		return givingDetailRespDtos;
+	}
+	
+	public int givingModify(GivingModifyReqDto givingModifyReqDto) {
+		Giving givingEntity = givingModifyReqDto.givingModifyToEntity();
+		
+		return givingDetailRepository.saveGivingModify(givingEntity);
+	}
+	
+	public int givingDelete(int pageId) {
+		return givingDetailRepository.saveGivingDelete(pageId);
 	}
 		
 }

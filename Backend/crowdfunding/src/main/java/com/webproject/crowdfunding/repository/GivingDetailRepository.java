@@ -11,4 +11,6 @@ import com.webproject.crowdfunding.entity.GivingGroupInfo;
 public interface GivingDetailRepository {
 	public Giving getGivingDetail(int pageId);
 	public List<Giving> getMostGivings(int pageId);
+	public int saveGivingModify(Giving giving);
+	public int saveGivingDelete(int pageId);
 }

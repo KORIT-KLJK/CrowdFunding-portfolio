@@ -45,7 +45,7 @@ export const modifyTitleTxt = css`
     font-size: 20px;
 `;
 
-export const midifyValue = css`
+export const modifyValue = css`
     outline: none;
     border: none;
     border-bottom: 1px solid #dbdbdb;
@@ -965,14 +965,6 @@ const FundingDetail = () => {
     }
 
     const deleteIdentifyHandleSubmit = () => {
-        // funding_id, reward_id
-        // reward_tb에 trigger를 만들어줌.
-        // reward_tb가 삭제되기 전에 funder에 reward_id를 삭제.
-        // 후에 funding_page_tb에서 reward_tb에 있는 funding_id 삭제.
-        // 그럼 xml은?
-        // reward_tb 먼저 delete, reward_id가지고 funder_tb에 reward_id 삭제.
-        // 후에 funding_page_tb delete.
-        // 그럼 pageId와 rewardId만 넘기면 되겠지?
         const rewardIds = [];
         fundingDetailReward.data.data.rewardList.map(reward => 
             rewardIds.push(reward.rewardId)
@@ -1006,15 +998,15 @@ const FundingDetail = () => {
                                     <div css={joinFundHeader}>
                                         <div css={modifyContainer}>
                                             <div css={modifyTitleTxt}>제목 수정</div>
-                                            <input css={midifyValue} defaultValue={funding.fundingTitle} onChange={modifyHandle} name="fundingName"/>
+                                            <input css={modifyValue} defaultValue={funding.fundingTitle} onChange={modifyHandle} name="fundingName"/>
                                         </div>
                                         <div css={modifyContainer}>
                                             <div css={modifyTitleTxt}>종료일 수정</div>
-                                            <input css={midifyValue} onChange={modifyHandle} name="endDate"/>
+                                            <input css={modifyValue} onChange={modifyHandle} name="endDate"/>
                                         </div>
                                         <div css={modifyContainer}>
                                             <div css={modifyTitleTxt}>목표 금액 수정</div>
-                                            <input css={midifyValue} onChange={modifyHandle} name="goalTotal"/>
+                                            <input css={modifyValue} onChange={modifyHandle} name="goalTotal"/>
                                         </div>
                                     </div>
                                     <div css={joinIdentifyButtonContainer}>
