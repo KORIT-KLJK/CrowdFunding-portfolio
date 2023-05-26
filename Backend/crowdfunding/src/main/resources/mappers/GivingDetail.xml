@@ -75,5 +75,33 @@
 		limit 0, 5;
 	</select>
 	
+	<update id="saveGivingModify">
+		update
+			giving_page_tb
+		set
+			giving_name = #{pageTitle},
+			end_date = #{endDate},
+			goal_total = #{goalTotal}
+		where
+			giving_page_id = #{pageId};
+	</update>
+	
+	<delete id="saveGivingDelete">
+		delete
+		from
+			giving_page_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
 </mapper>
+
+
+
+
+
+
+
+
+
 

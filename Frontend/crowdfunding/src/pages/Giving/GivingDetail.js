@@ -2,11 +2,207 @@
 import { css } from "@emotion/react";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import GiverPayment from "../../components/Modal/GiverPayment";
 import { authenticatedState } from "../Login/AuthAtom";
 import { useRecoilState } from "recoil";
+
+export const adminContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+`;
+
+export const givingModifyButton = css`
+    border: none;
+    border-radius: 50%;
+    background-color: #1f9eff;
+    margin-right: 50px;
+    width: 120px;
+    height: 50px;
+    cursor: pointer;
+`;
+
+export const givingModifyContainer = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+
+    background-color: #000000aa;   
+`;
+
+export const givingIdentifyContainer = css`
+    border-radius: 9px;
+    margin-top: 200px;
+    width: 700px;
+    background-color: white;
+`;
+
+export const givingIdentifyMain = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+`;
+
+export const givingModifyTitle = css`
+    font-size: 30px;
+`;
+
+export const modifyGivingHeader = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`;
+
+export const modifyContainer = css`
+    padding-top: 40px;
+    width: 100%;
+`;
+
+export const modifyTitleTxt = css`
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 20px;
+`;
+
+export const modifyValue = css`
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #dbdbdb;
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+`;
+
+export const modifyIdentifyButtonContainer = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    width: 400px;
+`;
+
+export const modifyIdentifyButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #10c838;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+`;
+
+export const modifyCancelButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #dbdbdb;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+`;
+
+export const givingDeleteButton = css`
+    border: none;
+    border-radius: 50%;
+    background-color: #888888;
+    margin-right: 50px;
+    width: 120px;
+    height: 50px;
+    cursor: pointer;
+`;
+
+export const givingDeleteContainer = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+
+    background-color: #000000aa;   
+`;
+
+export const givingDeleteTitle = css`
+    font-size: 30px;
+`;
+
+export const givingDeleteMessage = css`
+    padding-top: 40px;
+    font-size: 20px;
+`;
+
+export const givingDeleteButtonContainer = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    width: 400px;
+`;
+
+export const deleteIdentifyButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #10c838;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+`;
+
+export const deleteCancelButton = css`
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #dbdbdb;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+`;
 
 const mainContainer = css`
     position: relative;
@@ -270,10 +466,21 @@ const todayText = css`
 
 const GivingDetail = () => {
     const { pageId } = useParams();
+    const [ refresh, setRefresh ] = useState(true);
     const [searchParams, setSearchParams] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+    const accessToken = localStorage.getItem("accessToken");
+    const [ role, setRole ] = useState();
+    const [ modifyOpen, setModifyOpen ] = useState(false);
+    const [ deleteOpen, setDeleteOpen ] = useState(false);
+    const [ modify, setModify ] = useState({
+        givingPageId: pageId,
+        givingName: "",
+        endDate: 0,
+        goalTotal: 0
+    });
 
 
     const givingDetail = useQuery(["givingDetail"], async () => {
@@ -283,6 +490,62 @@ const GivingDetail = () => {
     const mostGivings = useQuery(["mostGivings"], async () => {
         return await axios.get(`http://localhost:8080/giving/most/${pageId}`);
     });
+
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.get("http://localhost:8080/principal", option)
+        setRole(response.data.authorities.split(",").includes("ROLE_ADMIN"));
+        return response;
+    },{
+        enabled: !!accessToken
+    })
+
+    const modifyInfo = useMutation(async () => {
+        const data = {
+            ...modify
+        }
+
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.put("http://localhost:8080/admin/giving/modify", data, option)
+    }, {
+        enabled: refresh,
+
+        onSuccess: () => {
+            alert("기부 내용이 성공적으로 수정 되었습니다.");
+            setRefresh(false);
+            setModifyOpen(false);
+        }
+    })
+
+    const deleteFunding = useMutation(async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.delete(`http://localhost:8080/admin/giving/delete/${pageId}`, option)
+    }, {
+        onSuccess: () => {
+            alert("기부 내용이 성공적으로 삭제 되었습니다.")
+            navigate("/giving")
+        }
+    })
+
+    useEffect(() => {
+        if (accessToken) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+    }, []);
 
     useEffect(() => {
         givingDetail.refetch();
@@ -295,6 +558,39 @@ const GivingDetail = () => {
     
     if(givingDetail.isLoading || mostGivings.isLoading){
         return <></>
+    }
+
+    if(principalUser.isLoading) {
+        return <></>;
+    }
+
+    const adminModifyHandleSubmit = () => {
+        setModifyOpen(true);
+    }
+
+    const adminDeleteHandleSubmit = () => {
+        setDeleteOpen(true);
+    }
+
+    const modifyHandle = (e) => {
+        const {name, value} = e.target
+        setModify({...modify, [name]: value})
+    }
+
+    const modifyIdentifyHandleSubmit = () => {
+        modifyInfo.mutate()
+    }
+
+    const modifyCancelHandleSubmit = () => {
+        setModifyOpen(false);
+    }
+
+    const deleteIdentifyHandleSubmit = () => {
+        deleteFunding.mutate()
+    }
+
+    const deleteCancelHandleSubmit = () => {
+        setDeleteOpen(false);
     }
 
     const toGivingPage = (pageId) => {
@@ -318,6 +614,53 @@ const GivingDetail = () => {
 
     return (
         <>
+        {role ?
+                <div css={adminContainer}>
+                    <button css={givingModifyButton} onClick={adminModifyHandleSubmit}>기부 수정</button>
+                    {modifyOpen ?
+                        <div css={givingModifyContainer}>
+                            <div css={givingIdentifyContainer}>
+                                <div css={givingIdentifyMain}>
+                                    <div css={givingModifyTitle}>기부 수정</div>
+                                    <div css={modifyGivingHeader}>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>제목 수정</div>
+                                            <input css={modifyValue} defaultValue={givingDetail.data.data.pageTitle} onChange={modifyHandle} name="givingName"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>종료일 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="endDate"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>목표 금액 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="goalTotal"/>
+                                        </div>
+                                    </div>
+                                    <div css={modifyIdentifyButtonContainer}>
+                                        <button css={modifyIdentifyButton} onClick={modifyIdentifyHandleSubmit}>확인</button>
+                                        <button css={modifyCancelButton} onClick={modifyCancelHandleSubmit}>취소</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    : ""}
+                        <button css={givingDeleteButton} onClick={adminDeleteHandleSubmit}>기부 삭제</button>
+                        {deleteOpen ?
+                            <div css={givingDeleteContainer}>
+                                <div css={givingIdentifyContainer}>
+                                    <div css={givingIdentifyMain}>
+                                        <div css={givingDeleteTitle}>기부 삭제</div>
+                                        <div css={givingDeleteMessage}>기부를 정말 삭제 하시겠습니까?</div>
+                                        <div css={givingDeleteButtonContainer}>
+                                            <button css={deleteIdentifyButton} onClick={deleteIdentifyHandleSubmit}>확인</button>
+                                            <button css={deleteCancelButton} onClick={deleteCancelHandleSubmit}>취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        : ""}
+                    </div>
+                : ""}
                 <div css={mainContainer}>
                     <div css={storyDetailContainer}>
                         <div css={givingStoryBox}>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.GivingDetailRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.Giving" id="GivingDetailMap">
+		<id property="pageId" column="page_id"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="givingTotal" column="giving_total"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="storyContent" column="story_content"/>
+		<result property="eventStatus" column="event_status"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="centerName" column="center_name"/>
+		<result property="achievementRate" column="achievement_rate"/>
+		<result property="registerDate" column="register_date"/>
+		<result property="endDate" column="end_date"/>
+		<result property="dDay" column="d_day"/>
+		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.GivingGroupInfo" id="GivingGroupInfoMap">
+		<id property="centerId" column="center_id"/>
+		<result property="centerName" column="center_name"/>
+		<result property="centerAddress" column="center_address"/>
+		<result property="centerPhoneNumber" column="center_phone_number"/>
+		<result property="centerCEO" column="center_ceo"/>
+	</resultMap>
+	
+	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
+	    SELECT
+		    gpt.giving_page_id AS page_id,
+		    gpt.giving_name AS page_title,
+		    ct.center_id,
+		    ct.center_name,
+		    ct.center_address,
+		    ct.center_phone_number,
+		    ct.center_ceo,
+		    gpt.main_img_url AS img_url,
+		    gt.giving_total AS giving_total,
+		    gpt.story_title,
+		    gpt.story_content,
+		    gpt.category_id,
+		    gpt.goal_total,
+		    gpt.register_date,
+		    gpt.end_date,
+		    CASE
+		        WHEN end_date &lt; CURDATE() THEN '모금 종료'
+		        WHEN end_date = CURDATE() THEN '오늘 모금 종료'
+		        ELSE DATEDIFF(end_date, CURDATE())
+		    END AS d_day,
+		    ROUND(SUM(gt.giving_total) / goal_total * 100) AS achievement_rate
+		FROM
+		    giving_page_tb gpt
+		    left outer join center_tb ct ON (ct.center_id = gpt.center_id)
+		    LEFT OUTER JOIN giver_tb gt ON (gt.giving_page_id = gpt.giving_page_id)
+		    LEFT OUTER JOIN giving_category_tb gct ON (gct.giving_category_id = gpt.category_id)
+
+		WHERE
+		    gpt.giving_page_id = #{pageId}
+	</select>
+	
+	<select id="getMostGivings" parameterType="Integer" resultMap="GivingDetailMap">
+		select
+			giving_page_id * FLOOR(RAND() * 10) as page_rand_index,
+			giving_page_id as page_id,
+			giving_name as page_title,
+			main_img_url as img_url
+		from
+			giving_page_tb
+		where
+			not giving_page_id = 9
+		order by
+			page_rand_index
+		limit 0, 5;
+	</select>
+	
+</mapper>
+
