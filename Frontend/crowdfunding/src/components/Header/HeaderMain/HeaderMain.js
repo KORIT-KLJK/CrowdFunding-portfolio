@@ -4,82 +4,85 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { authenticatedState } from '../../../pages/Login/AuthAtom';
-
+import logo from "../../../assets/images/logo.png";
 const mainHeader = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
     border-bottom: 1px solid #e8e8e8;
     background-color: #fff;
-    text-align: right;
-`;
-
-const header = css`
-    position: relative;
     width: 1140px;
     height: 70px;
+`;
 
-    margin: 0 auto;
+const headerLeft = css`
+    display: flex;
+    justify-content: left;
+
+    align-items: center;
+    width: 100%;
 `;
 
 const headerLogo = css`
-    float: left;
-    margin-top: 21px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const headerMenuList = css`
-    position: absolute;
-    top: 23px;
-    right: 100px;
-    left: 100px;
-    text-align: center;
-    
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0px 20px;
 `;
 
-const menuDonation = css`
-    display: inline-block;
-    padding: 0 70px;
+const menuLink = css`
+    margin: 0px 10px;
+    padding: 10px;
     font-size: 20px;
     font-weight: 700;
-    line-height: 24px;
-    color: #000;
-`;
-const menuFunding = css`
-    display: inline-block;
-    padding: 0 70px;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 24px;
     color: #000;
 `;
 
 const headerRight = css`
-    display: inline-block;
-
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 200px;
 `;
 
-const loginButton = css`
-    display: inline-block;
-    position: relative;
-    z-index: 1;
-    margin-top: 26px;
+const authButton = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    padding: 5px 10px;
+    height: 30px;
     color: #333;
+    font-size: 12px;
+    background-color: white;
     cursor: pointer;
 `;
 
 const searchButton = css`
-    display: inline-block;
-    position: relative;
-    z-index: 1;
-    margin-top: 26px;
-    vertical-align: top;
-    color: #333;        
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    padding: 5px 10px;
+    height: 30px;
+    color: #333;
+    font-size: 12px;
+    background-color: white;
+    cursor: pointer;
 `;
 
-const headerUserBar = css`
-    display: inline-block;
-    width: 1px;
-    height: 14px;
-    margin: 28px 12px 0;
-    border-color: #d8d8d8;
-    vertical-align: top;
+const link = css`
+    color: #333;
 `;
 
 const HeaderMain = () => {
@@ -107,19 +110,16 @@ const HeaderMain = () => {
 
     return (
         <div css={mainHeader}>
-            <div>
-                <div css={header}>
-                    <div css={headerLogo}>LOGO</div>
-                    <div css={headerMenuList}>
-                        <div css={menuDonation}><Link to="/giving">기부</Link></div>
-                        <div css={menuFunding}><Link to="/funding">펀딩</Link></div>
-                    </div>
-                    <div css={headerRight}>
-                        <div css={loginButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</div>
-                        <span css={headerUserBar}></span>
-                        <button css={searchButton}><Link to="/search">검색</Link></button>
-                    </div>
+            <div css={headerLeft}>
+                <Link css={headerLogo} to="/"><img src={logo} alt="" /></Link>
+                <div css={headerMenuList}>
+                    <Link css={menuLink} to="/giving">기부</Link>
+                    <Link css={menuLink} to="/funding">펀딩</Link>
                 </div>
+            </div>
+            <div css={headerRight}>
+                <button css={authButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</button>
+                <button css={searchButton}><Link css={link} to="/search">검색</Link></button>
             </div>
         </div>
     );
