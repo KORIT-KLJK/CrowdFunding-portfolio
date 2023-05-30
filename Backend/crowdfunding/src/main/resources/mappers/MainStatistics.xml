@@ -27,7 +27,7 @@
    <select id="getFundingTotal" parameterType="Integer" resultMap="StatisticsFunderMap">
    		select
 			count(distinct ft.user_id) as funder_total,
-		    sum(rt.reward_price) as funding_price_total
+		    ifnull(sum(rt.reward_price), 0) as funding_price_total
 		from
 			funder_tb ft
 		    left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
