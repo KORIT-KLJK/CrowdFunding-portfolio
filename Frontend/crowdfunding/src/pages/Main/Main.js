@@ -8,6 +8,7 @@ import MainGivingList from '../../components/MainCard/MainDonationList/MainGivin
 import CardItemGiving from '../../components/MainCard/MainDonationList/CardItem/CardItemGiving';
 import MainFundingList from '../../components/MainCard/MainFundingList/MainFundingList';
 import GivingStatistics from '../../components/Statistics/GivingStatistics';
+import Footer from '../../components/Footer/Footer';
 
 const mainContainer = css`
 `;
@@ -25,7 +26,16 @@ const mainBanner = css`
 `;
 
 const body = css``;
-const mainFooter = css``;
+const footerContainer = css`
+    position: relative;
+    z-index: 10;
+    margin-top: 96px;
+    padding-top: 52px;
+    border-top: 1px solid #e0e0e0;
+    background-clip: content-box;
+    background-color: #f6f6f6;
+    
+`;
 
 const Main = () => {
 
@@ -41,7 +51,8 @@ const Main = () => {
                     <GivingStatistics />
                 </main>
             </div>
-            <footer>
+            <footer css={footerContainer}>
+                <Footer />
             </footer>
         </div>
     );

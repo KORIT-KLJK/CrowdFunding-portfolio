@@ -16,7 +16,7 @@
 		<result property="fundingPriceTotal" column="funding_price_total"/>
 	</resultMap>
 	
-	<select id="getGivingTotal" parameterType="Integer" resultMap="StatisticsGiverMap">
+	<select id="getGivingTotal" resultType="com.webproject.crowdfunding.entity.MainStatisticsGiver">
    		select
 			count(distinct user_id) as giver_total,	
 		    sum(giving_total) as giving_total_sum
@@ -28,7 +28,7 @@
    <select id="getFundingTotal" parameterType="Integer" resultMap="StatisticsFunderMap">
    		select
 			count(distinct ft.user_id) as funder_total,
-		    sum(rt.reward_price) as funding_price_total
+		    ifnull(sum(rt.reward_price), 0) as funding_price_total
 		from
 			funder_tb ft
 		    left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
