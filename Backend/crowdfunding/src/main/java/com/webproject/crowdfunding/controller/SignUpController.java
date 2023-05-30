@@ -27,7 +27,6 @@ public class SignUpController {
 	@ValidAspect
 	@PostMapping("/auth/checkemail")
 	public ResponseEntity<?> duplicatedEmail(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
-		System.out.println(email);
 		signUpService.duplicatedEmail(email.getEmail());
 		return ResponseEntity.ok().body(true);
 	}

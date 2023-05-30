@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 const OAuth2Login = () => {
     const [ searchParams, setSearchParams ] = useSearchParams();
     const accessToken = searchParams.get("accessToken");
-
+    console.log(accessToken)
 
     if(!!accessToken) {
         localStorage.setItem("accessToken", accessToken);

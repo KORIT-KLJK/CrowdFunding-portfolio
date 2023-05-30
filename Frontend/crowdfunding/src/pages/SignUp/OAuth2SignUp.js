@@ -5,6 +5,7 @@ import PopupPostCode from './PopupPostCode';
 import PopupDom from './PopupDom';
 import axios from 'axios';
 import { useMutation } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
 
 
 export const mainContainer = css`
@@ -49,6 +50,7 @@ const SignUp = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const postcodeRef = useRef(null);
     const addressRef = useRef(null);
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const registerToken = searchParams.get("registerToken");
     const email = searchParams.get("email");
     const name = searchParams.get("name");
@@ -97,6 +99,12 @@ const SignUp = () => {
         }
     });
 
+    if(OAuth2register.isLoading) {
+        return <></>;
+    }
+
+    console.log(OAuth2register);
+
     // 팝업창 열기
     const openPostCode = () => {
         setIsPopupOpen(true)
@@ -108,7 +116,7 @@ const SignUp = () => {
     }
 
     const signUpSubmit = () => {
-        register.mutate();
+        OAuth2register.mutate();
     }
 
     return (

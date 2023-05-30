@@ -6,6 +6,8 @@ import { useRecoilState } from 'recoil';
 import { authenticatedState } from './AuthAtom';
 import { useMutation } from 'react-query';
 import { FcGoogle } from 'react-icons/fc';
+import { SiNaver } from 'react-icons/si';
+import { SiKakao } from 'react-icons/si'
 
 const mainContainer = css`
     width: 1334px;
@@ -41,6 +43,54 @@ const loginInner = css`
 const loginIdPwBox = css`
     display: block;
 `
+
+const providerButtonContainer = css`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+`;
+
+const google = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    border-radius: 50%;
+    border: 1px solid #88888822;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    background-color: white;
+    cursor: pointer;
+`;
+
+const naver = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    border-radius: 50%;
+    border: none;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    background-color: white;
+    color: #1cdf2c;
+    cursor: pointer;
+`;
+
+const kakao = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: none;
+    width: 50px;
+    height: 50px;
+    font-size: 35px;
+    background-color: yellow;
+    cursor: pointer;
+`;
 
 const Login = () => {
     const [loginUser, setLoginUser] = useState({email: "", password: ""});
@@ -78,6 +128,15 @@ const Login = () => {
         window.location.href = "http://localhost:8080/oauth2/authorization/google";
     }
 
+    const naverAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    }
+
+    const kakaoAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    }
+
+
     return (
         <div css={mainContainer}>
             <div css={loginContainer}>
@@ -91,7 +150,11 @@ const Login = () => {
                                 <div>{errorMessages.password}</div>
                                 <button onClick={loginHandleSubmit}>Sign in</button>
                                 <div>다른 계정으로 로그인</div>
-                                <button onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
+                                <div css={providerButtonContainer}>
+                                    <button css={google} onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
+                                    <button css={naver} onClick={naverAuthLoginClickHandle}><SiNaver /></button>
+                                    <button css={kakao} onClick={kakaoAuthLoginClickHandle}><SiKakao /></button>
+                                </div>
                             </div>
                         </div>                       
                     </li>

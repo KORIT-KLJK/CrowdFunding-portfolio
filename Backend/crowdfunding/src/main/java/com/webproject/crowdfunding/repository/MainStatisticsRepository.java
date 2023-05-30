@@ -9,6 +9,4 @@ import com.webproject.crowdfunding.entity.MainStatisticsGiver;
 public interface MainStatisticsRepository {
 	public MainStatisticsGiver getGivingTotal();
 	public MainStatisticsFunder getFundingTotal();
-
-	
 }
