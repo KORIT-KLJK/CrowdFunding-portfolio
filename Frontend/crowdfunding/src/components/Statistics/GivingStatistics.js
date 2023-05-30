@@ -87,14 +87,14 @@ const DonationStatisticsData = css`
 
 
 const GivingStatistics = () => {
-    const statistics = useQuery(["Statistics"], async () => {
+    const statistics = useQuery(["statistics"], async () => {
         const response = await axios.get("http://localhost:8080/main/givingStatistics")
         return response;
     });
     
     const statisticsFunding = useQuery(["statisticsFunding"], async () => {
         const response = await axios.get("http://localhost:8080/main/fundingStatistics")
-        return response
+        return response;
     })
 
     if(statistics.isLoading) {
@@ -105,9 +105,6 @@ const GivingStatistics = () => {
         return <></>;
     }
 
-    const statisticsData = statistics.data.data;
-    const statisticsFundingData = statisticsFunding.data.data;
-    
     return (
         <div css={StatisticsContainer}>
             <div css={StatisticsInner}>
@@ -119,14 +116,14 @@ const GivingStatistics = () => {
                             <div css={StaticsItem}>
                                 <div css={DonationStatisticsTitle}>기부 참여</div>
                                 <div css={DonationStatisticsSubTitle}>
-                                    <span css={DonationStatisticsData}>{statisticsData.giverTotal}</span>
+                                    <span css={DonationStatisticsData}>{statistics.data.data.giverTotal}</span>
                                     명
                                 </div>
                                 <div css={DonationStatisticsTitle}>기부 금액</div>
                                 <div css={DonationStatisticsSubTitle}>
                                     <div css={DonationStatisticsData}>
                                         {new Intl.NumberFormat("en-US")
-                                            .format(statisticsData.givingTotalSum)}
+                                            .format(statistics.data.data.givingTotalSum)}
                                     </div>
                                     원
                                 </div>
@@ -134,13 +131,13 @@ const GivingStatistics = () => {
                             <div css={StaticsItem}>
                                 <div css={DonationStatisticsTitle}>펀딩 참여</div>
                                 <div css={DonationStatisticsSubTitle}>
-                                    <span css={DonationStatisticsData}>{statisticsFundingData.funderTotal}</span>
+                                    <span css={DonationStatisticsData}>{statisticsFunding.data.data.funderTotal}</span>
                                     명
                                 </div>
                                 <div css={DonationStatisticsTitle}>참여 금액</div>
                                 <div css={DonationStatisticsSubTitle}>
                                     <div css={DonationStatisticsData}>{new Intl.NumberFormat("en-US")
-                                            .format(statisticsFundingData.fundingPriceTotal)}</div>
+                                            .format(statisticsFunding.data.data.fundingPriceTotal)}</div>
                                     원
                                 </div>
                             </div> 
