@@ -73,8 +73,8 @@ const categoryImgCss = css`
   margin-bottom: 10px;
   border: 1px solid #0dab30;
   border-radius: 50%;
-  width: 62px;
-  height: 62px;
+  width: 52px;
+  height: 52px;
   background-color: #0eb432;
 `;
 
@@ -345,18 +345,20 @@ const Giving = () => {
   const [givingRefresh, setGivingRefresh] = useState(true);
   const [showList, setShowList] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState("최신순");
+  const [hasMoreData, setHasMoreData] = useState(true);
   const [searchParams, setSearchParams] = useState({
     page: 1,
     limit: 20,
     categoryId: 0,
     selectedOrder: "최신순",
   });
+  const [ givingList, setGivingList ] = useState([]);
 
   const [todayCardDatas, setTodayCardDatas] = useState({
     todayGivers: 0,
     todayDonations: 0,
   });
-
+  
   const givingCategorys = useQuery(
     ["givingCategory"],
     async () => {
@@ -368,10 +370,11 @@ const Giving = () => {
         setGivingRefresh(false);
       },
     }
-  );
-
-  const givingData = useQuery(
-    ["givingData", searchParams.page],
+    );
+    
+    
+    const givingData = useQuery(
+    ["givingData"],
     async () => {
       const option = {
         params: {
@@ -387,6 +390,7 @@ const Giving = () => {
     {
       enabled: givingRefresh,
       onSuccess: (response) => {
+        setGivingList([...givingList, ...response.data]);
         const todayData = {
           todayGivers: 0,
           todayDonations: 0,
@@ -395,18 +399,19 @@ const Giving = () => {
           todayData.todayGivers += responseData.todayGivers;
           todayData.todayDonations += responseData.todayDonations;
         });
-
         setTodayCardDatas(todayData);
         setGivingRefresh(false);
+
+        if (response.data.length === 0) {
+          setHasMoreData(false);
+        }
       },
     }
-  );
+    );
 
   if (givingCategorys.isLoading || givingData.isLoading) {
     return <></>;
   }
-
-  console.log(givingData);
 
   const ClickView = (e) => {
     if (e.type !== "click") {
@@ -415,6 +420,12 @@ const Giving = () => {
       }
     }
     setShowList(!showList);
+  };
+  
+  const handleSeeMore = () => {
+    setSearchParams({...searchParams, page: searchParams.page + 1});
+    setGivingRefresh(true);
+
   };
 
   const handleCategoryClick = (categoryId) => {
@@ -433,11 +444,6 @@ const Giving = () => {
     navigate("/giving/" + pageId)
   }
 
-  const handleSeeMore = () => {
-    setSearchParams({ ...searchParams, page: searchParams.page + 1 });
-  };
-
-
   return (
     <div css={mainContainer}>
       <div>
@@ -452,7 +458,7 @@ const Giving = () => {
                 css={categoryItem}
                 key={category.givingCategoryId}
                 onClick={() => handleCategoryClick(category.givingCategoryId)}
-              >
+                >
                 <img
                   css={categoryImgCss}
                   src={categoryImg[category.givingCategoryName]}
@@ -541,7 +547,7 @@ const Giving = () => {
                 </span>
               </a>
             </div>
-            {givingData.data.data.map((giving) => (
+            {givingList.map((giving) => (
                 <div css={givingCard} key={giving.pageId} onClick={() => {givingDetailHandle(giving.pageId)}}>
                   <div css={cardImgContainer}>
                     <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
@@ -562,7 +568,9 @@ const Giving = () => {
                 </div>
             ))}
           </main>
-          <button css={seeMore} onClick={handleSeeMore}>더보기</button>
+          {givingData.data.data.length < searchParams.limit && hasMoreData &&(
+            <button css={seeMore} onClick={handleSeeMore}>더보기</button>
+          )}
         </div>
       </div>
     </div>
