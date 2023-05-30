@@ -48,7 +48,6 @@ const loginLeftSide = css`
     background: #10c838;
     background: -webkit-linear-gradient(to right, #3CB371, #10c838);
     background: linear-gradient(to right, #3CB371, #10c838);
-
 `;
 
 const loginLeftSideh1 = css`
@@ -282,7 +281,7 @@ const Login = () => {
                                     <button css={google} onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
                                     <button css={naver} onClick={naverAuthLoginClickHandle}><SiNaver /></button>
                                     <button css={kakao} onClick={kakaoAuthLoginClickHandle}><SiKakao /></button>
-                                </div>
+                                </div>                
                     </div>
             </div>
         </div>         
