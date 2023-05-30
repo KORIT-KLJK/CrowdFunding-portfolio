@@ -29,7 +29,7 @@ public class FundingDetailService {
 	private final FundingDetailRepository fundingDetailRepository;
 	
 	public FundingDetailRespDto fundingDetail(int pageId) {
-		
+		System.out.println(fundingDetailRepository.fundingDetail(pageId).getDetailFunding());
 		return fundingDetailRepository.fundingDetail(pageId).getDetailFunding();
 	}
 	

@@ -28,7 +28,8 @@ public class Funding {
 	private int goalTotal;
 	private int totalRewardPrice;
 	private int joinPercent;
-	private String imgUrl;
+	private String mainImgUrl;
+	private String subImgUrl;
 	private int fundingCategoryId;
 	private String storyTitle;
 	private String storyContent;
@@ -45,13 +46,13 @@ public class Funding {
 				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)
 				.joinPercent(joinPercent)
-				.imgUrl(imgUrl)
+				.mainImgUrl(mainImgUrl)
 				.fundingCategoryId(fundingCategoryId)
 				.build();
 	}
 	
 	public FundingDetailRespDto getDetailFunding() {
-		
+		System.out.println(subImgUrl);
 		return FundingDetailRespDto.builder()
 				.fundingId(fundingId)
 				.fundingSummaryName(fundingSummaryName)
@@ -62,7 +63,8 @@ public class Funding {
 				.totalRewardPrice(totalRewardPrice)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
-				.imgUrl(imgUrl)
+				.mainImgUrl(mainImgUrl)
+				.subImgUrl(subImgUrl)
 				.joinPercent(joinPercent)
 				.build();
 	}

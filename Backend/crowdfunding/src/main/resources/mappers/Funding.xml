@@ -13,7 +13,7 @@
 		<result property="goalTotal" column="goal_total"/>
 		<result property="totalRewardPrice" column="total_reward_price"/>
 		<result property="joinPercent" column="join_percent"/>
-		<result property="imgUrl" column="img_url"/>
+		<result property="mainImgUrl" column="main_img_url"/>
 		<result property="fundingCategoryId" column="funding_category_id"/>
 		<result property="rewardName" column="reward_name"/>
 		<result property="rewardPrice" column="reward_price"/>
@@ -47,7 +47,7 @@
 			fpt.goal_total,
 		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
 			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
-			fpt.main_img_url AS img_url,
+			fpt.main_img_url AS main_img_url,
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
@@ -66,12 +66,12 @@
             near_deadline_sort,
 			event_status,
             goal_total,
-            img_url,
+            main_img_url,
             funding_category_id
 		<if test="fundingSortingReward == '최신 순'">
 		order by
 			recent_sort,
-			page_id
+			page_id DESC
 		limit 0, #{index};
 		</if>	
 		<if test="fundingSortingReward == '참여 금액 순'">
@@ -109,7 +109,7 @@
 			fpt.goal_total,
 		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
 			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
-			fpt.main_img_url AS img_url,
+			fpt.main_img_url AS main_img_url,
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
@@ -126,13 +126,13 @@
             near_deadline_sort,
 			event_status,
             goal_total,
-            img_url,
+            main_img_url,
             funding_category_id
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
 			recent_sort,
-			page_id
+			page_id DESC
 		limit 0, #{index};
 		</if>	
 		
@@ -171,7 +171,7 @@
 			fpt.goal_total,
 		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
 			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
-			fpt.main_img_url AS img_url,
+			fpt.main_img_url AS main_img_url,
 			fpt.funding_category_id
 		from
 		   funding_page_tb fpt
@@ -188,13 +188,13 @@
             near_deadline_sort,
 			event_status,
             goal_total,
-            img_url,
+            main_img_url,
             funding_category_id
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
 			recent_sort,
-			page_id
+			page_id DESC
 		limit 0, #{index};
 		</if>	
 		

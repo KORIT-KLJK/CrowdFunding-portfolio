@@ -1,26 +1,17 @@
 package com.webproject.crowdfunding.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.webproject.crowdfunding.dto.req.RegisterPageReqDto;
 import com.webproject.crowdfunding.entity.BusinessInfo;
 import com.webproject.crowdfunding.entity.FundingRegisterPage;
-import com.webproject.crowdfunding.entity.PostsImg;
+import com.webproject.crowdfunding.entity.FundingSubImg;
 import com.webproject.crowdfunding.entity.Reward;
 import com.webproject.crowdfunding.repository.FundingRegisterPageRepository;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,18 +21,19 @@ public class FundingRegisterPageService {
 	private final FundingRegisterPageRepository registerPageRepository;
 	private FundingRegisterPage fundingRegisterEntity;
 	
+	@Value("${file.path}")
+	private String filePath;
+	
 	
 	public void registerPage(RegisterPageReqDto registerPageReqDto) {
-		fundingRegisterEntity = registerPageReqDto.toRegisterEntity();
-		System.out.println(fundingRegisterEntity);
+		fundingRegisterEntity = registerPageReqDto.toRegisterEntity(filePath);
 		registerPageRepository.toSaveRegisterPage(fundingRegisterEntity);
-		BusinessInfo businessInfoEntity = registerPageReqDto.toBusinessEntity();
-		List<Reward> rewardEntity = registerPageReqDto.toRewardEntity();
 		
+		BusinessInfo businessInfoEntity = registerPageReqDto.toBusinessEntity();
 		businessInfoEntity.setFundingId(fundingRegisterEntity.getFundingId());
 		registerPageRepository.toSaveBusinessInfo(businessInfoEntity);
 		
-		
+		List<Reward> rewardEntity = registerPageReqDto.toRewardEntity();
 		rewardEntity.forEach(reward -> {
 			registerPageRepository.toSaveReward(
 					Reward.builder()
@@ -52,9 +44,8 @@ public class FundingRegisterPageService {
 					.build());
 		});
 		
-		System.out.println(fundingRegisterEntity.getFundingId());
+		FundingSubImg fundingSubImgEntity = registerPageReqDto.toFundingSubImgEntity(filePath);
+		fundingSubImgEntity.setFundingId(fundingRegisterEntity.getFundingId());
+		registerPageRepository.toSaveFundingSubImg(fundingSubImgEntity);
 	}
-	
-
-	
 }

@@ -32,7 +32,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		String email = oAuth2User.getAttribute("email");
 		String provider = oAuth2User.getAttribute("provider");
 		User userEntity = userRepository.findUserByEmail(email);
-		System.out.println("userEntity: " + userEntity);
+		System.out.println(jwtTokenProvider.generateToken(authentication).getAccessToken());
 		
 		if(userEntity == null) {
 			String registerToken = jwtTokenProvider.generateToken(authentication).toString();
@@ -56,7 +56,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 				}
 				
 				response.sendRedirect("http://localhost:3000/auth/oauth2/login"
-				 			 	+ "?accessToken=" + jwtTokenProvider.generateToken(authentication));
+				 			 	+ "?accessToken=" + jwtTokenProvider.generateToken(authentication).getAccessToken());
 				
 			}else {
 				response.sendRedirect(

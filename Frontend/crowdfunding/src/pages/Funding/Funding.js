@@ -232,7 +232,7 @@ export const fundingTxt = css`
 
 export const fundingContainerMainTitlePrice = css`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin: 0px 15px 15px 15px;
 `;
@@ -249,6 +249,7 @@ export const fundingContainerMainPricePadding = css`
 export const fundingContainerMainUsername = css`
     padding: 0px 15px 15px 15px;
     border-bottom: 1px solid #dbdbdb66;
+    width: 280px;
     color: #7c7c7c;
 `;
 
@@ -333,6 +334,8 @@ const Funding = () => {
         return <></>;
     }
 
+    console.log(fundingData);
+    
     // 카테고리 이름들이 들어감. (전체는 null을 넣어줌으로써 모든 걸 보여준다)
     const handleCategoryClick = (categoryId) => {
         setSelectedCategoryId(categoryId);
@@ -425,8 +428,8 @@ const Funding = () => {
                         <div css={fundingContainer} onClick={() => {fundingDetailHandle(funding.pageId)}}>
                             <header>
                                 <div css={imgBox}>
-                                    <img css={img} src={`http://localhost:8080/image/post/${funding.imgUrl}`} />
-                                    <img css={img} src={funding.imgUrl} alt={funding.pageTitle} />
+                                    <img css={img} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
+                                    <img css={img} src={funding.mainImgUrl} alt={funding.pageTitle} />
                                         <div css={checkFunding({funding})}>
                                             <div css={fundingTxt}>펀딩</div>
                                             <div>{funding.joinPercent >= 100 ? "성공" : "종료"}</div>

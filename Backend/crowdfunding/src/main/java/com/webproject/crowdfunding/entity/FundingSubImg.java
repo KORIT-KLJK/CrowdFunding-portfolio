@@ -9,15 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FundingRegisterPage {
+public class FundingSubImg {
+	private int fpsiId;
 	private int fundingId;
+	private String subImgUrl;
 	private String pageCategory;
-	private String detailCategory;
-	private String title;
-	private String storyTitle;
-	private String story;
-	private String mainImgUrl;
-	private int goalTotal;
-	private String endDate;
-	private String nickname;
 }

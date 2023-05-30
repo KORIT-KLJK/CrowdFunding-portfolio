@@ -15,6 +15,7 @@ public class FundingDetailRespDto {
 	private int totalRewardPrice;
 	private String storyTitle;
 	private String storyContent;
-	private String imgUrl;
+	private String mainImgUrl;
+	private String subImgUrl;
 	private int joinPercent;
 }

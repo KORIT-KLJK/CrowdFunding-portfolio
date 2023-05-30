@@ -21,27 +21,27 @@
 	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '아동'">
 			insert into giving_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 1)
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 1)
 	</if>
 	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '노인'">
 			insert into giving_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 2)
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 2)
 	</if>
 	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '장애인'">
 			insert into giving_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 3)
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 3)
 	</if>
 	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '다문화'">
 			insert into giving_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 4)
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 4)
 	</if>
 	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '환경'">
 			insert into giving_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{imgUrl}, 5)
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 5)
 	</if>
 	</insert>
 	  
@@ -67,4 +67,21 @@
 		</if>
 	</insert>
 	
+	<insert id="toSaveGivingSubImg"
+				parameterType="com.webproject.crowdfunding.entity.GivingSubImg"
+				useGeneratedKeys="true"
+				keyProperty="gpsiId">
+		<if test="pageCategory == '기부'">
+			insert into giving_page_sub_img_tb
+			values
+			(0, #{givingPageId}, #{subImgUrl})
+		</if>	
+	</insert>
+	
 </mapper>
+
+
+
+
+
+

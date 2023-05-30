@@ -12,7 +12,8 @@
 		<result property="totalRewardPrice" column="total_reward_price"/>
 		<result property="storyTitle" column="story_title"/>
 		<result property="storyContent" column="story_content"/>
-		<result property="imgUrl" column="img_url"/>
+		<result property="mainImgUrl" column="main_img_url"/>
+		<result property="subImgUrl" column="sub_img_url"/>
 		<result property="joinPercent" column="join_percent"/>
 	</resultMap>
 
@@ -58,12 +59,14 @@
 		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price,
 		    fpt.story_title,
 		    fpt.story_content,
-		    fpt.main_img_url as img_url,
+		    fpt.main_img_url as main_img_url,
+		    fpsit.img_url as sub_img_url,
 		    ROUND((sum(if(ft.funder_id is null, 0, rt.reward_price)) / fpt.goal_total) * 100) as join_percent
 		from
 			funding_page_tb fpt
 		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
 		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
+		    left outer join funding_page_sub_img_tb fpsit on (fpsit.funding_id = fpt.funding_id)
 		where
 			fpt.funding_id = #{pageId};
 	</select>
