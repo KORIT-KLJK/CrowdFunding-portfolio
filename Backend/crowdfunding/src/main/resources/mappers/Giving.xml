@@ -77,7 +77,8 @@
 	        <otherwise>
 	            page_id desc
 	        </otherwise>
-	    </choose>    
+	    </choose>
+	   limit #{index}, 19;
 	</select>
 	
 	<select id="getGivingCategory" resultMap="GivingCategoryMap">

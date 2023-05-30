@@ -5,9 +5,8 @@ import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { authenticatedState } from './AuthAtom';
 import { useMutation } from 'react-query';
-import { Alert, Box, Button, TextField } from '@mui/material';
+import { Alert} from '@mui/material';
 import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -46,7 +45,6 @@ const loginLeftSide = css`
     background: #10c838;
     background: -webkit-linear-gradient(to right, #3CB371, #10c838);
     background: linear-gradient(to right, #3CB371, #10c838);
-
 `;
 
 const loginLeftSideh1 = css`
@@ -206,7 +204,7 @@ const Login = () => {
                                 </FormControl>
                             </div>
                         </div>
-                            <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>                 
+                        <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>                 
                     </div>
             </div>
         </div>         
