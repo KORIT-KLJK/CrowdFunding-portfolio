@@ -12,6 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.webproject.crowdfunding.security.JwtAuthenticationEntryPoint;
 import com.webproject.crowdfunding.security.JwtAuthenticationFilter;
 import com.webproject.crowdfunding.security.JwtTokenProvider;
+import com.webproject.crowdfunding.security.OAuth2SuccessHandler;
+import com.webproject.crowdfunding.service.OAuth2Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final JwtTokenProvider jwtTokenProvider;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+	private final OAuth2Service oAuth2Service;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
 	@Bean
@@ -55,7 +59,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and() // code8144: 토큰을 활용하면 세션이 필요가 없으므로 STATELESS로 설정하여 Session을 사용하지 않는다
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling()
-			.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.and()
+			.oauth2Login()
+			.loginPage("http://localhost:3000/auth/login")
+			.successHandler(oAuth2SuccessHandler)
+			.userInfoEndpoint()
+			.userService(oAuth2Service);	
+			
 		
 	}
 }

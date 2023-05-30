@@ -10,6 +10,7 @@
 		<result property="giverTotal" column="giver_total"/>
 		<result property="givingTotalSum" column="giving_total_sum"/>
 	</resultMap>
+	
 	<resultMap type="com.webproject.crowdfunding.entity.MainStatisticsFunder" id="StatisticsFunderMap">
 		<result property="funderTotal" column="funder_total"/>
 		<result property="fundingPriceTotal" column="funding_price_total"/>

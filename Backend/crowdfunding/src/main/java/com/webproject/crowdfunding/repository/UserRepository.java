@@ -15,4 +15,5 @@ public interface UserRepository {
 	public int saveAddress(Address address);
 	public int signUpUser(User user);
 	public int saveAuthority(Authority authority);
+	public int updateProvider(User user);
 }

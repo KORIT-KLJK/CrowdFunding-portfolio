@@ -1,6 +1,5 @@
 package com.webproject.crowdfunding.entity;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.webproject.crowdfunding.security.PrincipalUserDetails;
@@ -21,6 +20,7 @@ public class User {
 	private String name;
 	private String birthday;
 	private String gender;
+	private String provider;
 	private int addressId;
 	
 	private List<Authority> authorities;
