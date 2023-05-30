@@ -8,7 +8,7 @@ import GiverPayment from "../../components/Modal/GiverPayment";
 import { authenticatedState } from "../Login/AuthAtom";
 import { useRecoilState } from "recoil";
 
-export const adminContainer = css`
+const adminContainer = css`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,7 +16,7 @@ export const adminContainer = css`
     width: 100%;
 `;
 
-export const givingModifyButton = css`
+const givingModifyButton = css`
     border: none;
     border-radius: 50%;
     background-color: #1f9eff;
@@ -26,7 +26,7 @@ export const givingModifyButton = css`
     cursor: pointer;
 `;
 
-export const givingModifyContainer = css`
+const givingModifyContainer = css`
     position: absolute;
     top: 0;
     left: 0;
@@ -36,18 +36,17 @@ export const givingModifyContainer = css`
     align-items: flex-start;
     width: 100%;
     height: 100%;
-
     background-color: #000000aa;   
 `;
 
-export const givingIdentifyContainer = css`
+const givingIdentifyContainer = css`
     border-radius: 9px;
     margin-top: 200px;
     width: 700px;
     background-color: white;
 `;
 
-export const givingIdentifyMain = css`
+const givingIdentifyMain = css`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -55,11 +54,11 @@ export const givingIdentifyMain = css`
     padding: 40px;
 `;
 
-export const givingModifyTitle = css`
+const givingModifyTitle = css`
     font-size: 30px;
 `;
 
-export const modifyGivingHeader = css`
+const modifyGivingHeader = css`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -67,18 +66,18 @@ export const modifyGivingHeader = css`
     width: 100%;
 `;
 
-export const modifyContainer = css`
+const modifyContainer = css`
     padding-top: 40px;
     width: 100%;
 `;
 
-export const modifyTitleTxt = css`
+const modifyTitleTxt = css`
     width: 100%;
     margin-bottom: 10px;
     font-size: 20px;
 `;
 
-export const modifyValue = css`
+const modifyValue = css`
     outline: none;
     border: none;
     border-bottom: 1px solid #dbdbdb;
@@ -87,7 +86,7 @@ export const modifyValue = css`
     font-size: 18px;
 `;
 
-export const modifyIdentifyButtonContainer = css`
+const modifyIdentifyButtonContainer = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -95,7 +94,7 @@ export const modifyIdentifyButtonContainer = css`
     width: 400px;
 `;
 
-export const modifyIdentifyButton = css`
+const modifyIdentifyButton = css`
     display: inline-block;
     width: 120px;
     height: 40px;
@@ -112,7 +111,7 @@ export const modifyIdentifyButton = css`
     cursor: pointer;
 `;
 
-export const modifyCancelButton = css`
+const modifyCancelButton = css`
     display: inline-block;
     width: 120px;
     height: 40px;
@@ -129,7 +128,7 @@ export const modifyCancelButton = css`
     cursor: pointer;
 `;
 
-export const givingDeleteButton = css`
+const givingDeleteButton = css`
     border: none;
     border-radius: 50%;
     background-color: #888888;
@@ -139,7 +138,7 @@ export const givingDeleteButton = css`
     cursor: pointer;
 `;
 
-export const givingDeleteContainer = css`
+const givingDeleteContainer = css`
     position: absolute;
     top: 0;
     left: 0;
@@ -153,16 +152,16 @@ export const givingDeleteContainer = css`
     background-color: #000000aa;   
 `;
 
-export const givingDeleteTitle = css`
+const givingDeleteTitle = css`
     font-size: 30px;
 `;
 
-export const givingDeleteMessage = css`
+const givingDeleteMessage = css`
     padding-top: 40px;
     font-size: 20px;
 `;
 
-export const givingDeleteButtonContainer = css`
+const givingDeleteButtonContainer = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -170,7 +169,7 @@ export const givingDeleteButtonContainer = css`
     width: 400px;
 `;
 
-export const deleteIdentifyButton = css`
+const deleteIdentifyButton = css`
     display: inline-block;
     width: 120px;
     height: 40px;
@@ -187,7 +186,7 @@ export const deleteIdentifyButton = css`
     cursor: pointer;
 `;
 
-export const deleteCancelButton = css`
+const deleteCancelButton = css`
     display: inline-block;
     width: 120px;
     height: 40px;
@@ -256,6 +255,8 @@ const storyTitle = css`
     margin-top: 20px;
     line-height: 30px;
     letter-spacing: 1px;
+    font-family: "SUITE-Variable";
+    font-weight: 600;
 `;
 
 const storyContent = css`
@@ -266,6 +267,7 @@ const storyContent = css`
     line-height: 32px;
     text-align: justify;
     letter-spacing: -.01px;
+    font-family: "SUITE-Variable";
 `;
 
 const givingStatusBox = css`
@@ -274,6 +276,7 @@ const givingStatusBox = css`
     font-size: 15px;
     padding-bottom: 25px;
     border-right: 1px solid #e5e5e5;
+    font-family: "SUITE-Variable";
 `;
 
 const givingInfoBox = css`
@@ -611,6 +614,7 @@ const GivingDetail = () => {
         }
     }
 
+    console.log(givingDetail)
 
     return (
         <>
@@ -690,7 +694,7 @@ const GivingDetail = () => {
                                             : `D-${givingDetail.data.data.dday}`}
                             </div>
                             <div css={givingArea}>
-                                <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
+                                <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.goalTotal)}원</div>
                             </div>
                         </div>
                             <div css={givingButton} onClick={openModal}>
@@ -699,7 +703,7 @@ const GivingDetail = () => {
                             </div>
                             <div css={givingGroupBanner}>
                                 <div>기부하신 금액은 수수료없이
-                                    <strong css={strongColor}>100% 전달</strong>
+                                    <strong css={strongColor}> 100% 전달</strong>
                                     됩니다.
                                 </div>
                             </div>
@@ -714,7 +718,7 @@ const GivingDetail = () => {
                                 </div>
                             </div>
                             <div css={todayCommendBox}>
-                                <div css={todayCommendLogo}>기부 목록</div>
+                                <div css={todayCommendLogo}>기부 추천 목록</div>
                                     <ul css={todayCommendUl}>
                                         {mostGivings.data.data.map(mostGiving => 
                                             <li css={todayCommendLi} key={mostGiving.pageId} onClick={() => toGivingPage(mostGiving.pageId)}>

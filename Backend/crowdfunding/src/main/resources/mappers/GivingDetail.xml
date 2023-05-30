@@ -60,7 +60,7 @@
 		    gpt.giving_page_id = #{pageId}
 	</select>
 	
-	<select id="getMostGivings" parameterType="Integer" resultMap="GivingDetailMap">
+	<select id="getMostGivings" parameterType="map" resultMap="GivingDetailMap">
 		select
 			giving_page_id * FLOOR(RAND() * 10) as page_rand_index,
 			giving_page_id as page_id,

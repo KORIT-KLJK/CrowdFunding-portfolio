@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+@font-face {
+  font-family: "SUITE-Variable";
+  src: url("./assets/fonts/SUITE-Variable.ttf");
+}

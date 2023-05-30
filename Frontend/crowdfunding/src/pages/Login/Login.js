@@ -43,8 +43,10 @@ const loginLeftSide = css`
     justify-content: center;
     align-items: center;
     color: white;
-    background-image: 
-    radial-gradient(ellipse farthest-corner at 0 140%, #5d9dff 0%, #2178ff 70%, #3585ff 70%);   
+    background: #10c838;
+    background: -webkit-linear-gradient(to right, #3CB371, #10c838);
+    background: linear-gradient(to right, #3CB371, #10c838);
+
 `;
 
 const loginLeftSideh1 = css`
@@ -52,6 +54,9 @@ const loginLeftSideh1 = css`
     width:100%;
     text-align: right;
     opacity: 0.9;
+    font-family: "SUITE-Variable";
+    font-size: 33px;
+    font-weight: 800;
 `;
 
 const loginLeftSideP = css`
@@ -59,6 +64,9 @@ const loginLeftSideP = css`
     font-size:12px;
     text-align: right;
     opacity: 0.8;
+    line-height: 1.5;
+    font-family: "SUITE-Variable";
+    font-size: 15px;
 `;
 
 const loginRightSide = css`
@@ -114,9 +122,10 @@ const loginBtn = css`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
-    background: rgb(105,163,255);
-    background: linear-gradient(162deg, rgba(105,163,255,1) 0%, rgba(43,125,254,1) 50%, rgba(43,125,254,1) 100%);
+    background: rgb(000,255,051);
+    background: linear-gradient(162deg, rgba(000,204,102,1) 0%, rgba(000,204,102,1) 50%, rgba(000,255,051,1) 100%);
 `;
 
 const Login = () => {
@@ -197,7 +206,7 @@ const Login = () => {
                                 </FormControl>
                             </div>
                         </div>
-                            <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>                       
+                            <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>                 
                     </div>
             </div>
         </div>         

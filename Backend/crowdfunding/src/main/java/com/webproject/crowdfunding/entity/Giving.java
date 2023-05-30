@@ -69,7 +69,7 @@ public class Giving {
 				.registerDate(registerDate)
 				.endDate(endDate)
 				.dDay(dDay)
-				.givingTotal(givingTotal)
+				.goalTotal(goalTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
 				.centerId(givingGroupInfo.getCenterId())

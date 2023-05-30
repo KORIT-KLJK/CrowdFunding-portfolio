@@ -26,33 +26,6 @@ const mainContainer = css`
   min-width: 1140px;
 `;
 
-const header = css`
-  color: #202020;
-  font: NanumBarunGothic;
-`;
-
-const menubarMain = css`
-  position: relative;
-  margin-bottom: -1px;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-`;
-
-const menubar = css`
-  width: 1140px;
-  margin: 0 auto;
-  font-size: 0;
-  text-align: center;
-`;
-
-const menubarItem = css`
-  display: inline-block;
-  height: 50px;
-  padding: 16px 35px;
-  font-size: 17px;
-  text-align: center;
-  vertical-align: middle;
-`;
-
 const categoryName = css`
   overflow: hidden;
   position: absolute;
@@ -62,7 +35,7 @@ const categoryName = css`
   clip: rect(0 0 0 0);
 `;
 
-export const categoryArea = css`
+const categoryArea = css`
   background-color: #10c838;
 `;
 
@@ -226,7 +199,7 @@ const cardToday = css`
   margin: 0 0 24px 24px;
   display: table;
   background-color: #10c838;
-  font-family: NanumSquareWebFont, dotum, Sans-serif;
+  font-family: 'LINESeedKR-Bd';
   text-align: center;
   color: #fff;
 `;
@@ -284,7 +257,7 @@ const givingCard = css`
   height: 363px;
   margin: 0 0 24px 24px;
   background-color: #fff;
-  font-family: NanumSquareWebFont, dotum, Sans-serif;
+  font-family: 'LINESeedKR-Bd';
 
   cursor: pointer;
   &:hover {
@@ -354,6 +327,19 @@ const cardItemMoney = css`
   color: #333;
 `;
 
+const seeMore = css`
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+  padding-top: 1px;
+  clear: both;
+  border: 1px solid #e5e5e5;
+  background-color: #f6f6f6;
+  line-height: 42px;
+  cursor: pointer;
+  color: #333;
+`;
+
 const Giving = () => {
   const navigate = useNavigate();
   const [givingRefresh, setGivingRefresh] = useState(true);
@@ -361,6 +347,7 @@ const Giving = () => {
   const [selectedOrder, setSelectedOrder] = useState("최신순");
   const [searchParams, setSearchParams] = useState({
     page: 1,
+    limit: 20,
     categoryId: 0,
     selectedOrder: "최신순",
   });
@@ -384,7 +371,7 @@ const Giving = () => {
   );
 
   const givingData = useQuery(
-    ["givingData"],
+    ["givingData", searchParams.page],
     async () => {
       const option = {
         params: {
@@ -404,7 +391,6 @@ const Giving = () => {
           todayGivers: 0,
           todayDonations: 0,
         };
-
         response.data.forEach((responseData) => {
           todayData.todayGivers += responseData.todayGivers;
           todayData.todayDonations += responseData.todayDonations;
@@ -433,19 +419,23 @@ const Giving = () => {
 
   const handleCategoryClick = (categoryId) => {
     console.log(categoryId);
-    setSearchParams({ ...searchParams, categoryId });
+    setSearchParams({ ...searchParams, categoryId, page: 1 });
     setGivingRefresh(true);
   };
 
   const handleSortByAmount = (selectedOrder) => {
     setSelectedOrder(selectedOrder);
-    setSearchParams({ ...searchParams, selectedOrder });
+    setSearchParams({ ...searchParams, selectedOrder, page: 1 });
     setGivingRefresh(true);
   };
 
   const givingDetailHandle = (pageId) => {
     navigate("/giving/" + pageId)
   }
+
+  const handleSeeMore = () => {
+    setSearchParams({ ...searchParams, page: searchParams.page + 1 });
+  };
 
 
   return (
@@ -572,6 +562,7 @@ const Giving = () => {
                 </div>
             ))}
           </main>
+          <button css={seeMore} onClick={handleSeeMore}>더보기</button>
         </div>
       </div>
     </div>

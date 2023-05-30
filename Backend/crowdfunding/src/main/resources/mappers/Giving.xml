@@ -33,7 +33,7 @@
 	        gpt.giving_name as page_title,
 	        ct.center_name,
 	        gpt.main_img_url as img_url,
-	        gt.giving_total as giving_total,
+	        sum(gt.giving_total) as giving_total,
 	        gpt.category_id,
 	        gpt.goal_total,
 	        gct.giving_category_id,
