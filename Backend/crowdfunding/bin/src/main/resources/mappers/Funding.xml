@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.FundingRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingMap">
+		<id property="fundingId" column="page_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
+		<result property="fundingTitle" column="page_title"/>
+		<result property="username" column="user_name"/>
+		<result property="recentSort" column="recent_sort"/>
+		<result property="nearDeadline" column="near_deadline_sort"/>
+		<result property="eventStatus" column="event_status"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="totalRewardPrice" column="total_reward_price"/>
+		<result property="joinPercent" column="join_percent"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="fundingCategoryId" column="funding_category_id"/>
+		<result property="rewardName" column="reward_name"/>
+		<result property="rewardPrice" column="reward_price"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.FundingCategory" id="FundingCategoryMap">
+		<id property="fundingCategoryId" column="funding_category_id"/>
+		<result property="categoryName" column="category_name"/>
+	</resultMap>
+	
+	<select id="getTotalCount" parameterType="hashMap" resultType="integer">
+		select
+			count(*) as total_count
+		from
+			funding_page_tb
+		where 
+			1 = 1
+	</select>
+	
+	<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
+	<if test="fundingSortingStatus == '전체'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		<if test="fundingSortingReward == '종료 임박 순'">
+		where
+			DATEDIFF(fpt.end_date, NOW()) >= 0
+		</if>
+		group by
+		   	page_id,
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id
+		limit 0, #{index};
+		</if>	
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
+		</if>
+	</if>
+
+	<if test="fundingSortingStatus == '진행중'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		where
+			DATEDIFF(fpt.end_date, NOW()) >= 0
+		group by
+		   	page_id,
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
+			
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id
+		limit 0, #{index};
+		</if>	
+		
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
+		</if>
+	</if>
+		
+	<if test="fundingSortingStatus == '종료'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		where
+			DATEDIFF(fpt.end_date, NOW()) &lt; 0
+		group by
+		   	page_id,
+            funding_summary_name,
+            page_title,
+            recent_sort,
+            near_deadline_sort,
+			event_status,
+            goal_total,
+            img_url,
+            funding_category_id
+			
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id
+		limit 0, #{index};
+		</if>	
+		
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
+		</if>
+	</if>
+
+	</select>
+	
+	<select id="getFundingCategory" resultMap="FundingCategoryMap">
+		select
+			ft.funding_category_id,
+			ft.category_name
+		from
+			funding_category_tb ft
+	</select>
+
+
+</mapper>

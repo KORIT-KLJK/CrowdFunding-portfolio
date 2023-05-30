@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.FundingRegisterPageRepository">
+
+	<insert id="toSaveRegisterPage"
+				parameterType="com.webproject.crowdfunding.entity.FundingRegisterPage"
+				useGeneratedKeys="true"
+				keyProperty="fundingId">
+				
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '음식'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 1, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '도서'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 2, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '의류'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 3, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '액세서리&amp;화장품'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 4, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '꽃&amp;과일'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 5, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '생활용품'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 6, #{nickname})
+	</if>
+	</insert>
+	
+	<insert id="toSaveBusinessInfo"
+				parameterType="com.webproject.crowdfunding.entity.BusinessInfo"
+				useGeneratedKeys="true"
+				keyProperty="businessInfoId">
+		<if test="pageCategory == '펀딩'">
+			insert into business_info_tb
+			values
+			(0, #{companyName}, #{ceoName}, #{companyAddress}, #{companyPhoneNumber}, #{ceoEmail}, #{fundingId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveReward"
+				parameterType="com.webproject.crowdfunding.entity.Reward"
+				useGeneratedKeys="true"
+				keyProperty="rewardId">
+		<if test="pageCategory == '펀딩'">
+			insert into reward_tb
+			values
+			(0, #{rewardName}, #{rewardPrice}, #{fundingId})
+		</if>
+	</insert>
+	
+</mapper>
+
+
+
+
+
+
+
+

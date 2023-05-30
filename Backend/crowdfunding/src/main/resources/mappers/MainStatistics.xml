@@ -24,7 +24,6 @@
 		where
 			giving_date = DATE(NOW());
    </select>
-   <!--  -->
    <select id="getFundingTotal" parameterType="Integer" resultMap="StatisticsFunderMap">
    		select
 			count(distinct ft.user_id) as funder_total,
