@@ -40,7 +40,6 @@ public class WebMvcConfig implements WebMvcConfigurer{
 						return super.getResource(resourcePath, location);
 					}
 				});
-		
 	}
 	
 }

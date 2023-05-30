@@ -10,32 +10,32 @@
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '음식'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 1, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 1, #{nickname})
 	</if>
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '도서'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 2, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 2, #{nickname})
 	</if>
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '의류'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 3, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 3, #{nickname})
 	</if>
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '액세서리&amp;화장품'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 4, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 4, #{nickname})
 	</if>
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '꽃&amp;과일'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 5, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 5, #{nickname})
 	</if>
 	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '생활용품'">
 			insert into funding_page_tb
 			values
-			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{imgUrl}, 6, #{nickname})
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 6, #{nickname})
 	</if>
 	</insert>
 	
@@ -58,6 +58,17 @@
 			insert into reward_tb
 			values
 			(0, #{rewardName}, #{rewardPrice}, #{fundingId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveFundingSubImg"
+				parameterType="com.webproject.crowdfunding.entity.FundingSubImg"
+				useGeneratedKeys="true"
+				keyProperty="fpsiId">
+		<if test="pageCategory == '펀딩'">
+			insert into funding_page_sub_img_tb
+			values
+			(0, #{fundingId}, #{subImgUrl})
 		</if>
 	</insert>
 	

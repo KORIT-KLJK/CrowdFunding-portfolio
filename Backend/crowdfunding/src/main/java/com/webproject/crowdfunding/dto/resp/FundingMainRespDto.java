@@ -16,6 +16,6 @@ public class FundingMainRespDto {
 	private int goalTotal;
 	private int totalRewardPrice;
 	private int joinPercent;
-	private String imgUrl;
+	private String mainImgUrl;
 	private int fundingCategoryId;
 }

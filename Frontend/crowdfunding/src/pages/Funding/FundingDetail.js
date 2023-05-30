@@ -483,7 +483,7 @@ export const storyHeadLine = css`
     height: 50px;
     border-top: 1px solid #dbdbdb77;
     border-bottom: 1px solid #dbdbdb77;
-
+    margin-top: 50px;
 `;
 
 export const storyHeadLineContainer = css`
@@ -516,6 +516,7 @@ export const fundingStoryContainer = css`
 
 export const fundingStory = css`
     width: 750px;
+    border-bottom: 1px solid black;
 `;
 
 export const fundingStoryTitle = css`
@@ -526,12 +527,18 @@ export const fundingStoryTitle = css`
 
 export const fundingStoryContent = css`
     margin-top: 16px;
-    width: 628px;
+    width: 750px;
     font-size: 18px;
     color: #666;
     line-height: 32px;
     text-align: justify;
     letter-spacing: -.01px;
+`;
+
+export const fundingStoryImg = css`
+    width: 750px;
+    height: 480px;
+    margin: 50px 0px;
 `;
 
 export const rewardGuide = css`
@@ -595,7 +602,6 @@ export const joinUserContainer = css`
 `;
 
 export const joinUserMain = css`
-    border-top: 1px solid black;
     width: 750px;
 `;
 
@@ -928,6 +934,7 @@ const FundingDetail = () => {
 
     const joinFunding = () => {
         if (!authenticated) {
+            alert("로그인 후 이용 가능합니다.")
             navigate('/login');
         } else if (rewards.length === 0) {
             alert("리워드 수량과 옵션을 확인해주세요.");
@@ -991,6 +998,8 @@ const FundingDetail = () => {
         setDeleteOpen(true);
     }
 
+    console.log(fundingDetail)
+
     return (
         <div>
             {role ?
@@ -1042,7 +1051,7 @@ const FundingDetail = () => {
                 : ""}
             <div css={fundingDetailContainer}>
                 <div css={fundingDetailHeader}>
-                    <img css={fundingDetailImg} src={funding.imgUrl} alt={funding.fundingTitle} />
+                    <img css={fundingDetailImg} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
                     <div css={fundingDetailHeaderRight}>
                         <div css={fundingDetailNearDeadline}>{funding.deadline === "종료" ? "종료" : funding.deadline === "오늘 마감" ?  "오늘 마감" : `D-${funding.deadline}`}</div>
                         <div css={fundingDetailFundingTitle}>{funding.fundingTitle}</div>
@@ -1139,6 +1148,7 @@ const FundingDetail = () => {
                 <div css={fundingStory}>
                     <div css={fundingStoryTitle}>{funding.storyTitle}</div>
                     <div css={fundingStoryContent}>{funding.storyContent}</div>
+                    <img css={fundingStoryImg} src={`http://localhost:8080/image/sub/${funding.subImgUrl}`} />
                 </div>
                 <div css={rewardGuide}>
                     <div css={txtGuide}>리워드 안내</div>

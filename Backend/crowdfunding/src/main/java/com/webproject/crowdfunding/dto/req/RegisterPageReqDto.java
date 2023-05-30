@@ -16,10 +16,11 @@ import com.webproject.crowdfunding.entity.BusinessInfo;
 import com.webproject.crowdfunding.entity.Center;
 import com.webproject.crowdfunding.entity.DonationUsePlan;
 import com.webproject.crowdfunding.entity.FundingRegisterPage;
+import com.webproject.crowdfunding.entity.FundingSubImg;
 import com.webproject.crowdfunding.entity.GiveRegisterPage;
+import com.webproject.crowdfunding.entity.GivingSubImg;
 import com.webproject.crowdfunding.entity.Reward;
 import com.webproject.crowdfunding.entity.TargetBenefit;
-import com.webproject.crowdfunding.service.FundingRegisterPageService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class RegisterPageReqDto {
 	private String title;
 	private String storyTitle;
 	private String story;
-	private MultipartFile imgUrl;
+	private MultipartFile mainImgUrl;
+	private MultipartFile subImgUrl;
 	private int goalTotal;
 	private String endDate;
 	private List<String> giveUsing;
@@ -50,19 +52,18 @@ public class RegisterPageReqDto {
 	private String companyAddress;
 	private String companyPhoneNumber;
 	private String email;
-	@Value("${file.path}")
-	private String filePath;
 	
-	public FundingRegisterPage toRegisterEntity() {
-		MultipartFile file = imgUrl;
+	public FundingRegisterPage toRegisterEntity(String filePath) {
+		MultipartFile file = mainImgUrl;
 		if(file == null) {
 			return null;
 		}
 		String originFileName = file.getOriginalFilename();
 		String extension = originFileName.substring(originFileName.lastIndexOf("."));
 		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
-		Path uploadPath = Paths.get(filePath + "post/" + tempFileName);	// 경로/post/UUID.jpg
-		File f = new File(filePath + "post");
+		Path uploadPath = Paths.get(filePath + "main/" + tempFileName);	// 경로/post/UUID.jpg
+		System.out.println("filePath: " + filePath);
+		File f = new File(filePath + "main");
 		if(!f.exists()) {
 			f.mkdirs();
 		}
@@ -80,22 +81,23 @@ public class RegisterPageReqDto {
 				.storyTitle(storyTitle)
 				.story(story)
 				.goalTotal(goalTotal)
-				.imgUrl(tempFileName)
+				.mainImgUrl(tempFileName)
 				.endDate(endDate)
 				.nickname(nickname)
 				.build();
 	}
 	
-	public GiveRegisterPage toGiveRegisterEntity() {
-		MultipartFile file = imgUrl;
+	public GiveRegisterPage toGiveRegisterEntity(String filePath) {
+		MultipartFile file = mainImgUrl;
 		if(file == null) {
 			return null;
 		}
 		String originFileName = file.getOriginalFilename();
 		String extension = originFileName.substring(originFileName.lastIndexOf("."));
 		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
-		Path uploadPath = Paths.get(filePath + "post/" + tempFileName);	// 경로/post/UUID.jpg
-		File f = new File(filePath + "post");
+		Path uploadPath = Paths.get(filePath + "main/" + tempFileName);	// 경로/post/UUID.jpg
+	
+		File f = new File(filePath + "main");
 		if(!f.exists()) {
 			f.mkdirs();
 		}
@@ -112,7 +114,7 @@ public class RegisterPageReqDto {
 				.storyTitle(storyTitle)
 				.story(story)
 				.goalTotal(goalTotal)
-				.imgUrl(tempFileName)
+				.mainImgUrl(tempFileName)
 				.endDate(endDate)
 				.build();
 	}
@@ -179,6 +181,56 @@ public class RegisterPageReqDto {
 	    }
  
 	    return rewards;
+	}
+	
+	public FundingSubImg toFundingSubImgEntity(String filePath) {
+		MultipartFile file = subImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "sub/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "sub");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return FundingSubImg.builder()
+				.subImgUrl(tempFileName)
+				.pageCategory(pageCategory)
+				.build();
+	}
+	
+	public GivingSubImg togivingSubImgEntity(String filePath) {
+		MultipartFile file = subImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "sub/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "sub");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return GivingSubImg.builder()
+				.subImgUrl(tempFileName)
+				.pageCategory(pageCategory)
+				.build();
 	}
 	
 }

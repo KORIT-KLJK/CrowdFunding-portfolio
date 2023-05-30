@@ -2,12 +2,14 @@ package com.webproject.crowdfunding.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.RegisterPageReqDto;
 import com.webproject.crowdfunding.entity.Center;
 import com.webproject.crowdfunding.entity.DonationUsePlan;
 import com.webproject.crowdfunding.entity.GiveRegisterPage;
+import com.webproject.crowdfunding.entity.GivingSubImg;
 import com.webproject.crowdfunding.entity.TargetBenefit;
 import com.webproject.crowdfunding.repository.GiveRegisterPageRepository;
 
@@ -21,20 +23,22 @@ public class GiveRegsterPageService {
 	private Center centerEntity;
 	private GiveRegisterPage giveRegisterPageEntity;
 	
+	@Value("${file.path}")
+	private String filePath;
 	
 	public void giveRegisterPage (RegisterPageReqDto registerPageReqDto) {
 		centerEntity = registerPageReqDto.toCenterEntity();
-		System.out.println(centerEntity);
 		giveRegisterPageRepository.toSaveCenter(centerEntity);
 		
-		giveRegisterPageEntity = registerPageReqDto.toGiveRegisterEntity();
+		giveRegisterPageEntity = registerPageReqDto.toGiveRegisterEntity(filePath);
 		giveRegisterPageEntity.setCenterId(centerEntity.getCenterId());
 		giveRegisterPageRepository.toSaveGiveRegisterPage(giveRegisterPageEntity);
 		
-		List<DonationUsePlan> donationEntity = registerPageReqDto.toDonationUsePlanEntity();
-		System.out.println(donationEntity);
 		TargetBenefit targetBenefitEntity = registerPageReqDto.toTargetBenefitEntity();
 		targetBenefitEntity.setGivingPageId(giveRegisterPageEntity.getGivingPageId());
+		giveRegisterPageRepository.toSaveTarget(targetBenefitEntity);
+		
+		List<DonationUsePlan> donationEntity = registerPageReqDto.toDonationUsePlanEntity();
 		donationEntity.forEach(donation -> {
 			giveRegisterPageRepository.toSaveDonation(
 			DonationUsePlan.builder()
@@ -44,7 +48,10 @@ public class GiveRegsterPageService {
 			.givingPageId(giveRegisterPageEntity.getGivingPageId())
 			.build());
 		});
-		giveRegisterPageRepository.toSaveTarget(targetBenefitEntity);
+		
+		GivingSubImg givingSubImgEntity = registerPageReqDto.togivingSubImgEntity(filePath);
+		givingSubImgEntity.setGivingPageId(giveRegisterPageEntity.getGivingPageId());
+		giveRegisterPageRepository.toSaveGivingSubImg(givingSubImgEntity);
 	}
 
 }

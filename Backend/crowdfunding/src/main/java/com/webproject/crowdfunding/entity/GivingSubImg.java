@@ -9,15 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GiveRegisterPage {
+public class GivingSubImg {
+	private int gpsiId;
 	private int givingPageId;
+	private String subImgUrl;
 	private String pageCategory;
-	private String detailCategory;
-	private String title;
-	private String storyTitle;
-	private String story;
-	private String mainImgUrl;
-	private int centerId;
-	private int goalTotal;
-	private String endDate;
 }

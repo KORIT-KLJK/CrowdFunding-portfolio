@@ -6,6 +6,7 @@ import { async } from 'q';
 import axios from 'axios';
 import { useMutation } from 'react-query';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router';
 
 
 const mainContainer = css`
@@ -249,8 +250,10 @@ const submitBtnContainer = css`
 `;
 
 const RegisterPage = () => {
-    const [ imgFiles, setImgFiles ] = useState([]);
+    const [ mainImgFiles, setMainImgFiles ] = useState([]);
+    const [ subImgFiles, setSubImgFiles ] = useState([]);
     const fileId = useRef(1);
+    const navigate = useNavigate();
     const [giveInputParams, setGiveInputParams] = useState({ 
         pageCategory: "기부",
         detailCategory : "아동",
@@ -331,8 +334,11 @@ const RegisterPage = () => {
         formData.append("title", giveInputParams.title)
         formData.append("storyTitle", giveInputParams.storyTitle)
         formData.append("story", giveInputParams.story)
-        imgFiles.forEach(imgFile => {
-            formData.append("imgUrl", imgFile.file);
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
         })
         formData.append("goalTotal", giveInputParams.goalTotal);
         formData.append("endDate", giveInputParams.endDate);
@@ -355,6 +361,11 @@ const RegisterPage = () => {
             }
         }
             return await axios.post("http://localhost:8080/giveregisterpage", formData, option)
+    }, {
+        onSuccess: () => {
+            alert("기부 페이지 등록 성공");
+            navigate("/giving");
+        }
     });
 
     const fundingRegisterPage = useMutation(async () => {
@@ -364,8 +375,11 @@ const RegisterPage = () => {
         formData.append("title", fundingInputParams.title)
         formData.append("storyTitle", fundingInputParams.storyTitle)
         formData.append("story", fundingInputParams.story)
-        imgFiles.forEach(imgFile => {
-            formData.append("imgUrl", imgFile.file);
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
         })
         formData.append("goalTotal", fundingInputParams.goalTotal);
         formData.append("endDate", fundingInputParams.endDate);
@@ -383,6 +397,11 @@ const RegisterPage = () => {
             }
         }
         return await axios.post("http://localhost:8080/fundingregisterpage", formData, option)
+    }, {
+        onSuccess: () => {
+            alert("펀딩 페이지 등록 성공");
+            navigate("/funding");
+        }
     });
 
     const handleGivingUsingChange = (id, e) => {
@@ -511,9 +530,7 @@ const RegisterPage = () => {
         setFundingInputParams({...fundingInputParams, story:e.target.value})
     }
 
-    const changeImgUrl = (e) => {
-        console.log(e.target.files)
-        console.log(e.target.file)
+    const changeMainImgUrl = (e) => {
         const newImgFiles = [];
 
         // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
@@ -526,25 +543,25 @@ const RegisterPage = () => {
             newImgFiles.push(fileData)      
         }
 
-        setImgFiles([...imgFiles, ...newImgFiles]);
+        setMainImgFiles([...mainImgFiles, ...newImgFiles]);
     }
 
-//    const addFileHandle = (e) => {
-//        const newImgFiles = [];
-//
-//        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
-//        for(const file of e.target.files) {
-//            const fileData = {
-//                id: fileId.current,
-//                file
-//            }
-//            fileId.current += 1;
-//            newImgFiles.push(fileData)      // 비동기 처리로 인해 순서가 섞일 수도 있기 때문에 새로운 배열에다 넣어줌.
-//        }
-//
-//        setImgFiles([...imgFiles, ...newImgFiles]);
-//        e.target.value = null;  // 파일을 옮기고 나면 null로 처리를 해준다.
-//    }
+    const changeSubImgUrl = (e) => {
+        const newImgFiles = [];
+
+        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setSubImgFiles([...subImgFiles, ...newImgFiles]);
+    }
+
 
     const changeGoalTotal = (e) => {
         setGiveInputParams({...giveInputParams, goalTotal:e.target.value})
@@ -712,7 +729,14 @@ const RegisterPage = () => {
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 메인 이미지</div>
                         <div css={inputContainer}>
-                            <input css={input} type="file" onChange={changeImgUrl} accept={".jpg, .png"}/>    
+                            <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>    
+                        </div> 
+                    </div>
+
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 스토리 이미지</div>
+                        <div css={inputContainer}>
+                            <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>    
                         </div> 
                     </div>
                 
@@ -893,7 +917,14 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 메인 이미지</div>
                     <div css={inputContainer}>
-                    <input css={input} type="file" onChange={changeImgUrl} accept={".jpg, .png"}/>     
+                    <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>     
+                    </div> 
+                </div>
+
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 스토리 이미지</div>
+                    <div css={inputContainer}>
+                    <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>     
                     </div> 
                 </div>
             
