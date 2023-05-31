@@ -2,12 +2,12 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import HeaderMain from '../../components/Header/HeaderMain/HeaderMain';
-import Slide from '../../components/Bannder/swiper/Slide';
-import Recommend from '../../components/Recommend/Recommend';
-import MainGivingList from '../../components/MainCard/MainDonationList/MainGivingList';
-import CardItemGiving from '../../components/MainCard/MainDonationList/CardItem/CardItemGiving';
-import MainFundingList from '../../components/MainCard/MainFundingList/MainFundingList';
-import GivingStatistics from '../../components/Statistics/GivingStatistics';
+import Slide from '../../components/Main/Bannder/swiper/Slide';
+import Recommend from '../../components/Main/Recommend/Recommend';
+import MainGivingList from '../../components/Main/MainCard/MainDonationList/MainGivingList';
+import CardItemGiving from '../../components/Main/MainCard/MainDonationList/CardItem/CardItemGiving';
+import MainFundingList from '../../components/Main/MainCard/MainFundingList/MainFundingList';
+import GivingStatistics from '../../components/Main/Statistics/GivingStatistics';
 import Footer from '../../components/Footer/Footer';
 
 const mainContainer = css`
@@ -18,7 +18,7 @@ const mainBody = css`
 `;
 
 const mainBodyDetails = css`
-    margin-top: 71px;
+    margin-top: none;
 `;
 
 const mainBanner = css`
