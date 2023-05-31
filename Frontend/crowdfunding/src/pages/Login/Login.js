@@ -9,10 +9,11 @@ import { Alert } from '@mui/material';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { FcGoogle } from 'react-icons/fc';
 import { SiNaver } from 'react-icons/si';
 import { SiKakao } from 'react-icons/si'
+import { useNavigate } from 'react-router-dom';
+import { Lock, Mail } from '@mui/icons-material';
 
 const mainContainer = css`
     width: 100vw;
@@ -113,6 +114,10 @@ const inputI = css`
     line-height: 45px;
 `;
 
+const errorCss = css`
+    height: 40px;
+    align-items: center;
+`;
 
 const loginBtn = css`
     width:95px;
@@ -129,15 +134,32 @@ const loginBtn = css`
     background: linear-gradient(162deg, rgba(000,204,102,1) 0%, rgba(000,204,102,1) 50%, rgba(000,255,051,1) 100%);
 `;
 
-const providerLoginContainer = css`
+const signupNaviBtn = css`
     margin: 30px 0px;
-    font-size: 17px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #888;
+    float: left;
+`;
+
+const signupAndOtherLogin = css`
+    width: 300px;
+    display: flex;
+`;
+
+const providerLoginContainer = css`
+    margin: 30px 0px 0px 117px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #888;
+    float: right;
 `;
 
 const providerButtonContainer = css`
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    margin-top: 10px;
 `;
 
 const google = css`
@@ -186,6 +208,7 @@ const Login = () => {
     const [loginUser, setLoginUser] = useState({email: "", password: ""});
     const [errorMessages, setErrorMessages] = useState({email: "", password: ""});
     const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+    const navigate = useNavigate();
 
     const informationHandle = (e) => {
         const { name, value } = e.target;
@@ -226,12 +249,16 @@ const Login = () => {
         window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
     }
 
+    const signupNavi = (pageId) => {
+        navigate("/signup/")
+      }
+
 
     return (
         <div css={mainContainer}>
             <div css={loginContainer}>
                 <div css={loginLeftSide}>
-                    <h1 css={loginLeftSideh1}>Unicef</h1>
+                    <h1 css={loginLeftSideh1}>UniSecond</h1>
                     <p css={loginLeftSideP}>새롭게 만들어진 기부 펀딩 페이지에 오신 여러분을 환영합니다! 이 페이지는 사회적 문제에 대한 기부와 창작자들을 위한 펀딩을 촉진하며, 사회적 영향력을 키우기 위한 플랫폼입니다. 우리는 여러분의 관심과 참여로 더 나은 세상을 만들어갈 수 있습니다. 함께하는 여정에 참여해주세요!</p>
                 </div>             
                     <div css={loginRightSide}>
@@ -248,10 +275,10 @@ const Login = () => {
                                         onChange={informationHandle} 
                                         startAdornment={
                                             <InputAdornment position="start">
-                                            <AccountCircle />
+                                            <Mail />
                                             </InputAdornment>
                                         } />
-                                    {errorMessages.email && <Alert severity="error">{errorMessages.email}</Alert>}
+                                    {errorMessages.email && <Alert css={errorCss} severity="error">{errorMessages.email}</Alert>}
                                 </FormControl>
                             </div>
                             <div css={loginInputContainerWrapPw}>
@@ -266,17 +293,20 @@ const Login = () => {
                                         onChange={informationHandle} 
                                         startAdornment={
                                             <InputAdornment position="start">
-                                            <AccountCircle />
+                                            <Lock />
                                             </InputAdornment>
                                         } />
-                                    {errorMessages.password && <Alert severity="error">{errorMessages.password}</Alert>}
+                                    {errorMessages.password && <Alert css={errorCss} severity="error">{errorMessages.password}</Alert>}
                                 </FormControl>
                             </div>
                         </div>
                         <div>
                             <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>
                         </div>
+                            <div css={signupAndOtherLogin}>
+                                <div css={signupNaviBtn} onClick={signupNavi}>회원가입</div>
                                 <div css={providerLoginContainer}>다른 계정으로 로그인</div>
+                            </div>
                                 <div css={providerButtonContainer}>
                                     <button css={google} onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
                                     <button css={naver} onClick={naverAuthLoginClickHandle}><SiNaver /></button>

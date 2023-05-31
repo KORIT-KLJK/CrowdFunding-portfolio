@@ -45,6 +45,7 @@ const categoryInner = css`
   margin: 0 auto;
   padding: 48px 20px 42px;
   font-size: 16px;
+  justify-content: space-evenly;
   list-style: none;
 `;
 
@@ -76,21 +77,6 @@ const categoryImgCss = css`
   width: 52px;
   height: 52px;
   background-color: #0eb432;
-`;
-
-const categoryButton = css`
-  width: 130px;
-  height: 40px;
-  border: 1px solid #dbdbdb;
-  border-radius: 5px;
-  margin-right: 5px;
-  background-color: white;
-  cursor: pointer;
-  font-size: 15px;
-  &:focus {
-    border: 1px solid #047ff1;
-    color: #047ff1;
-  }
 `;
 
 const fundBank = css`
@@ -140,15 +126,6 @@ const fundBankButton = css`
   white-space: nowrap;
   color: #333;
   cursor: pointer;
-`;
-
-const fundBankButtonItem = css`
-  display: block;
-  padding: 9px 14px;
-  outline: 0;
-  line-height: 17px;
-  cursor: pointer;
-  text-align: -webkit-match-parent;
 `;
 
 const ulListBox = css`
@@ -261,7 +238,7 @@ const givingCard = css`
 
   cursor: pointer;
   &:hover {
-    border: 1px solid #aaa;
+    border: 1px solid black;
   }
 `;
 
@@ -431,12 +408,14 @@ const Giving = () => {
   const handleCategoryClick = (categoryId) => {
     console.log(categoryId);
     setSearchParams({ ...searchParams, categoryId, page: 1 });
+    setGivingList([]);
     setGivingRefresh(true);
   };
 
   const handleSortByAmount = (selectedOrder) => {
     setSelectedOrder(selectedOrder);
     setSearchParams({ ...searchParams, selectedOrder, page: 1 });
+    setGivingList([]);
     setGivingRefresh(true);
   };
 

@@ -7,6 +7,8 @@ import { authenticatedState } from '../../../pages/Login/AuthAtom';
 import logo from "../../../assets/images/logo.png";
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import search from '../../../assets/images/search.png'
+
 const mainHeader = css`
     display: flex;
     justify-content: center;
@@ -21,7 +23,6 @@ const mainHeader = css`
 const headerLeft = css`
     display: flex;
     justify-content: left;
-
     align-items: center;
     width: 100%;
 `;
@@ -30,6 +31,21 @@ const headerLogo = css`
     display: flex;
     justify-content: center;
     align-items: center;
+`;
+
+const headerSearch = css`
+    width: 50%;
+    height: 50%;
+    float: left;
+`;
+
+const searchImgSeparation = css`
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background-color: #d8d8d8;
+    vertical-align: top;
+    content: '';
 `;
 
 const headerMenuList = css`
@@ -79,6 +95,7 @@ const authButton = css`
     height: 30px;
     color: #333;
     font-size: 12px;
+    border: none;
     background-color: white;
     cursor: pointer;
 `;
@@ -95,6 +112,7 @@ const searchButton = css`
     color: #333;
     font-size: 12px;
     background-color: white;
+    border: none;
     cursor: pointer;
 `;
 
@@ -157,7 +175,8 @@ const HeaderMain = () => {
                 <button css={fundingAndGivingRegisterButton} onClick={registerHandle}>기부 및 펀딩 등록</button>
                 : ""}
                 <button css={authButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</button>
-                <button css={searchButton}><Link css={link} to="/search">검색</Link></button>
+                <div css={searchImgSeparation}></div>
+                <button css={searchButton}><Link css={link} to="/search"><img css={headerSearch} src={search} alt=""/></Link></button>
             </div>
         </div>
     );

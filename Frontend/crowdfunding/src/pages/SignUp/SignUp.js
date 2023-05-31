@@ -5,12 +5,11 @@ import PopupPostCode from './PopupPostCode';
 import PopupDom from './PopupDom';
 import axios from 'axios';
 import { useMutation } from 'react-query';
-import { Alert} from '@mui/material';
+import { Alert, Button, Checkbox, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup} from '@mui/material';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-
+import { Lock, Mail, Badge, Celebration, Home } from '@mui/icons-material';
 
 const mainContainer = css`
     width: 100vw;
@@ -23,7 +22,7 @@ const mainContainer = css`
 
 const signupContainer = css`
     background:#f5f5f5 ;
-    width: 960px;
+    width: 1110px;
     height: 840px;
     display: flex;
     flex-direction: row;
@@ -54,12 +53,13 @@ const signupLeftSideh1 = css`
     text-align: right;
     opacity: 0.9;
     font-family: "SUITE-Variable";
-    font-size: 33px;
+    font-size: 36px;
     font-weight: 800;
+    background-color:transparent;
 `;
 
 const signupLeftSideLi = css`
-    font-size:12px;
+    font-size: 15px;
     text-align: left;
     opacity: 0.8;
     line-height: 1.5;
@@ -81,58 +81,84 @@ const signRightSide = css`
 `;
 
 const signupInputContainer = css`
-    padding-top:120px;
-    width:300px;
+    padding-top: 70px;
+    width: 400px;
 `;
 
 const signupInputContainerWrap = css`
-    width:300px;
-    height: 45px;
-    margin-top: 5px;
+    width: 250px;
+    margin-top: 15px;
     border-radius: 2px;
 `;
 
-const inputLabel = css`
-    display: flex;
-    align-items: center;
+const radioCheckBox = css`
+    margin-top: 20px;
 `;
 
-const checkedEmailAndAddress = css`
-    margin-left: 20px;
-`;
-const inputValue = css`
-    margin-bottom: 10px;
+const placeholderFontSize = css`
+    font-size: 13px;
 `;
 
-const errorMsg = css`
-    margin-bottom: 10px;
+const errorCss = css`
     font-size: 12px;
-    color: red;
+    height: 32px;
+    align-items: center;
+    opacity: 0.6;
+    position: relative;
+`;
+
+const inputAddressNumMargin = css`
+    margin-top: 10px;
+`;
+
+const checkedEmail = css`
+    position: relative;
+    margin-top: 7px;
+    margin-right: 60px;
+    width: 80px;
+    font-size: 11px;
+    background-color: #0fb03a;
+    float: right;
+`;
+
+const checkedAddress = css`
+    position: relative;
+    margin-top: 55px;
+    margin-left: 10px;
+    align-items: center;
+    text-align: center;
+    width: 110px;
+    font-size: 11px;
+    background-color: #0fb03a;
+`;
+
+const addressFontSize = css`
+    font-size: 11px;
+    margin-top: 10px;
+`;
+
+const postcodeAndBtn = css`
+    width: 380px;
+    height: 50px;
 `;
 
 const availableEmail = css`
   color: green;
 `;
 
-const inputAddress = css`
-    display: flex;
-    align-items: center;
-`;
-
 const signupBtn = css`
     width:95px;
     height:35px;
-    color:white;
     border: 0;
     border-radius: 4px;
-    margin-top: 80px;
+    margin-top: 230px;
+    float: right;
     display: flex;
     flex-direction: column;
+    background-color: #0fb03a;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background: rgb(000,255,051);
-    background: linear-gradient(162deg, rgba(000,204,102,1) 0%, rgba(000,204,102,1) 50%, rgba(000,255,051,1) 100%);
 `;
 
 const SignUp = () => {
@@ -143,6 +169,7 @@ const SignUp = () => {
     const [signUp, setSignUp] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: ""});
     const [address, setAddress] = useState({zonecode: "", address: "", buildingName: "", bname: "", detailAddress: "", addressType: ""});
     const [errorMessage, setErrorMessages] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""});
+    const [successMessage, setSuccessMessage] = useState({email: ""})
     const [emailSubmitDisabled, setEmailSubmitDisabled] = useState(true);
 
     const onChangeHandler = (e) => {
@@ -168,7 +195,7 @@ const SignUp = () => {
 
         try {
             await axios.post("http://localhost:8080/auth/checkemail", JSON.stringify(data), option)
-            setErrorMessages({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
+            setSuccessMessage({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
             setEmailSubmitDisabled(false);
         }catch(error) {
             setErrorMessages({email: error.response.data.errorData.email})
@@ -225,7 +252,7 @@ const SignUp = () => {
                 <div css={mainContainer}>
                     <div css={signupContainer}>
                         <div css={signupLeftSide}>
-                            <h1 css={signupLeftSideh1}>Unicef</h1>
+                            <h1 css={signupLeftSideh1}>UniSecond</h1>
                             <li css={signupLeftSideLi}>기부 펀딩 사이트에 가입해 주셔서 감사합니다.</li>
                             <li css={signupLeftSideLi}>우리는 사회적 가치를 가진 프로젝트와 조직을 지원하는 플랫폼입니다.</li>
                             <li css={signupLeftSideLi}>다양한 펀딩 프로젝트를 제공하며, 교육, 환경, 사회복지, 의료 등 다양한 분야에서 활동합니다.</li>
@@ -234,75 +261,177 @@ const SignUp = () => {
                         </div>
                         <div css={signRightSide}>
                             <div css={signupInputContainer}>
-
-                                <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>이메일</label>
-                                    <input type="text" placeholder="이메일 주소 입력" onChange={onChangeHandler} name="email"/>
-                                    <button css={checkedEmailAndAddress} onClick={checkDuplicateEmail}>중복확인</button>
-                                    <div css={errorMsg}>{errorMessage.email}</div>
-                                </div>
-
-                                <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>비밀번호</label>
-                                    <input type="text" placeholder="8-16자의 영문 및 숫자, 특수문자를 모두 포함" onChange={onChangeHandler} name="password"/>
-                                    <div css={errorMsg}>{errorMessage.password}</div>       
-                                </div>
-
-                                <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>비밀번호 확인</label>
-                                    <input css={inputValue} type="text" placeholder="비밀번호 재입력" onChange={onChangeHandler} name="confirmPassword"/>
-                                    <div css={errorMsg}>{errorMessage.confirmPassword}</div>
-                                </div>
+                                <FormControl variant="standard">
+                                        <Input id="input-with-icon-adornment"
+                                            css={placeholderFontSize}
+                                            label="email" 
+                                            variant="outlined" 
+                                            placeholder="이메일 주소 입력" 
+                                            name="email" 
+                                            type="text" 
+                                            onChange={onChangeHandler} 
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                <Mail />
+                                                </InputAdornment>
+                                            } />
+                                        {successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>}
+                                        {errorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
+                                    </FormControl>
+                                    <Button variant="contained" css={checkedEmail} onClick={checkDuplicateEmail}>중복확인</Button>
                                 
                                 <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>성명</label>
-                                    <input type="text" placeholder="성명 입력" onChange={onChangeHandler} name="name"/>
-                                    <div css={errorMsg}>{errorMessage.name}</div>
+                                    <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment" 
+                                                label="password" 
+                                                variant="outlined" 
+                                                placeholder="8-16자의 영문 및 숫자, 특수문자를 모두 포함" 
+                                                name="password" 
+                                                type="password" 
+                                                onChange={onChangeHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Lock />
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.password && <Alert css={errorCss} severity="error">{errorMessage.password}</Alert>}
+                                    </FormControl>
+                                </div>
+                           
+                                <div css={signupInputContainerWrap}>
+                                    <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment" 
+                                                label="password" 
+                                                variant="outlined" 
+                                                placeholder="비밀번호 재입력" 
+                                                name="confirmPassword" 
+                                                type="password" 
+                                                onChange={onChangeHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Lock />
+                                                    </InputAdornment>
+                                                } />
+                                             {errorMessage.confirmPassword && <Alert css={errorCss} severity="error">{errorMessage.confirmPassword}</Alert>}
+                                    </FormControl>
+                                </div>
+                                <div css={signupInputContainerWrap}>
+                                    <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment" 
+                                                label="name" 
+                                                variant="outlined" 
+                                                placeholder="이름 입력" 
+                                                name="name" 
+                                                type="text" 
+                                                onChange={onChangeHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Badge />
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.name && <Alert css={errorCss} severity="error">{errorMessage.name}</Alert>}
+                                    </FormControl>
                                 </div>
 
                                 <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>성별</label>
-                                    <div css={inputValue}>
-                                        <label>
-                                            <input type="radio" name="gender" value="male" onChange={onChangeHandler} />
-                                            남성
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="gender" value="female" onChange={onChangeHandler} />
-                                            여성
-                                        </label>
+                                    <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="gender">
+                                        <FormControlLabel css={radioCheckBox} name="gender" value="male" onChange={onChangeHandler} control={<Radio/>} label="남성" />
+                                        <FormControlLabel css={radioCheckBox} name="gender" value="female" onChange={onChangeHandler} control={<Radio/>} label="여성" />
+                                        {errorMessage.gender && <Alert css={errorCss} severity="error">{errorMessage.gender}</Alert>}
+                                    </RadioGroup>                                  
+                                </div>
+
+                                <div css={signupInputContainerWrap}>
+                                    <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment"
+                                                label="생년월일" 
+                                                variant="outlined" 
+                                                placeholder="yyyy-MM-dd 형식으로 작성" 
+                                                name="birthday" 
+                                                type="text" 
+                                                onChange={onChangeHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Celebration />
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.birthday && <Alert css={errorCss} severity="error">{errorMessage.birthday}</Alert>}
+                                        </FormControl>
+                                </div>
+
+                                <div css={signupInputContainerWrap}>
+                                    <FormControl variant="standard">
+                                        <div css={postcodeAndBtn}>
+                                            <Input id="input-with-icon-adornment"
+                                                css={inputAddressNumMargin}
+                                                label="우편번호" 
+                                                variant="outlined"
+                                                value={address.zonecode}
+                                                placeholder="우편번호"
+                                                ref={postcodeRef}
+                                                name="zonecode" 
+                                                type="text" 
+                                                onChange={onChangeAddressHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Home />
+                                                    </InputAdornment>
+                                                } />
+                                            <Button variant="contained" css={checkedAddress} onClick={openPostCode}>우편번호 검색</Button>
+                                        </div>
+                                            {errorMessage.zonecode && <Alert css={errorCss} severity="error">{errorMessage.zonecode}</Alert>}
+                                        <div id='popupDom'>
+                                        {isPopupOpen && (
+                                            <PopupDom>
+                                                <PopupPostCode 
+                                                    onClose={closePostCode}
+                                                    postcodeRef={postcodeRef}
+                                                    addressRef={addressRef}
+                                                    setAddress={setAddress}/>
+                                            </PopupDom>
+                                        )}
+                                        </div>
+                                        </FormControl>
                                     </div>
-                                    <div css={errorMsg}>{errorMessage.gender}</div>
-                                </div>
-
-                                <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>생년월일</label>
-                                    <input css={inputValue} type="text" placeholder="yyyy-MM-dd 형식으로 작성" onChange={onChangeHandler} name="birthday"/>
-                                    <div css={errorMsg}>{errorMessage.birthday}</div>
-                                </div>
-
-                                <div css={signupInputContainerWrap}>
-                                    <label css={inputLabel}>주소</label>
-                                    <input type="text" placeholder="우편번호" ref={postcodeRef} onChange={onChangeAddressHandler} name="zonecode" value={address.zonecode}/>
-                                    <button css={checkedEmailAndAddress} onClick={openPostCode}>우편번호 검색</button>
-                                    <div css={errorMsg}>{errorMessage.zonecode}</div>
-                                    <div id='popupDom'>
-                                    {isPopupOpen && (
-                                        <PopupDom>
-                                            <PopupPostCode 
-                                                onClose={closePostCode}
-                                                postcodeRef={postcodeRef}
-                                                addressRef={addressRef}
-                                                setAddress={setAddress}/>
-                                        </PopupDom>
-                                    )}
+                                    <div css={signupInputContainerWrap}>
+                                        <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment"
+                                                css={addressFontSize}
+                                                label="주소"
+                                                ref={addressRef}
+                                                value={address.address  + address.buildingName}
+                                                variant="outlined" 
+                                                placeholder="주소" 
+                                                name="address" 
+                                                type="text" 
+                                                onChange={onChangeAddressHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.address && <Alert css={errorCss} severity="error">{errorMessage.address}</Alert>}
+                                        </FormControl>
                                     </div>
-                                    <input css={inputAddress} type="text" placeholder="주소" ref={addressRef} onChange={onChangeAddressHandler} name="address" value={address.address  + address.buildingName}/>
-                                    <div css={errorMsg}>{errorMessage.address}</div>
-                                    <input css={inputAddress} type="text" placeholder="상세주소" onChange={onChangeAddressHandler} name="detailAddress" />
-                                    <div css={errorMsg}>{errorMessage.detailAddress}</div>
-                                </div>
-                                <button css={signupBtn} onClick={signUpSubmit} disabled={emailSubmitDisabled}>가입하기</button>
+                                        <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment" 
+                                                css={addressFontSize}
+                                                label="상세주소"
+                                                ref={addressRef}
+                                                variant="outlined" 
+                                                placeholder="상세주소" 
+                                                name="detailAddress" 
+                                                type="text" 
+                                                onChange={onChangeAddressHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.detailAddress && <Alert css={errorCss} severity="error">{errorMessage.detailAddress}</Alert>}
+                                        </FormControl>
+                                    <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
                             </div> 
                         </div>
                     </div>
@@ -310,7 +439,7 @@ const SignUp = () => {
             </main>
             <footer>
 
-            </footer>
+                </footer>
         </div>
     );
 };
