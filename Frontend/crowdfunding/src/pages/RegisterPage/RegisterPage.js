@@ -249,6 +249,21 @@ const submitBtnContainer = css`
     justify-content: end;
 `;
 
+const errorMsg = css`
+    margin: 0px 30px;
+    font-size: 12px;
+    color: red;
+`;
+
+const rewardMsg = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: red;
+`;
+
 const RegisterPage = () => {
     const [ mainImgFiles, setMainImgFiles ] = useState([]);
     const [ subImgFiles, setSubImgFiles ] = useState([]);
@@ -272,7 +287,6 @@ const RegisterPage = () => {
         benefitEffect: "",
         companyName: "",
         ceoName: "",
-        nickname: "",
         companyAddress: "",
         companyPhoneNumber: "",
         email:""
@@ -289,6 +303,43 @@ const RegisterPage = () => {
         endDate: "",
         rewardName: [],
         rewardPrice: [],
+        companyName: "",
+        ceoName: "",
+        nickname: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
+    });
+
+    const [ giveErrorMessages, giveFundErrorMessages ] = useState({
+        title: "",
+        storyTitle: "",
+        story: "",
+        mainImgUrl: "",
+        subImgUrl: "",
+        goalTotal: "",
+        endDate: "",
+        giveUsing: "",
+        businessStartDate: "",
+        businessEndDate: "",
+        target: "",
+        benefitEffect: "",
+        companyName: "",
+        ceoName: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
+    });
+
+    const [ fundErrorMessages, setFundErrorMessages ] = useState({
+        title: "",
+        storyTitle: "",
+        story: "",
+        mainImgUrl: "",
+        subImgUrl: "",
+        goalTotal: "",
+        endDate: "",
+        rewardName: "",
         companyName: "",
         ceoName: "",
         nickname: "",
@@ -327,7 +378,7 @@ const RegisterPage = () => {
     const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
     const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
 
-    const giveRegisterPage = useMutation(async () => {
+    const giveRegisterPage = async () => {
         const formData = new FormData();
         formData.append("pageCategory", giveInputParams.pageCategory);
         formData.append("detailCategory", giveInputParams.detailCategory)
@@ -360,15 +411,33 @@ const RegisterPage = () => {
                 "Content-Type": "multipart/form-data"
             }
         }
-            return await axios.post("http://localhost:8080/giveregisterpage", formData, option)
-    }, {
-        onSuccess: () => {
+        try {
+            await axios.post("http://localhost:8080/giveregisterpage", formData, option)
             alert("기부 페이지 등록 성공");
             navigate("/giving");
+        } catch (error) {
+            giveFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                giveUsing: "",
+                businessStartDate: "",
+                businessEndDate: "",
+                target: "",
+                benefitEffect: "",
+                companyName: "",
+                ceoName: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                email:""
+                , ...error.response.data.errorData})
         }
-    });
+    };
 
-    const fundingRegisterPage = useMutation(async () => {
+    const fundingRegisterPage = async () => {
         const formData = new FormData();
         formData.append("pageCategory", fundingInputParams.pageCategory);
         formData.append("detailCategory", fundingInputParams.detailCategory)
@@ -396,13 +465,28 @@ const RegisterPage = () => {
                 "Content-Type": "multipart/form-data"
             }
         }
-        return await axios.post("http://localhost:8080/fundingregisterpage", formData, option)
-    }, {
-        onSuccess: () => {
+        try {
+            await axios.post("http://localhost:8080/admin/funding/registerpage", formData, option);
             alert("펀딩 페이지 등록 성공");
             navigate("/funding");
+        } catch (error) {
+            setFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                rewardName: "",
+                companyName: "",
+                ceoName: "",
+                nickname: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                email:""
+                , ...error.response.data.errorData})
         }
-    });
+    };
 
     const handleGivingUsingChange = (id, e) => {
         const newInputValues = new Map(giveUsingMap);
@@ -453,7 +537,7 @@ const RegisterPage = () => {
         const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
 
         if(!giveUsingIsBlank && !givesingPriceIsBlank) {
-            alert("reward는 비워져있으면 안 됩니다.");
+            alert("기부금 사용 계획은 비워져있으면 안 됩니다.");
         }else{
             setGiveInputParams({...giveInputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
             setShowTable(false);
@@ -472,17 +556,16 @@ const RegisterPage = () => {
         }
     };
 
-
-
-    const changeGivePageCategory = (e) => {
+      const changeGivePageCategory = (e) => {
         const givePageCategory = e.target.value;
         let giveDetailCategory = giveSubCategoryList.detailCategory;
       
         if (givePageCategory === "기부") {
             giveDetailCategory = "아동";
+            setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
         }else if(givePageCategory === "펀딩") {
             giveDetailCategory = "음식";
-            setFundingInputParams({pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+            setFundingInputParams({...fundingInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
         }
       
         setGiveInputParams({
@@ -498,17 +581,12 @@ const RegisterPage = () => {
     
         if (fundingPageCategory === "펀딩") {
             fundingDetailCategory = "음식";
+            setFundingInputParams({...fundingInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
         }else if(fundingPageCategory === "기부") {
             fundingDetailCategory = "아동"
-            setGiveInputParams({pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+            setGiveInputParams({...giveInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
         }
-    
-        setFundingInputParams({
-            ...fundingInputParams,
-            pageCategory: fundingPageCategory,
-            detailCategory: fundingDetailCategory,
-        });
-      };
+    }
 
     const changeDetailCategory = (e) => {
         setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
@@ -564,8 +642,10 @@ const RegisterPage = () => {
 
 
     const changeGoalTotal = (e) => {
-        setGiveInputParams({...giveInputParams, goalTotal:e.target.value})
-        setFundingInputParams({...fundingInputParams, goalTotal:e.target.value})
+        const parsedGoalTotal = parseInt(e.target.value, 10);
+
+        setGiveInputParams({...giveInputParams, goalTotal: parsedGoalTotal})
+        setFundingInputParams({...fundingInputParams, goalTotal: parsedGoalTotal})
     }
 
     const changeEndDate = (e) => {
@@ -628,6 +708,7 @@ const RegisterPage = () => {
     }
 
     const addRewardInputComponentHandle = () => {
+        setFundingInputParams({...fundingInputParams, showRewardTable: true});
         setRewardTds([...rewardTds, {id: rewardId.current}]);
         rewardId.current += 1;
     }
@@ -651,15 +732,6 @@ const RegisterPage = () => {
         setRewardNameMap(newRewardName);
         setRewardPriceMap(newRewardPrice);
     }
-
-    const giveRegisterSubmitHandle = () => {
-        giveRegisterPage.mutate();
-    }
-
-    const fundRegisterSubmitHandle = () => {
-        fundingRegisterPage.mutate();
-    }
-
 
     return (
         <div css={mainContainer}>
@@ -710,33 +782,37 @@ const RegisterPage = () => {
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 제목</div>
                         <div css={inputContainer}>
-                            <input onChange={changeTitle} css={input} type="text"/>    
+                            <input onChange={changeTitle} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.title}</div>
                         </div> 
                     </div>
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 스토리 제목</div>
                         <div css={inputContainer}>
-                            <input onChange={changeStoryTitle} css={input} type="text"/>    
+                            <input onChange={changeStoryTitle} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.storyTitle}</div>  
                         </div> 
                     </div>
                     <div css={storyInfoInput}>
                         <div css={storyInfoTitle}>기부 스토리 내용</div>
                         <div css={storyInputContainer}>
-                        <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
-                            </textarea> 
+                        <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10"></textarea>
+                        <div css={errorMsg}>{giveErrorMessages.story}</div> 
                         </div> 
                     </div>
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 메인 이미지</div>
                         <div css={inputContainer}>
-                            <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>    
+                            <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>
+                            <div css={errorMsg}>{giveErrorMessages.mainImgUrl}</div>   
                         </div> 
                     </div>
 
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 스토리 이미지</div>
                         <div css={inputContainer}>
-                            <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>    
+                            <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>
+                            <div css={errorMsg}>{giveErrorMessages.subImgUrl}</div>  
                         </div> 
                     </div>
                 
@@ -750,7 +826,8 @@ const RegisterPage = () => {
                     <div css={infoInput}>
                         <div css={infoTitle}>기부 종료일</div>
                         <div css={inputContainer}>
-                            <input onChange={changeEndDate} css={input} type="text"/>    
+                            <input onChange={changeEndDate} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.endDate}</div>   
                         </div> 
                     </div>
                     {showTable && giveInputParams.pageCategory === '기부' ?
@@ -759,7 +836,6 @@ const RegisterPage = () => {
                             <h1 css={rewardH1}>기부금 사용 계획</h1>
                             <div css={btnContainer}>
                                 <button css={rewardBtn} onClick={addGiveUsingInputComponentHandle}>+</button>
-
                             </div>
                         </div>
                         <table css={rewardTable}>
@@ -776,6 +852,7 @@ const RegisterPage = () => {
                                         <td css={rewardPriceThAndTd}><input onChange={(e)=> handleGivingUsingPriceChange(giveTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={giveTd.id} onClick={(e)=>removeGiveUsingInputComponentHandle(giveTd.id,e)}>-</button></td>    
                                     </tr>
                                 ))}
+                                <div css={rewardMsg}>{giveErrorMessages.giveUsing}</div>
                             </tbody>
                         </table>
                         <div css={saveBtnContainer}>
@@ -789,19 +866,22 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>사업 시작일</div>
                     <div css={inputContainer}>
-                        <input onChange={changeBusinessStartDate} css={input} type="text"/>    
+                        <input onChange={changeBusinessStartDate} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.businessStartDate}</div>
                     </div> 
                 </div> 
                 <div css={infoInput}>
                     <div css={infoTitle}>사업 종료일</div>
                     <div css={inputContainer}>
-                        <input onChange={changeBusinessEndDate} css={input} type="text"/>    
+                        <input onChange={changeBusinessEndDate} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.businessEndDate}</div>
                     </div> 
                 </div> 
                 <div css={infoInput}>
                     <div css={infoTitle}>사업 대상</div>
                     <div css={inputContainer}>
-                        <input onChange={changeTarget} css={input} type="text"/>    
+                        <input onChange={changeTarget} css={input} type="text"/> 
+                        <div css={errorMsg}>{giveErrorMessages.target}</div>   
                     </div> 
                 </div> 
                 <div css={infoInput}>
@@ -813,7 +893,8 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>기대 효과</div>
                     <div css={inputContainer}>
-                        <input onChange={changeBenefitEffect} css={input} type="text"/>    
+                        <input onChange={changeBenefitEffect} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.benefitEffect}</div> 
                     </div> 
                 </div>
                 <div css={subTitle}>
@@ -822,35 +903,40 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>단체명</div>
                     <div css={inputContainer}>
-                        <input onChange={changeCompanyName} css={input} type="text"/>    
+                        <input onChange={changeCompanyName} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.companyName}</div> 
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>대표자</div>
                     <div css={inputContainer}>
-                        <input onChange={changeCeoName} css={input} type="text"/>    
+                        <input onChange={changeCeoName} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.ceoName}</div>
                     </div> 
                 </div> 
                 <div css={infoInput}>
                     <div css={infoTitle}>주소</div>
                     <div css={inputContainer}>
                         <input onChange={changeCompanyAddress} css={input} type="text"/>    
+                        <div css={errorMsg}>{giveErrorMessages.companyAddress}</div>
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>고객센터</div>
                     <div css={inputContainer}>
                         <input onChange={changePhoneNumber} css={input} type="text"/>    
+                        <div css={errorMsg}>{giveErrorMessages.companyPhoneNumber}</div>
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>이메일</div>
                     <div css={inputContainer}>
-                        <input onChange={changeEmail} css={input} type="text"/>    
+                        <input onChange={changeEmail} css={input} type="text"/>   
+                        <div css={errorMsg}>{giveErrorMessages.email}</div> 
                     </div> 
                 </div>
             <div css={submitBtnContainer}>
-                <button onClick={giveRegisterSubmitHandle}>기부 페이지 등록하기</button>
+                <button onClick={giveRegisterPage}>기부 페이지 등록하기</button>
             </div>
         </> :          
         <>
@@ -898,56 +984,60 @@ const RegisterPage = () => {
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 제목</div>
                     <div css={inputContainer}>
-                        <input onChange={changeTitle} css={input} type="text"/>    
+                        <input onChange={changeTitle} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.title}</div>  
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 스토리 제목</div>
                     <div css={inputContainer}>
-                        <input onChange={changeStoryTitle} css={input} type="text"/>    
+                        <input onChange={changeStoryTitle} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.storyTitle}</div>
                     </div> 
                 </div>
                 <div css={storyInfoInput}>
                     <div css={storyInfoTitle}>펀딩 스토리 내용</div>
                     <div css={storyInputContainer}>
-                    <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10">
-                        </textarea> 
+                    <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10"></textarea>
+                    <div css={errorMsg}>{fundErrorMessages.story}</div> 
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 메인 이미지</div>
                     <div css={inputContainer}>
-                    <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>     
+                    <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>
+                    <div css={errorMsg}>{fundErrorMessages.mainImgUrl}</div>    
                     </div> 
                 </div>
 
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 스토리 이미지</div>
                     <div css={inputContainer}>
-                    <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>     
+                    <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>
+                    <div css={errorMsg}>{fundErrorMessages.subImgUrl}</div>
                     </div> 
                 </div>
             
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 목표 금액</div>
                     <div css={inputContainer}>
-                        <input onChange={changeGoalTotal} css={input} type="text"/>원    
+                        <input onChange={changeGoalTotal} css={input} type="text" placeholder='숫자만 입력해주세요'/>원 
                     </div> 
                 </div>
 
                 <div css={infoInput}>
                     <div css={infoTitle}>펀딩 종료일</div>
                     <div css={inputContainer}>
-                        <input onChange={changeEndDate} css={input} type="text"/>    
+                        <input onChange={changeEndDate} css={input} type="text" placeholder='예) 2000-05-10'/>
+                        <div css={errorMsg}>{fundErrorMessages.endDate}</div>
                     </div> 
                 </div>
-                {showTable && fundingInputParams.pageCategory === '펀딩' ?
+                {showTable && fundingInputParams.pageCategory === '펀딩' ? 
                     <div css={rewardInfoInputContainer}>
                         <div css={rewardHeader}>
                             <h1 css={rewardH1}>리워드 추가</h1>
                             <div css={btnContainer}>
                                 <button css={rewardBtn} onClick={addRewardInputComponentHandle}>+</button>
-            
                             </div>
                         </div>
                         <table css={rewardTable}>
@@ -964,14 +1054,13 @@ const RegisterPage = () => {
                                         <td css={rewardPriceThAndTd}><input onChange={(e)=> handleRewardPriceChange(rewardTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={rewardTd.id} onClick={(e)=>removeRewardInputComponentHandle(rewardTd.id,e)}>-</button></td>    
                                     </tr>
                                 ))}
-                                
+                                <div css={rewardMsg}>{fundErrorMessages.rewardName}</div>
                             </tbody>
                         </table>
                         <div css={saveBtnContainer}>
                             <button onClick={madeRewardList}>저장하기</button>
                         </div>
                     </div>
-                    
                 : ""}
                 <div css={subTitle}>
                     펀딩 신청인 등록
@@ -980,41 +1069,47 @@ const RegisterPage = () => {
                     <div css={infoTitle}>상호명</div>
                     <div css={inputContainer}>
                         <input onChange={changeCompanyName} css={input} type="text"/>    
+                        <div css={errorMsg}>{fundErrorMessages.companyName}</div>
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>대표자</div>
                     <div css={inputContainer}>
-                        <input onChange={changeCeoName} css={input} type="text"/>    
+                        <input onChange={changeCeoName} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.ceoName}</div> 
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>닉네임</div>
                     <div css={inputContainer}>
-                        <input onChange={changeNickname} css={input} type="text"/>    
+                        <input onChange={changeNickname} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.nickname}</div>  
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>주소</div>
                     <div css={inputContainer}>
-                        <input onChange={changeCompanyAddress} css={input} type="text"/>    
+                        <input onChange={changeCompanyAddress} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.companyAddress}</div>
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>고객센터</div>
                     <div css={inputContainer}>
-                        <input onChange={changePhoneNumber} css={input} type="text"/>    
+                        <input onChange={changePhoneNumber} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.companyPhoneNumber}</div>
                     </div> 
                 </div>
                 <div css={infoInput}>
                     <div css={infoTitle}>이메일</div>
                     <div css={inputContainer}>
-                        <input onChange={changeEmail} css={input} type="text"/>    
+                        <input onChange={changeEmail} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.email}</div>  
                     </div> 
                 </div>
             </div>
             <div css={submitBtnContainer}>
-                <button onClick={fundRegisterSubmitHandle}>펀딩 페이지 등록하기</button>
+                <button onClick={fundingRegisterPage}>펀딩 페이지 등록하기</button>
             </div>
         </>}
     </div>

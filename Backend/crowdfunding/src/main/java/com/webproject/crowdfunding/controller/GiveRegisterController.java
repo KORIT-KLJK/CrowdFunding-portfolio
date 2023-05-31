@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webproject.crowdfunding.aop.ValidAspect;
-import com.webproject.crowdfunding.dto.req.RegisterPageReqDto;
+import com.webproject.crowdfunding.dto.req.FundingRegisterPageReqDto;
+import com.webproject.crowdfunding.dto.req.GivingRegisterReqDto;
 import com.webproject.crowdfunding.service.FundingRegisterPageService;
 import com.webproject.crowdfunding.service.GiveRegsterPageService;
 
@@ -21,10 +22,10 @@ public class GiveRegisterController {
 
 	private final GiveRegsterPageService giveRegsterPageService;
 	
-	
+	@ValidAspect
 	@PostMapping("/giveregisterpage")
-	public ResponseEntity<?> registerPage(RegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		giveRegsterPageService.giveRegisterPage(registerPageReqDto);
+	public ResponseEntity<?> registerPage(@Valid GivingRegisterReqDto givingRegisterReqDto, BindingResult bindingResult) {
+		giveRegsterPageService.giveRegisterPage(givingRegisterReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
