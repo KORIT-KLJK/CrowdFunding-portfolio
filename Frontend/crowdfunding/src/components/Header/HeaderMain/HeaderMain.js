@@ -19,6 +19,7 @@ const mainHeader = css`
     margin: 0 auto;
     border-bottom: 2px solid #e1e1e1;
     background-color: #fff;
+
     width: 100%;
     height: 70px;
 `;
@@ -27,7 +28,8 @@ const subHeader = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 1140px;
+
+    width: 840px;
     height: 70px;
 `;
 
@@ -50,15 +52,19 @@ const headerImgLogo = css`
 `;
 
 const headerSearch = css`
+    display: flex;
+    justify-content: center;
+
     width: 50%;
     height: 50%;
-    float: left;
 `;
 
 const searchImgSeparation = css`
     display: inline-block;
     width: 1px;
     height: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
     background-color: #d8d8d8;
     vertical-align: top;
     content: '';
@@ -81,7 +87,7 @@ const menuLink = css`
 
 const headerRight = css`
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;
     width: 300px;
 `;
@@ -104,7 +110,6 @@ const authButton = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
     border: 1px solid #dbdbdb;
     border-radius: 3px;
     padding: 5px 10px;
@@ -120,10 +125,10 @@ const searchButton = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
     border: 1px solid #dbdbdb;
     border-radius: 3px;
-    padding: 5px 10px;
+    padding: 5px 5px;
+    margin-right: 0;
     height: 30px;
     color: #333;
     font-size: 12px;
@@ -199,7 +204,7 @@ const HeaderMain = () => {
                 : ""}
                 <button css={authButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</button>
                 <div css={searchImgSeparation}></div>
-                <button css={searchButton}><Link css={link} to="/search"><img css={headerSearch} src={search} alt=""/></Link></button>
+                <button css={searchButton}><Link css={link} to="/search"><img css={headerSearch} src={search} /></Link></button>
             </div>
         </div>
     );
