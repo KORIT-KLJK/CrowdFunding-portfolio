@@ -18,7 +18,7 @@ const mainBody = css`
 `;
 
 const mainBodyDetails = css`
-    margin-top: 71px;
+    margin-top: none;
 `;
 
 const mainBanner = css`

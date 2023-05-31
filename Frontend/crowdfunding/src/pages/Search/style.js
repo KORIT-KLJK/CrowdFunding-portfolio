@@ -6,7 +6,7 @@ export const searchMainContainer = css`
     width: 900px;
     height: 2000px;
     margin: auto;
-    margin-top: 100px;
+    margin-top: 50px;
 `;
 
 export const searchBox = css`

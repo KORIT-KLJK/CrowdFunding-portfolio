@@ -40,54 +40,22 @@ const mainBanner = css`
   background-position: 50%;
 `;
 
-const slideA = css`
+const slide = css`
   position: relative;
   display: flex;    // 안의 요소를 결정 
   justify-content: center;
   align-items: center;
   height: 300px;  // div자체가 아무런 크기를 주지않았을 경우 화면의 100%를 먹음.
 
-  background-color: red;
+  background-color: #f1f1f1;
   color: black;
   font-size: 65px;
   text-align: center;
 `;
 
-const slideB = css`
-  position: relative;
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 300px;  
-
-  background-color: orange;
-  color: black;
-  font-size: 65px;
-  text-align: center;
-`;
-const slideC = css`
-  position: relative;
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 300px;  
-
-  background-color: yellow;
-  color: black;
-  font-size: 65px;
-  text-align: center;
-`;
-const slideD = css`
-  position: relative;
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 300px;  
-
-  background-color: green;
-  color: black;
-  font-size: 65px;
-  text-align: center;
+const slideImg = css`
+  width: 1140px;
+  height: 301px;
 `;
 
 const swiperParam = {
@@ -108,10 +76,11 @@ const Slide = () => {
             pagination={{ clickable: true }}
             {...swiperParam}
           > 
-            <SwiperSlide><div css={slideA}>Slide 1</div></SwiperSlide>
-            <SwiperSlide><div css={slideB}>Slide 2</div></SwiperSlide>
-            <SwiperSlide><div css={slideC}>Slide 3</div></SwiperSlide>
-            <SwiperSlide><div css={slideD}>Slide 4</div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230519_235/1684466659301ob4Ix_PNG/%25B4%25ED%25BC%25EB_pc_2280x584_e2ffff.png"></img></div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230526_61/1685064020114JYGS0_PNG/%25B4%25ED%25BC%25EB_pc_2280x584_41c98c.png"></img></div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230510_59/1683681529975fVYnl_PNG/%25B4%25ED%25BC%25EB_PC_2280x584__fcf4e8%252C_f0b154.png"></img></div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230530_140/1685415017749jnl07_JPEG/0530_%25EA%25B5%25D7%25D9%25EB%25B0%25A9%25EA%25B3%25B5_%25B4%25ED%25BC%25EB_PC_2280x584_e8e4fb.jpg"></img></div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230530_293/1685431286033oMwAx_PNG/%25B4%25ED%25BC%25EB_PC_2280x584.png"></img></div></SwiperSlide>
           </Swiper>
         </div>
       </div>

@@ -11,25 +11,39 @@ const mainHeader = css`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 99;
     margin: 0 auto;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 2px solid #e1e1e1;
     background-color: #fff;
+    width: 100%;
+    height: 70px;
+`;
+
+const subHeader = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 1140px;
     height: 70px;
 `;
 
 const headerLeft = css`
     display: flex;
-    justify-content: left;
-
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
 `;
 
-const headerLogo = css`
+const headerImgLogo = css`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    border-radius: 10px;
+    width: 65px;
+    height: 65px;
 `;
 
 const headerMenuList = css`
@@ -144,20 +158,27 @@ const HeaderMain = () => {
         navigate("/admin/register/page");
     }
 
+    const headerLogoHandle = () => {
+        navigate("/");
+    }
+
     return (
         <div css={mainHeader}>
-            <div css={headerLeft}>
-                <div css={headerMenuList}>
-                    <Link css={menuLink} to="/giving">기부</Link>
-                    <Link css={menuLink} to="/funding">펀딩</Link>
+            <div css={subHeader}>
+                <div css={headerLeft}>
+                    <div><img css={headerImgLogo} onClick={headerLogoHandle} src="https://avatars.githubusercontent.com/u/132314800?s=200&v=4"></img></div>
+                    <div css={headerMenuList}>
+                        <Link css={menuLink} to="/giving">기부</Link>
+                        <Link css={menuLink} to="/funding">펀딩</Link>
+                    </div>
                 </div>
-            </div>
-            <div css={headerRight}>
-                {role ? 
-                <button css={fundingAndGivingRegisterButton} onClick={registerHandle}>기부 및 펀딩 등록</button>
-                : ""}
-                <button css={authButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</button>
-                <button css={searchButton}><Link css={link} to="/search">검색</Link></button>
+                <div css={headerRight}>
+                    {role ? 
+                    <button css={fundingAndGivingRegisterButton} onClick={registerHandle}>기부 및 펀딩 등록</button>
+                    : ""}
+                    <button css={authButton} onClick={loginNavigateHandle}>{authenticated ? "로그아웃" : "로그인"}</button>
+                    <button css={searchButton}><Link css={link} to="/search">검색</Link></button>
+                </div>
             </div>
         </div>
     );
