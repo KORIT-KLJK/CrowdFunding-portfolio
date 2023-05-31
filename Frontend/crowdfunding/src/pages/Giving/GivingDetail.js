@@ -485,6 +485,18 @@ const GivingDetail = () => {
         goalTotal: 0
     });
 
+    useEffect(() => {
+        if (accessToken) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        givingDetail.refetch();
+        mostGivings.refetch();
+    }, [pageId]);
 
     const givingDetail = useQuery(["givingDetail"], async () => {
         return await axios.get(`http://localhost:8080/giving/detail/${pageId}`);
@@ -542,18 +554,9 @@ const GivingDetail = () => {
         }
     })
 
-    useEffect(() => {
-        if (accessToken) {
-          setAuthenticated(true);
-        } else {
-          setAuthenticated(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        givingDetail.refetch();
-        mostGivings.refetch();
-    }, [pageId]);
+    if(principalUser.isLoading) {
+        return <></>;
+    }
 
     const givingDetailHandle = (pageId) => {
         navigate("/giving/" + pageId)
@@ -561,10 +564,6 @@ const GivingDetail = () => {
     
     if(givingDetail.isLoading || mostGivings.isLoading){
         return <></>
-    }
-
-    if(principalUser.isLoading) {
-        return <></>;
     }
 
     const adminModifyHandleSubmit = () => {
@@ -613,8 +612,6 @@ const GivingDetail = () => {
             setIsOpen(false);
         }
     }
-
-    console.log(givingDetail)
 
     return (
         <>

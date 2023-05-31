@@ -1085,7 +1085,7 @@ const FundingDetail = () => {
                                                         <button css={minusButton}
                                                                 onClick={() => decreaseCount(reward)}>-</button>
                                                         <input  css={rewardCount}
-                                                                type="text"
+                                                                type="number"
                                                                 value={reward.fundingReward.count || 1}
                                                                 onChange={(e) => countHandle(e, reward)} />
                                                         <button css={plusButton}

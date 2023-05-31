@@ -54,8 +54,6 @@ const AuthRoute = ({ path, element }) => {
         return <div>로딩중...</div>;
     }
 
-    console.log(authenticated.data.data);
-
     const permitAll = ["/login", "/signup"];
 
     if(!authenticated.data.data) {

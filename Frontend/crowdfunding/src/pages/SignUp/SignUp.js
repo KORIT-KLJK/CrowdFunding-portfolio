@@ -225,7 +225,6 @@ const SignUp = () => {
             window.location.replace("/login")
         }catch(error) {
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
-            console.log(error)
         }
     });
 

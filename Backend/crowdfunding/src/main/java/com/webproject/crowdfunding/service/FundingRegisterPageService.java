@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.webproject.crowdfunding.dto.req.RegisterPageReqDto;
+import com.webproject.crowdfunding.dto.req.FundingRegisterPageReqDto;
 import com.webproject.crowdfunding.entity.BusinessInfo;
 import com.webproject.crowdfunding.entity.FundingRegisterPage;
 import com.webproject.crowdfunding.entity.FundingSubImg;
@@ -25,7 +25,7 @@ public class FundingRegisterPageService {
 	private String filePath;
 	
 	
-	public void registerPage(RegisterPageReqDto registerPageReqDto) {
+	public void registerPage(FundingRegisterPageReqDto registerPageReqDto) {
 		fundingRegisterEntity = registerPageReqDto.toRegisterEntity(filePath);
 		registerPageRepository.toSaveRegisterPage(fundingRegisterEntity);
 		
