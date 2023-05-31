@@ -103,7 +103,7 @@ export const sortingFundingStatusList = css`
     border-top: none;
     width: 125px;
     padding: 10px;
-    z-index: 99;
+    z-index: 98;
     top: 211%;
     left: 73.1%;
     margin-top: -10px;
@@ -122,7 +122,7 @@ export const sortingFundingRewardStatusList = css`
     border-top: none;
     width: 125px;
     padding: 10px;
-    z-index: 99;
+    z-index: 98;
     top: 211%;
     left: 83.45%;
     margin-top: -10px;

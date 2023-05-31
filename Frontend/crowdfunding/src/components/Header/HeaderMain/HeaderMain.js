@@ -12,7 +12,7 @@ const mainHeader = css`
     justify-content: center;
     align-items: center;
     position: sticky;
-    top: 0;
+    top: 0px;
     z-index: 99;
     margin: 0 auto;
     border-bottom: 2px solid #e1e1e1;
@@ -44,6 +44,7 @@ const headerImgLogo = css`
     border-radius: 10px;
     width: 65px;
     height: 65px;
+    cursor: pointer;
 `;
 
 const headerMenuList = css`

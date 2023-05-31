@@ -4,8 +4,7 @@ import { Global } from "@emotion/react";
 import { Routes, Route } from "react-router-dom";
 import Main from "./pages/Main/Main";
 import { Reset } from "./styles/Global/reset";
-// import Slide from './pages/Bannder/swiper/Slide';
-import Recommend from "./components/Recommend/Recommend";
+import Recommend from "./components/Main/Recommend/Recommend";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import PopupPostCode from "./pages/SignUp/PopupPostCode";
@@ -28,7 +27,6 @@ function App() {
       <HeaderMain />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/recommend" element={<Recommend />} />
         <Route path="/login" element={<AuthRoute path="/login" element={<Login />} />} />
         <Route path="/signup" element={<AuthRoute path="/signup" element={<SignUp />}/>} />
         <Route path="/search" element={<Search />} />
