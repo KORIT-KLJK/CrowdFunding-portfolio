@@ -65,7 +65,7 @@ const Footer = () => {
             <div css={footerInfoContainer}>
                 <div css={footerInfoInner}>
                     <ul css={footerInfoList}>
-                        <li css={footerInfoItem}>해피빈 이용약관</li>
+                        <li css={footerInfoItem}>UNISECOND 이용약관</li>
                         <li css={footerInfoItem}>개인정보처리방침</li>
                         <li css={footerInfoItem}>책임의 한계와 법적고지</li>
                         <li css={footerInfoItem}>고객센터</li>
@@ -73,7 +73,7 @@ const Footer = () => {
                     </ul>
                     <ul css={footerInfoListItem}>
                         <div css={infoLiContainer}>
-                            <li css={footerInfoItem}>재단법인 해피빈</li>
+                            <li css={footerInfoItem}>재단법인 UNISECOND</li>
                             <li css={footerInfoItem}>대표자: 홍길동</li>
                         </div>
                         <div css={infoLiContainer}>
