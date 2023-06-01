@@ -14,6 +14,7 @@ const adminContainer = css`
     align-items: center;
     margin-top: 20px;
     width: 100%;
+    font-family: "SUITE-Variable";
 `;
 
 const givingModifyButton = css`
@@ -209,6 +210,8 @@ const mainContainer = css`
     width: 1098px;
     margin: 0 auto 90px;
     border-bottom: 1px solid #e5e5e5;
+    border-left: 1px solid #e5e5e5;
+    font-family: "SUITE-Variable";
 `;
 
 const storyDetailContainer = css`
@@ -217,7 +220,6 @@ const storyDetailContainer = css`
     margin: 0 auto 90px;
     padding: 60px 94px 90px;
     font-size: 16px;
-    border-left: 1px solid #e5e5e5;
     border-right: 1px solid #e5e5e5;
     border-bottom: 1px solid #e5e5e5;
 `;
@@ -409,6 +411,7 @@ const strongColor = css`
 const todayCommendBox = css`
     padding: 30px;
     border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 `;
 
 const todayCommendLogo = css`
@@ -466,6 +469,112 @@ const todayText = css`
     padding-top: 1px;
     vertical-align: middle;
 `;
+
+const subImgContainer = css`
+    width: 624px;
+    overflow: hidden;
+    margin: 50px auto 60px;
+    padding-bottom: 0;
+    text-align: center;
+    border-bottom: 1px solid #ebebeb;
+`;
+
+const subImgBox = css`
+    overflow: hidden;
+    position: relative;
+    height: 351px;
+    background: #000;
+    text-align: center;
+`;
+
+const subImg = css`
+    width: auto;
+    height: 100%;
+    vertical-align: top;
+`;
+
+const participationContainer = css`
+    width: 624px;
+    overflow: hidden;
+    margin-top: 50px;
+    padding-bottom: 0;
+`;
+
+const participationListUl = css`
+    padding-bottom: 9px;
+    border-top: 1px solid rgba(0,0,0,.05);
+    border-bottom: 1px solid #000;
+    position: relative;
+    padding: 10px;
+    font-size: 20px;
+    letter-spacing: 0;
+`;
+
+const historyParticipationBox = css`
+    display: table;
+    width: 100%;
+    min-height: 65px;
+    background-color: #fcfcfc;
+    border: 1px solid rgba(0,0,0,.05);
+    border-radius: 3px;
+`;
+
+const historyParticipationInner = css`
+    display: table-cell;
+    padding: 20px 70px;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -.5px;
+    color: #333;
+    text-align: center;
+    word-break: keep-all;
+    word-wrap: break-word;
+    vertical-align: middle;
+`;
+
+const historyListUl = css`
+    margin-top: 20px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+`;
+
+const historyListLi = css`
+    border-top: 1px solid rgba(0,0,0,.05);
+`;
+
+const historyCard = css`
+    position: relative;
+    padding: 13px 20px 10px;
+    letter-spacing: 0;
+`;
+
+const historyCardDate = css`
+    display: block;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #828282;
+`;
+
+const historyCardName = css`
+    position: relative;
+    font-size: 15px;
+    font-weight: 400;
+    color: #202020;
+`;
+
+const historyCardAmount = css`
+    position: relative;
+    margin-left: 12px;
+    font-size: 15px;
+    color: #00ab33;
+`;
+
+const historyCardAmountColor = css`
+    position: relative;
+    color: #666;
+`;
+
 
 const GivingDetail = () => {
     const { pageId } = useParams();
@@ -554,16 +663,24 @@ const GivingDetail = () => {
         }
     })
 
+    const ParticipationDetails = useQuery(["ParticipationDetails"], async () => {
+        return await axios.get(`http://localhost:8080/giving/detail/participation/${pageId}`);
+    })
+
     if(principalUser.isLoading) {
         return <></>;
     }
 
-    const givingDetailHandle = (pageId) => {
-        navigate("/giving/" + pageId)
-    }
-    
     if(givingDetail.isLoading || mostGivings.isLoading){
         return <></>
+    }
+
+    if(ParticipationDetails.isLoading) {
+        return <></>
+    }
+
+    const givingDetailHandle = (pageId) => {
+        navigate("/giving/" + pageId)
     }
 
     const adminModifyHandleSubmit = () => {
@@ -674,7 +791,31 @@ const GivingDetail = () => {
                                 <div css={storyContent}>{givingDetail.data.data.storyContent}</div>
                             </div>
                         </div>
-                    </div>
+                            <div css={subImgContainer}>
+                                <div css={subImgBox}>
+                                    <div css={subImg}>이미지 들어올 곳</div>
+                                </div>
+                            </div>
+                            <div css={participationContainer}>
+                                <div css={participationListUl}>참여내역</div>
+                                <div css={historyParticipationBox}>
+                                    <p css={historyParticipationInner}>총 {ParticipationDetails.data.data.participationDetailsList.length}건이 기부되었습니다.</p>
+                                </div>
+                                {ParticipationDetails.data.data.participationDetailsList.map(participation => (
+                                    <ul css={historyListUl}>
+                                        <li css={historyListLi}>
+                                            <div css={historyCard}>
+                                                <span css={historyCardDate}>{participation.givingDate}</span>
+                                                <strong css={historyCardName}>{participation.username}</strong>
+                                                <span css={historyCardAmount}>{new Intl.NumberFormat('en-US').format(participation.givingTotal)}
+                                                    <span css={historyCardAmountColor}>원 참여</span>
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                ))}
+                            </div>
+                        </div>
                     <div css={givingStatusBox}>
                         <div css={givingInfoBox}>
                             <div css={graphStatus}>

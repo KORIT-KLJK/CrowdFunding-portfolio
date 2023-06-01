@@ -31,6 +31,10 @@ public class SignUpReqDto {
     @Pattern(regexp = "^(male|female)$",
             message = "성별을 체크해주세요.")
 	private String gender;
+    
+    @Pattern(regexp = "^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$",
+    		message = "휴대전화번호 형식에 맞게 작성해주세요.")
+    private String phoneNumber;
 	
 	public User toEntity() {
 		return User.builder()
@@ -39,6 +43,7 @@ public class SignUpReqDto {
 				.name(name)
 				.birthday(birthday)
 				.gender(gender)
+				.phoneNumber(phoneNumber)
 				.build();
 	}
 }

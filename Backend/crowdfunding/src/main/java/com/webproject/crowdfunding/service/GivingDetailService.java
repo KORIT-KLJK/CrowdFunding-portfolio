@@ -1,13 +1,16 @@
 package com.webproject.crowdfunding.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.GivingModifyReqDto;
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
 import com.webproject.crowdfunding.entity.Giving;
 import com.webproject.crowdfunding.repository.GivingDetailRepository;
 
@@ -40,6 +43,18 @@ public class GivingDetailService {
 	
 	public int givingDelete(int pageId) {
 		return givingDetailRepository.saveGivingDelete(pageId);
+	}
+	
+	public Map<String, Object> getParticipationDetails(int pageId) {
+		List<GivingParticipationDetailsRespDto> participationDetailsList = new ArrayList<>();
+		givingDetailRepository.getParticipationDetails(pageId).forEach(participationDetails -> {
+			participationDetailsList.add(participationDetails.toParticipationDetails());
+		});
+		
+		Map<String, Object> participationDetailsMap = new HashMap<>();
+		participationDetailsMap.put("participationDetailsList", participationDetailsList);
+		
+		return participationDetailsMap;
 	}
 		
 }

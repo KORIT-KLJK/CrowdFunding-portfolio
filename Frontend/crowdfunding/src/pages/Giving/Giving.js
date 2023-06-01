@@ -500,7 +500,6 @@ const Giving = () => {
           <main css={givingCardList}>
             <div css={cardToday}>
               <a
-                href="https://happybean.naver.com/statistics"
                 css={cardTodayInner}
               >
                 <span css={labelToday}>Today</span>

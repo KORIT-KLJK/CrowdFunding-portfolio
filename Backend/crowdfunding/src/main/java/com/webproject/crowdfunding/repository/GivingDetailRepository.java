@@ -13,4 +13,5 @@ public interface GivingDetailRepository {
 	public List<Giving> getMostGivings(int pageId);
 	public int saveGivingModify(Giving giving);
 	public int saveGivingDelete(int pageId);
+	public List<Giving> getParticipationDetails(int pageId);
 }
