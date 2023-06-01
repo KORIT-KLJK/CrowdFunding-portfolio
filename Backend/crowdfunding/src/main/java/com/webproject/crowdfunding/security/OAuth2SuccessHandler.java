@@ -28,14 +28,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-		System.out.println("oAuth2User: " + oAuth2User);
 		String email = oAuth2User.getAttribute("email");
 		String provider = oAuth2User.getAttribute("provider");
 		User userEntity = userRepository.findUserByEmail(email);
-		System.out.println(jwtTokenProvider.generateToken(authentication).getAccessToken());
 		
 		if(userEntity == null) {
-			String registerToken = jwtTokenProvider.generateToken(authentication).toString();
+			String registerToken = jwtTokenProvider.generateToken(authentication).getAccessToken().toString();
 			String name = oAuth2User.getAttribute("name");
 			response
 			.sendRedirect(

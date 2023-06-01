@@ -42,7 +42,7 @@
 		useGeneratedKeys="true"
 		keyProperty="userId">
 		insert into user_tb
-		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, NULL, #{phoneNumber})
+		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, #{provider}, #{phoneNumber})
 	</insert>
 	
 	<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">

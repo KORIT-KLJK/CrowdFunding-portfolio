@@ -8,6 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.webproject.crowdfunding.entity.User;
 
+import lombok.Data;
+
+@Data
 public class OAuth2SignUpReqDto {
 	@Email
 	@NotBlank(message="이메일을 입력하세요")

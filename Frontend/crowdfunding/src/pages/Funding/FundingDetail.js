@@ -382,13 +382,19 @@ export const joinFundHeader = css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid #dbdbdb;
+    padding-bottom: 40px;
     width: 100%;
 `;
 
 export const joinFundTitle = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 40px;
-    font-size: 18px;
+    font-size: 25px;
+    font-weight: 600;
 `;
 
 export const joinFundNickname = css`
@@ -434,6 +440,32 @@ export const joinFundCountAndPrice = css`
 export const joinFundPrice = css`
     font-size: 20px;
     color: #1f9eff;
+`;
+
+export const joinTotalRewardPriceContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+`;
+
+export const joinTotalRewardPriceTxt = css`
+    font-size: 26px;
+    margin-right: 20px;
+`;
+
+export const joinTotalRewardPrice = css`
+    font-size: 26px;
+    color: #1f9eff;
+`;
+
+export const paymentTxtContainer = css`
+    margin-top: 40px;
+`;
+
+export const paymentTxt = css`
+    font-size: 18px;
 `;
 
 export const joinIdentifyButtonContainer = css`
@@ -710,6 +742,15 @@ const FundingDetail = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/v1/iamport.js"
+        document.head.appendChild(iamport);
+        return () => {
+            document.head.removeChild(iamport);
+        }
+    });
+
+    useEffect(() => {
         if (accessToken) {
           setAuthenticated(true);
         } else {
@@ -945,16 +986,45 @@ const FundingDetail = () => {
 
 
     const joinSubmitHandle = () => {
+        if (!window.IMP) return;
+        /* 1. 가맹점 식별하기 */
+        const { IMP } = window;
+        IMP.init("imp26700005"); // 가맹점 식별코드
+
+        /* 2. 결제 데이터 정의하기 */
+        const data = {
+            pg: "kakaopay", // PG사 : https://portone.gitbook.io/docs/sdk/javascript-sdk/payrq#undefined-1 참고
+            pay_method: "kakaopay", // 결제수단
+            merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+            amount: totalPrice, // 결제금액
+            name: funding.fundingTitle, // 주문명
+            buyer_name: principalUser.data.data.name, // 구매자 이름
+            // buyer_tel: "01012341234", // 구매자 전화번호
+            buyer_email: principalUser.data.data.email, // 구매자 이메일
+            buyer_addr: getAddress.data.data.address // 구매자 주소
+        };
+
         const rewardIds = [];
         const counts = [];
         rewards.map(reward => (rewardIds.push(reward.fundingReward.rewardId), counts.push(reward.fundingReward.count)));
-        joinFund.mutate({
-            userId: principalUser.data.data.userId,
-            addressId: getAddress.data.data.addressId,
-            rewardIds: rewardIds,
-            counts: counts
+
+        /* 4. 결제 창 호출하기 */
+        IMP.request_pay(data, (response) => {
+            const { success, error_msg } = response;
+
+            if (success) {
+                alert("결제 성공");
+                joinFund.mutate({
+                    userId: principalUser.data.data.userId,
+                    addressId: getAddress.data.data.addressId,
+                    rewardIds: rewardIds,
+                    counts: counts
+                });
+            } else {
+                alert(`결제 실패: ${error_msg}`);
+            }
         });
-    }
+    };
 
     const joinCancelButtonHandle = () => {
         setIsOpen(false);
@@ -1114,7 +1184,7 @@ const FundingDetail = () => {
                                         <div css={joinFundIdentifyMain}>
                                             <div css={joinFundHeader}>
                                                 <div css={joinFundTitle}>{funding.fundingTitle}</div>
-                                                <div css={joinFundNickname}>By Unicef</div>
+                                                <div css={joinFundNickname}>By UniSecond</div>
                                             </div>
                                             <div css={joinFundBorderBottom}>
                                             {rewards.map(reward => (
@@ -1127,9 +1197,16 @@ const FundingDetail = () => {
                                                 </div>
                                             ))}
                                             </div>
+                                            <div css={paymentTxtContainer}>
+                                                <div css={paymentTxt}>결제를 진행하시겠습니까?</div>
+                                            </div>
+                                            <div css={joinTotalRewardPriceContainer}>
+                                                <div css={joinTotalRewardPriceTxt}> 총 금액:</div>
+                                                <div css={joinTotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
+                                            </div>
                                             <div css={joinIdentifyButtonContainer}>
-                                                <button css={joinIdentifyButton} onClick={joinSubmitHandle}>동의함</button>
-                                                <button css={joinCancelButton} onClick={joinCancelButtonHandle}>동의 안 함</button>
+                                                <button css={joinIdentifyButton} onClick={joinSubmitHandle}>결제하기</button>
+                                                <button css={joinCancelButton} onClick={joinCancelButtonHandle}>취소</button>
                                             </div>
                                         </div>
                                     </div>

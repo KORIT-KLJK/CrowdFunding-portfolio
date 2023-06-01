@@ -22,7 +22,6 @@ public class AccountService {
 	// iuejeong: 유저 정보에 대한 확인을 위한 검사 과정
 	// iuejeong: db에 있는 email과 요청으로 받은 token을 열어서 그 email이 일치한지 알아본다.
 	public PrincipalRespDto getPrincipal() {
-		System.out.println((PrincipalUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User userEntity = signUpRepository.findUserByEmail(principalUserDetails.getEmail());
 		StringBuilder roles = new StringBuilder();
