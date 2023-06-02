@@ -79,7 +79,7 @@ const cardItemPercent = css`
     margin-top: 11px;
     font-size: 17px;
     letter-spacing: -.2px;
-    color: #00ab33;
+    color: black;
 `;
 const cardItemMoney = css`
     float: right;

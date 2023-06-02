@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 
 const StatisticsContainer = css`
     margin-top: 70px;
-    background-color: #21ce55;
+    background-color: #6ED746;
 `;
 
 const StatisticsInner = css`
@@ -113,34 +113,34 @@ const GivingStatistics = () => {
                     <span css={StatisticsTitleSub}>여러분의 응원이 이만큼 모였어요</span>
                 </div>
                 <div css={StatisticsList}>
-                            <div css={StaticsItem}>
-                                <div css={DonationStatisticsTitle}>기부 참여</div>
-                                <div css={DonationStatisticsSubTitle}>
-                                    <span css={DonationStatisticsData}>{statistics.data.data.giverTotal}</span>
-                                    명
-                                </div>
-                                <div css={DonationStatisticsTitle}>기부 금액</div>
-                                <div css={DonationStatisticsSubTitle}>
-                                    <div css={DonationStatisticsData}>
-                                        {new Intl.NumberFormat("en-US")
-                                            .format(statistics.data.data.givingTotalSum)}
-                                    </div>
-                                    원
-                                </div>
+                    <div css={StaticsItem}>
+                        <div css={DonationStatisticsTitle}>기부 참여</div>
+                        <div css={DonationStatisticsSubTitle}>
+                            <span css={DonationStatisticsData}>{statistics.data.data.giverTotal}</span>
+                            명
+                        </div>
+                        <div css={DonationStatisticsTitle}>기부 금액</div>
+                        <div css={DonationStatisticsSubTitle}>
+                            <div css={DonationStatisticsData}>
+                                {new Intl.NumberFormat("en-US")
+                                    .format(statistics.data.data.givingTotalSum)}
                             </div>
-                            <div css={StaticsItem}>
-                                <div css={DonationStatisticsTitle}>펀딩 참여</div>
-                                <div css={DonationStatisticsSubTitle}>
-                                    <span css={DonationStatisticsData}>{statisticsFunding.data.data.funderTotal}</span>
-                                    명
-                                </div>
-                                <div css={DonationStatisticsTitle}>참여 금액</div>
-                                <div css={DonationStatisticsSubTitle}>
-                                    <div css={DonationStatisticsData}>{new Intl.NumberFormat("en-US")
-                                            .format(statisticsFunding.data.data.fundingPriceTotal)}</div>
-                                    원
-                                </div>
-                            </div> 
+                            원
+                        </div>
+                    </div>
+                    <div css={StaticsItem}>
+                        <div css={DonationStatisticsTitle}>펀딩 참여</div>
+                        <div css={DonationStatisticsSubTitle}>
+                            <span css={DonationStatisticsData}>{statisticsFunding.data.data.funderTotal}</span>
+                            명
+                        </div>
+                        <div css={DonationStatisticsTitle}>참여 금액</div>
+                        <div css={DonationStatisticsSubTitle}>
+                            <div css={DonationStatisticsData}>{new Intl.NumberFormat("en-US")
+                                    .format(statisticsFunding.data.data.fundingPriceTotal)}</div>
+                            원
+                        </div>
+                    </div> 
                 </div>
             </div>
         </div>
