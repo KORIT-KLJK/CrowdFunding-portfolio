@@ -48,12 +48,12 @@ public class GivingDetailController {
 		return ResponseEntity.ok(givingDetailService.getParticipationDetails(pageId));
 	}
 	
-	@GetMapping("/giving/detail/donationuseplan/{pageId}")
+	@GetMapping("/donationuseplan/{pageId}")
 	public ResponseEntity<?> donationUsePlan(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.getDonationUsePlan(pageId));
 	}
 	
-	@GetMapping("/giving/detail/targetbenefit/{pageId}")
+	@GetMapping("/targetbenefit/{pageId}")
 	public ResponseEntity<?> targetBenefit(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.getTargetBenefit(pageId));
 	}

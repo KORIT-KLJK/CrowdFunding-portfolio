@@ -828,11 +828,11 @@ const GivingDetail = () => {
     })
 
     const DonationUsePlan = useQuery(["DonationUsePlan"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/donationuseplan/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/donationuseplan/${pageId}`);
     })
 
     const TargetBenefit = useQuery(["TargetBenefit"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/targetbenefit/${pageId}`)
+        return await axios.get(`http://localhost:8080/givingdetail/targetbenefit/${pageId}`)
     })
 
     if(principalUser.isLoading) {
