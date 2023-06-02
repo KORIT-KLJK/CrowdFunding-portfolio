@@ -158,7 +158,7 @@ export const Reset = css`
   }
   /* 진행 바의 색상 */
 progress::-webkit-progress-value {
-  background-color: #10c838;
+  background-color: black;
 }
 
 /* 배경색 */

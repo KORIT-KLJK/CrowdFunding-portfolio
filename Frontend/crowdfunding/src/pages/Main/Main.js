@@ -41,7 +41,6 @@ const Main = () => {
 
     return (
         <div mainContainer={mainContainer}>
-            
             <div css={mainBody}>
                 <main css={mainBodyDetails}>
                     <Slide />
