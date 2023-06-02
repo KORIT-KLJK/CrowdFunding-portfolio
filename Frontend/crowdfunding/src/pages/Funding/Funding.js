@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css} from "@emotion/react";
+import  FundingSlide  from "../../components/FundingSwaiper/FundingSlide";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
@@ -10,8 +11,8 @@ export const welcomeFunding = css`
     align-items: center;
     width: 100%;
     height: 250px;
-    background-color: red;
-    margin-top: 70px;
+    background-color: #fff;
+    margin-top: 49px;
     font-size: 60px;
     font-weight: 600;
 `;
@@ -386,7 +387,7 @@ const Funding = () => {
 
     return (
         <div>
-            <div css={welcomeFunding}>펀딩 페이지에 오신 것을 환영합니다 ^_^(나중에 수정할 부분)</div>
+            <div css={welcomeFunding}><FundingSlide /></div>
             <div css={fundingMain}>
                 <header css={fundingHeader}>
                     <button css={fundingCategoryMainButton} onClick={() => handleCategoryClick(null)}>전체</button>
