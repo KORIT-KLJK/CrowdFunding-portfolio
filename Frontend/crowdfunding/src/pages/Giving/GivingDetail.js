@@ -616,11 +616,11 @@ const GivingDetail = () => {
     }, [pageId]);
 
     const givingDetail = useQuery(["givingDetail"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/${pageId}`);
     });
     
     const mostGivings = useQuery(["mostGivings"], async () => {
-        return await axios.get(`http://localhost:8080/giving/most/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/most/${pageId}`);
     });
 
     const principalUser = useQuery(["principalUser"], async () => {
@@ -672,7 +672,7 @@ const GivingDetail = () => {
     })
 
     const ParticipationDetails = useQuery(["ParticipationDetails"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/participation/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/participation/${pageId}`);
     })
 
     if(principalUser.isLoading) {

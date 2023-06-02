@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.webproject.crowdfunding.repository.MainCardItemGivingRepository">
+<mapper namespace="com.webproject.crowdfunding.repository.MainRepository">
+
+	<resultMap type="com.webproject.crowdfunding.entity.MainCardItemFunding" id="MainCardItemFundingMap">
+		<id property="pageId" column="page_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
+		<result property="pageTitle" column="page_title"/>
+		<result property="joinPercent" column="join_percent"/>
+		<result property="imgUrl" column="img_url"/>
+		<result property="funderId" column="funder_id"/>
+		<result property="rewardPrice" column="reward_price"/>
+		<result property="rewardId" column="reward_id"/>
+	</resultMap>
+
 	<resultMap type="com.webproject.crowdfunding.entity.MainCardItemGiving" id="MainCardItemGivingMap">
 		<id property="pageId" column="page_id"/>
 		<result property="pageTitle" column="page_title"/>
@@ -10,6 +22,16 @@
 		<result property="goalTotal" column="goal_total"/>
 		<result property="categoryId" column="category_id"/>
 		<result property="achievementRate" column="achievement_rate"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.MainStatisticsGiver" id="StatisticsGiverMap">
+		<result property="giverTotal" column="giver_total"/>
+		<result property="givingTotalSum" column="giving_total_sum"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.MainStatisticsFunder" id="StatisticsFunderMap">
+		<result property="funderTotal" column="funder_total"/>
+		<result property="fundingPriceTotal" column="funding_price_total"/>
 	</resultMap>
 	
 	<select id="saveCardItemGiving" parameterType="hashMap" resultMap="MainCardItemGivingMap">
@@ -34,4 +56,45 @@
 		limit 4;
 	</select>
 	
+	<select id="saveCardItemFunding" parameterType="hashMap" resultMap="MainCardItemFundingMap">
+		select 
+		   fpt.funding_id AS page_id,
+		   fpt.funding_summary_name,
+		   fpt.funding_name AS page_title,
+		   IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+		   fpt.main_img_url AS img_url
+		from
+		   funding_page_tb fpt
+		   left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		   left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		group by
+		   page_id,
+		   page_title
+		limit 3;
+	</select>
+	
+	<select id="getGivingTotal" resultMap="StatisticsGiverMap">
+   		select
+			count(distinct user_id) as giver_total,	
+		    sum(giving_total) as giving_total_sum
+		from
+			giver_tb
+		where
+			giving_date = DATE(NOW());
+   </select>
+   
+   <select id="getFundingTotal" parameterType="Integer" resultMap="StatisticsFunderMap">
+   		select
+			count(distinct ft.user_id) as funder_total,
+		    ifnull(sum(rt.reward_price), 0) as funding_price_total
+		from
+			funder_tb ft
+		    left outer join reward_tb rt on(rt.reward_id = ft.reward_id)
+		where
+			DATE(order_date) = DATE(NOW());
+   </select>
+	
 </mapper>
+
+
+

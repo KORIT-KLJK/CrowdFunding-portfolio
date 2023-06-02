@@ -129,6 +129,13 @@
 		   giver_tb.giving_page_id = #{pageId};
 	</select>
 	
+	<insert id="toGiverPayment" parameterType="com.webproject.crowdfunding.entity.GiverPayment">
+		insert into
+	        giver_tb
+	    values 
+	        (0, #{pageId}, #{userId}, #{givingTotal}, now())
+	</insert>
+	
 </mapper>
 
 

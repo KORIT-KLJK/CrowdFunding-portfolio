@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,17 +21,18 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/fundingdetail")
 public class FundingDetailController {
 	
 	private final FundingDetailService fundingDetailService;
 
-	@GetMapping("/fundingdetail/{pageId}")
+	@GetMapping("/{pageId}")
 	public ResponseEntity<?> fundingDetail(@PathVariable int pageId) {
 		
 		return ResponseEntity.ok(fundingDetailService.fundingDetail(pageId));
 	}
 	
-	@GetMapping("/fundingreward/{pageId}")
+	@GetMapping("/reward/{pageId}")
 	public ResponseEntity<?> fundingReward(@PathVariable int pageId) {
 		
 		return ResponseEntity.ok(fundingDetailService.getReward(pageId));
@@ -48,9 +50,8 @@ public class FundingDetailController {
 		return ResponseEntity.ok(fundingDetailService.getBreakdown(pageId));
 	}
 	
-	@GetMapping("/funding/address")
+	@GetMapping("/address")
 	public ResponseEntity<?> getAddress(@RequestParam int userId) {
-		System.out.println("userId: " + userId);
 		return ResponseEntity.ok(fundingDetailService.getAddressId(userId));
 	}
 	

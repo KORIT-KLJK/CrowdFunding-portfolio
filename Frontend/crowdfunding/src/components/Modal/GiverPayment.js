@@ -193,7 +193,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                 Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.get("http://localhost:8080/funding/address", option);
+        return await axios.get("http://localhost:8080/fundingdetail/address", option);
     }, {
         enabled: !!principalUser.data
     })
@@ -210,7 +210,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post("http://localhost:8080/giver/payment", JSON.stringify(data), option);
+        const response = await axios.post("http://localhost:8080/givingdetail/payment", JSON.stringify(data), option);
         queryClient.fetchQuery("givingDetail");
         setIsOpen(false);
         return response;

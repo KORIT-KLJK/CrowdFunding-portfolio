@@ -795,15 +795,15 @@ const FundingDetail = () => {
     });
 
     const fundingDetailReward = useQuery(["fundingDetailReward"], async () => {
-        return await axios.get(`http://localhost:8080/fundingreward/${pageId}`);
+        return await axios.get(`http://localhost:8080/fundingdetail/reward/${pageId}`);
     });
 
     const fundingBusinessInfo = useQuery(["fundingBusinessInfo"], async () => {
-        return await axios.get(`http://localhost:8080/businessinfo/${pageId}`);
+        return await axios.get(`http://localhost:8080/fundingdetail/businessinfo/${pageId}`);
     })
 
     const fundingJoinBreakdown = useQuery(["fundingJoinBreakDown"], async () => {
-        return await axios.get(`http://localhost:8080/breakdown/${pageId}`);
+        return await axios.get(`http://localhost:8080/fundingdetail/breakdown/${pageId}`);
     })
     
     
@@ -816,7 +816,7 @@ const FundingDetail = () => {
                 Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.get("http://localhost:8080/funding/address", option);
+        return await axios.get("http://localhost:8080/fundingdetail/address", option);
     }, {
         enabled: !!principalUser.data
     })

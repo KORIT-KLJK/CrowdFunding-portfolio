@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.webproject.crowdfunding.entity.GiverPayment;
 import com.webproject.crowdfunding.entity.Giving;
 import com.webproject.crowdfunding.entity.GivingGroupInfo;
 
@@ -16,4 +17,5 @@ public interface GivingDetailRepository {
 	public int saveGivingDonationUsePlan(int pageId);
 	public int saveGivingTargetBenefit(int pageId);
 	public List<Giving> getParticipationDetails(int pageId);
+	public int toGiverPayment(GiverPayment giverPayment);
 }
