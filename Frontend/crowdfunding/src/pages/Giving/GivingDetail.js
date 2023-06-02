@@ -483,7 +483,6 @@ const subImgBox = css`
     overflow: hidden;
     position: relative;
     height: 351px;
-    background: #000;
     text-align: center;
 `;
 
@@ -739,8 +738,6 @@ const GivingDetail = () => {
         }
     }
 
-    console.log(ParticipationDetails)
-
     return (
         <>
         {role ?
@@ -795,7 +792,7 @@ const GivingDetail = () => {
                         <div css={givingStoryBox}>
                             <div css={pageTitle}>{givingDetail.data.data.pageTitle}</div>
                             <div css={detailImgBox}>
-                                <img css={givingDetailImg} src={givingDetail.data.data.imgUrl} alt={givingDetail.data.data.pageTitle} />   
+                                <img css={givingDetailImg} src={`http://localhost:8080/image/main/${givingDetail.data.data.imgUrl}`} />   
                             </div>
                             <div>
                                 <div css={storyTitle}>{givingDetail.data.data.storyTitle}</div>
@@ -804,7 +801,7 @@ const GivingDetail = () => {
                         </div>
                             <div css={subImgContainer}>
                                 <div css={subImgBox}>
-                                    <div css={subImg}>이미지 들어올 곳</div>
+                                    <img css={subImg} src={`http://localhost:8080/image/sub/${givingDetail.data.data.subImgUrl}`}></img>
                                 </div>
                             </div>
                             <div css={participationContainer}>
@@ -872,7 +869,7 @@ const GivingDetail = () => {
                                         {mostGivings.data.data.map(mostGiving => 
                                             <li css={todayCommendLi} key={mostGiving.pageId} onClick={() => toGivingPage(mostGiving.pageId)}>
                                                 <div css={todayImgBox}>
-                                                    <img css={todayImg} src={mostGiving.imgUrl} alt={mostGiving.pageTitle} />
+                                                    <img css={todayImg} src={`http://localhost:8080/image/main/${mostGiving.imgUrl}`} />
                                                 </div>
                                                 <div css={todayTextBox}>
                                                     <div css={todayText}>{mostGiving.pageTitle}</div>

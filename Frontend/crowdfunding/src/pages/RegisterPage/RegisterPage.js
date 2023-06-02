@@ -289,7 +289,6 @@ const RegisterPage = () => {
         ceoName: "",
         companyAddress: "",
         companyPhoneNumber: "",
-        email:""
     });
 
     const [fundingInputParams, setFundingInputParams] = useState({ 
@@ -328,7 +327,6 @@ const RegisterPage = () => {
         ceoName: "",
         companyAddress: "",
         companyPhoneNumber: "",
-        email:""
     });
 
     const [ fundErrorMessages, setFundErrorMessages ] = useState({
@@ -404,7 +402,6 @@ const RegisterPage = () => {
         formData.append("ceoName", giveInputParams.ceoName)
         formData.append("companyAddress", giveInputParams.companyAddress)
         formData.append("companyPhoneNumber", giveInputParams.companyPhoneNumber)
-        formData.append("email", giveInputParams.email)
 
         const option = {
             headers: {
@@ -432,8 +429,7 @@ const RegisterPage = () => {
                 ceoName: "",
                 companyAddress: "",
                 companyPhoneNumber: "",
-                email:""
-                , ...error.response.data.errorData})
+                ...error.response.data.errorData})
         }
     };
 
@@ -621,7 +617,7 @@ const RegisterPage = () => {
             newImgFiles.push(fileData)      
         }
 
-        setMainImgFiles([...mainImgFiles, ...newImgFiles]);
+        setMainImgFiles([newImgFiles[newImgFiles.length - 1]]);
     }
 
     const changeSubImgUrl = (e) => {
@@ -637,7 +633,7 @@ const RegisterPage = () => {
             newImgFiles.push(fileData)      
         }
 
-        setSubImgFiles([...subImgFiles, ...newImgFiles]);
+        setSubImgFiles([newImgFiles[newImgFiles.length - 1]]);
     }
 
 
@@ -926,13 +922,6 @@ const RegisterPage = () => {
                     <div css={inputContainer}>
                         <input onChange={changePhoneNumber} css={input} type="text"/>    
                         <div css={errorMsg}>{giveErrorMessages.companyPhoneNumber}</div>
-                    </div> 
-                </div>
-                <div css={infoInput}>
-                    <div css={infoTitle}>이메일</div>
-                    <div css={inputContainer}>
-                        <input onChange={changeEmail} css={input} type="text"/>   
-                        <div css={errorMsg}>{giveErrorMessages.email}</div> 
                     </div> 
                 </div>
             <div css={submitBtnContainer}>

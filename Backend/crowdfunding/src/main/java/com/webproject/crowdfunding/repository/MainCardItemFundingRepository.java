@@ -9,5 +9,5 @@ import com.webproject.crowdfunding.entity.MainCardItemFunding;
 
 @Mapper
 public interface MainCardItemFundingRepository {
-	public List<MainCardItemFunding> saveCardItemFunding(Map<String, Object> map);
+	public List<MainCardItemFunding> saveCardItemFunding();
 }

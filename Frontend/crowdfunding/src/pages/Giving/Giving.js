@@ -529,7 +529,7 @@ const Giving = () => {
             {givingList.map((giving) => (
                 <div css={givingCard} key={giving.pageId} onClick={() => {givingDetailHandle(giving.pageId)}}>
                   <div css={cardImgContainer}>
-                    <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                    <img css={img} src={`http://localhost:8080/image/main/${giving.imgUrl}`}></img>
                   </div>
                   <div css={cardItemContent}>
                     <div css={cardItemTitle}>{giving.pageTitle}</div>

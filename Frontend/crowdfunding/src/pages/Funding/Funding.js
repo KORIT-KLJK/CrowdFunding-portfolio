@@ -12,7 +12,7 @@ export const welcomeFunding = css`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 250px;
+    height: 247px;
     background-color: #fff;
     margin-top: 49px;
     font-size: 60px;

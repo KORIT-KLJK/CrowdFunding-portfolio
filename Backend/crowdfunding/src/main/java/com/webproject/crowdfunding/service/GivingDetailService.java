@@ -42,6 +42,8 @@ public class GivingDetailService {
 	}
 	
 	public int givingDelete(int pageId) {
+		givingDetailRepository.saveGivingDonationUsePlan(pageId);
+		givingDetailRepository.saveGivingTargetBenefit(pageId);
 		return givingDetailRepository.saveGivingDelete(pageId);
 	}
 	
@@ -53,7 +55,6 @@ public class GivingDetailService {
 		
 		Map<String, Object> participationDetailsMap = new HashMap<>();
 		participationDetailsMap.put("participationDetailsList", participationDetailsList);
-		System.out.println(participationDetailsList);
 		return participationDetailsMap;
 	}
 		

@@ -17,7 +17,7 @@ public interface FundingDetailRepository {
 	public BusinessInfo getBusinessInfo(int pageId);
 	public List<Funding> getBreakdown(int pageId);
 	public Address getAddressId(int userId);
-	public int toSaveFunder(Funder funder);
+	public int toSaveFunder(List<Funder> funder);
 	public int saveFundingModify(Funding funding);
 	public int saveDeleteFundingId(Funding funding);
 	public int saveDeleteRewardId(Reward reward);

@@ -13,5 +13,7 @@ public interface GivingDetailRepository {
 	public List<Giving> getMostGivings(int pageId);
 	public int saveGivingModify(Giving giving);
 	public int saveGivingDelete(int pageId);
+	public int saveGivingDonationUsePlan(int pageId);
+	public int saveGivingTargetBenefit(int pageId);
 	public List<Giving> getParticipationDetails(int pageId);
 }

@@ -20,13 +20,12 @@ public class MainCardItemFundingService {
 	public Map<String, Object> toSaveCardItemFunding() {
 		List<MainCardItemFundingRespDto> cardFundingList = new ArrayList<>();
 		
-		mainCardItemFundingRepository.saveCardItemFunding(null).forEach(mainCardItemFunding -> {
+		mainCardItemFundingRepository.saveCardItemFunding().forEach(mainCardItemFunding -> {
 			cardFundingList.add(mainCardItemFunding.toSaveMainCardFundingRespDto());
 		});
 		
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("cardFundingList", cardFundingList);
-		System.out.println(responseMap);
 		return responseMap;
 	}
 	

@@ -25,7 +25,7 @@ public class FundingRegisterPageService {
 	private String filePath;
 	
 	
-	public void registerPage(FundingRegisterPageReqDto registerPageReqDto) {
+	public int registerPage(FundingRegisterPageReqDto registerPageReqDto) {
 		fundingRegisterEntity = registerPageReqDto.toRegisterEntity(filePath);
 		registerPageRepository.toSaveRegisterPage(fundingRegisterEntity);
 		
@@ -46,6 +46,6 @@ public class FundingRegisterPageService {
 		
 		FundingSubImg fundingSubImgEntity = registerPageReqDto.toFundingSubImgEntity(filePath);
 		fundingSubImgEntity.setFundingId(fundingRegisterEntity.getFundingId());
-		registerPageRepository.toSaveFundingSubImg(fundingSubImgEntity);
+		return registerPageRepository.toSaveFundingSubImg(fundingSubImgEntity);
 	}
 }

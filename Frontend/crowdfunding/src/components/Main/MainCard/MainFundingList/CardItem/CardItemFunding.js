@@ -111,7 +111,7 @@ const CardItemFunding = () => {
                     <div css={fundingContainer} key={funding.pageId} onClick={() => fundingDetailHandle(funding.pageId)}>      
                     {/** navigate로 상세페이지 클릭이벤트는 파라미터로 해당 페이지 주소(pageId)를 받은뒤 onClick에 함수를 줘야됨 아님 무한루프돔. */}
                     <header>
-                        <img css={imgBox} src={funding.imgUrl} alt={funding.imgUrl}></img>
+                        <img css={imgBox} src={`http://localhost:8080/image/main/${funding.imgUrl}`}></img>
                     </header>
                     <main>
                         <div css={fundingText}>

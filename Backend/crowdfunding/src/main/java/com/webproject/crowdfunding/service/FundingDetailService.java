@@ -29,7 +29,6 @@ public class FundingDetailService {
 	private final FundingDetailRepository fundingDetailRepository;
 	
 	public FundingDetailRespDto fundingDetail(int pageId) {
-		System.out.println(fundingDetailRepository.fundingDetail(pageId).getDetailFunding());
 		return fundingDetailRepository.fundingDetail(pageId).getDetailFunding();
 	}
 	
@@ -68,16 +67,7 @@ public class FundingDetailService {
 	
 	public int saveFunder(FunderReqDto funderReqDto) {
 		List<Funder> funderEntity = funderReqDto.toFunderEntity();
-		funderEntity.forEach(funder -> {
-			fundingDetailRepository.toSaveFunder(
-					Funder.builder()
-					.funderId(funder.getFunderId())
-					.userId(funder.getUserId())
-					.addressId(funder.getAddressId())
-					.rewardId(funder.getRewardId())
-					.build());
-		});
-		return 0;
+		return fundingDetailRepository.toSaveFunder(funderEntity);
 	}
 	
 	public int fundingModify(FundingModifyReqDto fundingModifyReqDto) {
@@ -94,7 +84,7 @@ public class FundingDetailService {
 													.rewardId(reward.getRewardId())
 													.build());
 		});
-		return 0;
+		return fundingDetailRepository.saveDeleteFundingId(fundingEntity);
 	}
 	
 }

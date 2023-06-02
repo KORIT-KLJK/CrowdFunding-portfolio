@@ -99,6 +99,22 @@
 			giving_page_id = #{pageId}
 	</delete>
 	
+	<delete id="saveGivingDonationUsePlan">
+		delete
+		from
+			donation_use_plan_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
+	<delete id="saveGivingTargetBenefit">
+		delete
+		from
+			target_benefit_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
 	<select id="getParticipationDetails" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT 
 	    	user_tb.user_id, user_tb.name AS username,
