@@ -105,7 +105,7 @@ export const sortingFundingStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 4.85%;
+    top: 5.6%;
     margin: -10px 0px 0px -11px;
     background-color: white;
 
@@ -123,7 +123,7 @@ export const sortingFundingRewardStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 4.85%;
+    top: 5.6%;
     margin: -10px 0px 0px -11px;
     background-color: white;
 
