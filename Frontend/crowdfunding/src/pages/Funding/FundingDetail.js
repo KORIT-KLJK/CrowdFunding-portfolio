@@ -6,6 +6,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import { authenticatedState } from "../Login/AuthAtom";
+import Footer from "../../components/Footer/Footer";
 
 export const adminContainer = css`
     display: flex;
@@ -718,6 +719,10 @@ export const businessInfoDetailContent = css`
     margin-bottom: 8px;
 `;
 
+export const fundingDetailFooter = css`
+    margin-top: 100px;
+`;
+
 const FundingDetail = () => {
     const { pageId } = useParams();
     const [ refresh, setRefresh ] = useState(true);
@@ -999,7 +1004,7 @@ const FundingDetail = () => {
             amount: totalPrice, // 결제금액
             name: funding.fundingTitle, // 주문명
             buyer_name: principalUser.data.data.name, // 구매자 이름
-            // buyer_tel: "01012341234", // 구매자 전화번호
+            buyer_tel: principalUser.data.data.phoneNumber, // 구매자 전화번호
             buyer_email: principalUser.data.data.email, // 구매자 이메일
             buyer_addr: getAddress.data.data.address // 구매자 주소
         };
@@ -1025,6 +1030,8 @@ const FundingDetail = () => {
             }
         });
     };
+
+    console.log(principalUser)
 
     const joinCancelButtonHandle = () => {
         setIsOpen(false);
@@ -1279,6 +1286,9 @@ const FundingDetail = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div css={fundingDetailFooter}>
+                <Footer />
             </div>
         </div>
     );

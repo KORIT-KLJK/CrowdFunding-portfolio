@@ -20,8 +20,6 @@ export const welcomeFunding = css`
 
 export const fundingMain = css`
     position: relative;
-    width: 1224px;
-    height: 70px;
     margin: 0 auto;
 `;
 
@@ -106,9 +104,8 @@ export const sortingFundingStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 211%;
-    left: 77.65%;
-    margin-top: -10px;
+    top: 4.85%;
+    margin: -10px 0px 0px -11px;
     background-color: white;
 
     cursor: pointer;
@@ -125,9 +122,8 @@ export const sortingFundingRewardStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 211%;
-    left: 88.7%;
-    margin-top: -10px;
+    top: 4.85%;
+    margin: -10px 0px 0px -11px;
     background-color: white;
 
     cursor: pointer;
@@ -137,7 +133,8 @@ export const sortingFundingStatusContainer = css`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width: 1210px;
+    width: 1197px;
+    margin: 0px auto;
 `;
 
 export const sortingFundingStatus = css`
@@ -176,7 +173,8 @@ export const fundingMainConatiner = css`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
-    width: 100%;
+    margin: 0px auto;
+    width: 1224px;
 `;
 
 export const fundingContainer = css`
