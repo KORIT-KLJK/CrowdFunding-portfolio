@@ -5,6 +5,8 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import HeaderMain from "../../components/Header/HeaderMain/HeaderMain";
+import Footer from "../../components/Footer/Footer";
 export const welcomeFunding = css`
     display: flex;
     justify-content: center;
@@ -19,8 +21,6 @@ export const welcomeFunding = css`
 
 export const fundingMain = css`
     position: relative;
-    width: 1300px;
-    height: 70px;
     margin: 0 auto;
 `;
 
@@ -105,9 +105,8 @@ export const sortingFundingStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 211%;
-    left: 73.1%;
-    margin-top: -10px;
+    top: 4.85%;
+    margin: -10px 0px 0px -11px;
     background-color: white;
 
     cursor: pointer;
@@ -124,9 +123,8 @@ export const sortingFundingRewardStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 211%;
-    left: 83.45%;
-    margin-top: -10px;
+    top: 4.85%;
+    margin: -10px 0px 0px -11px;
     background-color: white;
 
     cursor: pointer;
@@ -136,7 +134,8 @@ export const sortingFundingStatusContainer = css`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width: 1210px;
+    width: 1197px;
+    margin: 0px auto;
 `;
 
 export const sortingFundingStatus = css`
@@ -175,8 +174,8 @@ export const fundingMainConatiner = css`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
-    width: 100%;
     margin: 0px auto;
+    width: 1224px;
 `;
 
 export const fundingContainer = css`
@@ -283,6 +282,9 @@ export const fundingContainerFooterPrice = css`
 `;
 
 export const pageNationContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px 13px;
 `;
 
@@ -297,6 +299,17 @@ export const pageNationIndex = css`
 
     cursor: pointer;
 `;
+
+export const footerContainer = css`
+    position: relative;
+    z-index: 10;
+    margin-top: 48px;
+    padding-top: 52px;
+    border-top: 1px solid #e0e0e0;
+    background-clip: content-box;
+    background-color: #f6f6f6;
+`;
+
 
 
 const Funding = () => {
@@ -389,7 +402,7 @@ const Funding = () => {
         <div>
             <div css={welcomeFunding}><FundingSlide /></div>
             <div css={fundingMain}>
-                <header css={fundingHeader}>
+                <div css={fundingHeader}>
                     <button css={fundingCategoryMainButton} onClick={() => handleCategoryClick(null)}>전체</button>
                     {fundingCategorys.isLoading ? <div>...불러오는 중</div> : fundingCategorys.data.data.map(fundingCategory => (
                         <div css={fundingCategoryContainer}>
@@ -400,7 +413,7 @@ const Funding = () => {
                             </button>
                         </div>
                     ))}
-                </header>
+                </div>
                     <div css={sortingFundingStatusContainer}>
                         <div css={fundingStatusDetail} onClick={statussortingHidden}>
                             <button css={fundingStatus}>{sortingStatus}</button>
@@ -422,12 +435,12 @@ const Funding = () => {
                         </ul>) : ""}
                         </div>
                     </div>
-                <main css={fundingMainConatiner}>
+                <div css={fundingMainConatiner}>
                     {fundingData.data.data.fundingList.filter(
                     funding => selectedCategoryId === null ||
                     funding.fundingCategoryId === selectedCategoryId).map(funding => (
                         <div css={fundingContainer} onClick={() => {fundingDetailHandle(funding.pageId)}}>
-                            <header>
+                            <div>
                                 <div css={imgBox}>
                                     <img css={img} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
                                     <img css={img} src={funding.mainImgUrl} alt={funding.pageTitle} />
@@ -436,8 +449,8 @@ const Funding = () => {
                                             <div>{funding.joinPercent >= 100 ? "성공" : "종료"}</div>
                                         </div>
                                 </div>
-                            </header>
-                                <main key={funding.pageId}>
+                            </div>
+                                <div key={funding.pageId}>
                                     <div css={fundingContainerMainTitlePrice}>
                                         <div css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</div>
                                         <div css={fundingContainerMainPricePadding}>
@@ -445,22 +458,22 @@ const Funding = () => {
                                         </div>
                                     </div>
                                     <div css={fundingContainerMainUsername}>{funding.fundingSummaryName}</div>
-                                </main>
-                            <footer css={fundingContainerFooter}>
+                                </div>
+                            <div css={fundingContainerFooter}>
                                     <div css={fundingContainerFooterEventStatus}>{funding.eventStatus}</div>
                                     <div css={fundingContainerFooterPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
-                            </footer>
+                            </div>
                         </div>
                     ))}
-                </main>
+                </div>
                 <div>
                     <div css={pageNationContainer}>
                         <div css={pageNationIndex} onClick={loadMore}>더보기</div>
                     </div>
                 </div>
-                <footer>
-                    웹페이지 정보
-                </footer>
+                    <div css={footerContainer}>
+                        <Footer />
+                    </div>
             </div>
         </div>
     );

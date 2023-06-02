@@ -35,6 +35,7 @@ public class AccountService {
 				.email(userEntity.getEmail())
 				.name(userEntity.getName())
 				.authorities(roles.toString())
+				.phoneNumber(userEntity.getPhoneNumber())
 				.build();
 	}
 	

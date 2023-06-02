@@ -595,6 +595,15 @@ const GivingDetail = () => {
     });
 
     useEffect(() => {
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/v1/iamport.js"
+        document.head.appendChild(iamport);
+        return () => {
+            document.head.removeChild(iamport);
+        }
+    });
+
+    useEffect(() => {
         if (accessToken) {
           setAuthenticated(true);
         } else {
@@ -729,6 +738,8 @@ const GivingDetail = () => {
             setIsOpen(false);
         }
     }
+
+    console.log(ParticipationDetails)
 
     return (
         <>

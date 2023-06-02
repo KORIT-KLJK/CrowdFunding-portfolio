@@ -53,7 +53,7 @@ public class GivingDetailService {
 		
 		Map<String, Object> participationDetailsMap = new HashMap<>();
 		participationDetailsMap.put("participationDetailsList", participationDetailsList);
-		
+		System.out.println(participationDetailsList);
 		return participationDetailsMap;
 	}
 		
