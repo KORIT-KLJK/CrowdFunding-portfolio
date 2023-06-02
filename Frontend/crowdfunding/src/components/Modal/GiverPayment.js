@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { authenticatedState } from "../../pages/Login/AuthAtom";
+import { Input } from "@mui/material";
 
 const modalContainer = css`
     position: fixed;
@@ -135,6 +136,7 @@ const inputUserInfo = css`
     height: 33px;
     line-height: 23px;
     vertical-align: middle;
+    text-align: right;
     font-size: 12px;
     color: #666;
     -webkit-box-sizing: border-box;
@@ -224,7 +226,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                     </div>
                     <div css={modalBodyBox}>
                         <div css={modalGivingMentBox}>
-                            <div css={modalGivingMent}>"기부자님의 소중한 마음으로 놀라운 변화가 일어납니다."</div>
+                        <div css={modalGivingMent}>"기부자님의 소중한 마음으로 놀라운 변화가 일어납니다."</div>
                             <span css={modalGivingSubMent}>투명한 기부 후기로 그 변화를 소개하고 보답하겠습니다</span>
                         </div>
                     </div>
@@ -232,7 +234,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                         <ul css={modalGiverInfoUl}>                     
                             <li>
                                 <span css={giverInfo}>기부 금액</span>
-                                <input css={inputUserInfo} placeholder="원" type="text" style={{ textAlign: 'right' }} onChange={givingTotalInputHandle} />
+                                <Input id="input-with-icon-adornment" css={inputUserInfo} placeholder="금액 입력" type="text" onChange={givingTotalInputHandle} />
                             </li>
                         </ul>
                     </div>

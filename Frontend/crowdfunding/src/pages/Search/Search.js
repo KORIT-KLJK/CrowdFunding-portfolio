@@ -7,6 +7,7 @@ import * as S from './style'
 import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Button, Select } from '@mui/material';
 
 
 
@@ -163,11 +164,11 @@ const Search = () => {
                     <div css={S.searchResultTop}>
                         <div css={S.searchResultLeft}>검색결과 "{getPageData.isLoading ? "" : getPageData.data.data.totalCount}" 건</div>
                         <div css={S.searchResultRight}>
-                           <button onClick={sortTemaWordChange} css={S.newestButton({sortTemaWord})}>최신순</button>
-                           <button onClick={sortTemaWordChange} css={S.amountButton({sortTemaWord})}>금액순</button>
+                           <Button onClick={sortTemaWordChange} css={S.newestButton({sortTemaWord})}>최신순</Button>
+                           <Button onClick={sortTemaWordChange} css={S.amountButton({sortTemaWord})}>금액순</Button>
                            <div css={S.searchSortContainer}>
                                 <div css={S.searchSortButtonContainer} onClick={sortHiden}>
-                                    <button css={S.searchSortButton} >{sortWord}</button>
+                                    <Button css={S.searchSortButton} >{sortWord}</Button>
                                     <div css={S.direction}>{sortHidenFlage ? "" : "∨"} </div>
                                 </div>
                                 {sortHidenFlage ? (<ul css={S.sortCategoryList}>

@@ -36,7 +36,6 @@ public class OAuth2Controller {
 			// 토큰이 유효하지 않음.
 			return ResponseEntity.badRequest().body("회원가입 요청 시간이 초과하였습니다.");
 		}
-		
 		return ResponseEntity.ok().body(oAuth2Service.oauth2signUp(oAuth2SignUpReqDto));
 	}
 	

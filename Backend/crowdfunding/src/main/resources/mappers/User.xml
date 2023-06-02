@@ -10,6 +10,7 @@
 		<result property="birthday" column="birth_day"/>
 		<result property="gender" column="gender"/>
 		<result property="provider" column="provider"/>
+		<result property="phoneNumber" column="phone_number"/>
 		<collection property="authorities" resultMap="authorityMap" javaType="list"></collection>
 	</resultMap>
 	
@@ -41,7 +42,7 @@
 		useGeneratedKeys="true"
 		keyProperty="userId">
 		insert into user_tb
-		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, NULL)
+		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, #{provider}, #{phoneNumber})
 	</insert>
 	
 	<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">

@@ -237,6 +237,12 @@ const Login = () => {
         login.mutate();
     }
 
+    const handleOnKeyPress = e => {
+        if (e.key === 'Enter') {
+            loginHandleSubmit();
+        }
+      };
+
     const googleAuthLoginClickHandle = () => {
         window.location.href = "http://localhost:8080/oauth2/authorization/google";
     }
@@ -290,7 +296,8 @@ const Login = () => {
                                         placeholder="password" 
                                         name="password" 
                                         type="Password" 
-                                        onChange={informationHandle} 
+                                        onChange={informationHandle}
+                                        onKeyPress={handleOnKeyPress}
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <Lock />

@@ -175,7 +175,6 @@ export const searchSortButton = css`
 
     border: none;
     font-size: 15px;
-    background-color: white;
 `;
 export const direction = css`
     display: flex;

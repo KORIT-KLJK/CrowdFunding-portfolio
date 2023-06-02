@@ -15,7 +15,11 @@
 		<result property="achievementRate" column="achievement_rate"/>
 		<result property="registerDate" column="register_date"/>
 		<result property="endDate" column="end_date"/>
-		<result property="dDay" column="d_day"/>
+		<result property="dDay" column="d_day"/> 
+		<result property="userId" column="user_id"/> 
+		<result property="username" column="username"/>
+		<result property="givingDate" column="giving_date"/>
+		<result property="subImgUrl" column="sub_img_url"/>
 		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
 	</resultMap>
 	
@@ -29,33 +33,34 @@
 	
 	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT
-		    gpt.giving_page_id AS page_id,
-		    gpt.giving_name AS page_title,
+		    gpt.giving_page_id as page_id,
+		    gpt.giving_name as page_title,
 		    ct.center_id,
 		    ct.center_name,
 		    ct.center_address,
 		    ct.center_phone_number,
 		    ct.center_ceo,
-		    gpt.main_img_url AS img_url,
-		    sum(gt.giving_total) AS giving_total,
+		    gpt.main_img_url as img_url,
+		    sum(gt.giving_total) as giving_total,
 		    gpt.story_title,
 		    gpt.story_content,
 		    gpt.category_id,
 		    gpt.goal_total,
 		    gpt.register_date,
 		    gpt.end_date,
-		    CASE
-		        WHEN end_date &lt; CURDATE() THEN '모금 종료'
-		        WHEN end_date = CURDATE() THEN '오늘 모금 종료'
+		    case
+		        when end_date &lt; CURDATE() THEN '모금 종료'
+		        when end_date = CURDATE() THEN '오늘 모금 종료'
 		        ELSE DATEDIFF(end_date, CURDATE())
-		    END AS d_day,
-		    ROUND(SUM(gt.giving_total) / goal_total * 100) AS achievement_rate
+		    end AS d_day,
+		    gpsit.img_url as sub_img_url,
+		    round(SUM(gt.giving_total) / goal_total * 100) as achievement_rate
 		FROM
 		    giving_page_tb gpt
-		    left outer join center_tb ct ON (ct.center_id = gpt.center_id)
-		    LEFT OUTER JOIN giver_tb gt ON (gt.giving_page_id = gpt.giving_page_id)
-		    LEFT OUTER JOIN giving_category_tb gct ON (gct.giving_category_id = gpt.category_id)
-
+		    left outer join center_tb ct on (ct.center_id = gpt.center_id)
+		    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
+		    left outer join giving_category_tb gct on (gct.giving_category_id = gpt.category_id)
+			left outer join giving_page_sub_img_tb gpsit on (gpsit.giving_page_id = gpt.giving_page_id)
 		WHERE
 		    gpt.giving_page_id = #{pageId}
 	</select>
@@ -93,6 +98,20 @@
 		where
 			giving_page_id = #{pageId}
 	</delete>
+	
+	<select id="getParticipationDetails" parameterType="integer" resultMap="GivingDetailMap">
+	    SELECT 
+	    	user_tb.user_id, user_tb.name AS username,
+	    	giver_tb.giving_page_id AS page_id, 
+	    	giver_tb.giving_total,
+	    	giver_tb.giving_date
+		FROM 
+		   user_tb
+		JOIN
+		   giver_tb on user_tb.user_id = giver_tb.user_id
+		WHERE
+		   giver_tb.giving_page_id = #{pageId};
+	</select>
 	
 </mapper>
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Giving {
 	private String storyTitle;
 	private String eventStatus;
 	private String imgUrl;
+	private String subImgUrl;
 	private String content;
 	private int givingExpense;
 	private String centerName;
@@ -36,6 +38,8 @@ public class Giving {
 	private int todayGivers;
 	private int todayDonations;
 	private String storyContent;
+	private int userId;
+	private String username;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -65,6 +69,7 @@ public class Giving {
 				.pageId(pageId)
 				.pageTitle(pageTitle)
 				.imgUrl(imgUrl)
+				.subImgUrl(subImgUrl)
 				.achievementRate(achievementRate)
 				.registerDate(registerDate)
 				.endDate(endDate)
@@ -87,6 +92,18 @@ public class Giving {
 				.imgUrl(imgUrl)
 				.build();
 	}
+	
+	public GivingParticipationDetailsRespDto toParticipationDetails() {
+		return GivingParticipationDetailsRespDto.builder()
+				.pageId(pageId)
+				.userId(userId)
+				.username(username)
+				.givingTotal(givingTotal)
+				.givingDate(givingDate)
+				.build();
+	}
+	
+	
 	
 }
 

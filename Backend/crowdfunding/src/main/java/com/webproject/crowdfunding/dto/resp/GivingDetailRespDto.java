@@ -11,6 +11,7 @@ public class GivingDetailRespDto {
 	private int pageId;
 	private String pageTitle;
 	private String imgUrl;
+	private String subImgUrl;
 	private int achievementRate;
 	private LocalDate registerDate;
 	private LocalDate endDate;

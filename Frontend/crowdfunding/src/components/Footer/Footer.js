@@ -46,26 +46,53 @@ const footerInfoItem = css`
         justify-content: center;
         align-items: center;
         margin: 0px 10px;
-        border-left: 1px solid #000;
+        border-left: 1px solid #828282;
         height: 100%;
     }
 `; 
-
 
 const infoLiContainer = css`
     display: flex;
     justify-content: left;
     
 `;
+const footerImgLogo = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
+    border-radius: 10px;
+    width: 65px;
+    height: 65px;
+`;
+
+const footerLogoContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-top: 1px solid #f0f0f0;
+    background-color: #fff;
+`;
+
+const footerLogoBox = css`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 1140px;
+    height: 95px;
+    font-size: 15px;
+    color: #828282;
+    background-color: #fff;
+`;
 
 const Footer = () => {
     return (
-        <>
+        <div>
             <div css={footerInfoContainer}>
                 <div css={footerInfoInner}>
                     <ul css={footerInfoList}>
-                        <li css={footerInfoItem}>해피빈 이용약관</li>
+                        <li css={footerInfoItem}>UNISECOND 이용약관</li>
                         <li css={footerInfoItem}>개인정보처리방침</li>
                         <li css={footerInfoItem}>책임의 한계와 법적고지</li>
                         <li css={footerInfoItem}>고객센터</li>
@@ -73,7 +100,7 @@ const Footer = () => {
                     </ul>
                     <ul css={footerInfoListItem}>
                         <div css={infoLiContainer}>
-                            <li css={footerInfoItem}>재단법인 해피빈</li>
+                            <li css={footerInfoItem}>재단법인 UNISECOND</li>
                             <li css={footerInfoItem}>대표자: 홍길동</li>
                         </div>
                         <div css={infoLiContainer}>
@@ -87,7 +114,15 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-        </>
+            <div css={footerLogoContainer}>
+                <div css={footerLogoBox}>
+                    <div>
+                        <img css={footerImgLogo} src="https://avatars.githubusercontent.com/u/132314800?s=200&v=4"></img>
+                    </div>
+                    Copyright © UNISECOND Corp. All Rights Reserved.
+                </div>
+            </div>
+        </div>
     );
 };
 

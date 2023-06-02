@@ -38,5 +38,10 @@ public class GivingDetailController {
 	public ResponseEntity<?> givingDeleteInfo(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.givingDelete(pageId));
 	}
+	
+	@GetMapping("/giving/detail/participation/{pageId}")
+	public ResponseEntity<?> participationDetails(@PathVariable int pageId) {
+		return ResponseEntity.ok(givingDetailService.getParticipationDetails(pageId));
+	}
 
 }

@@ -22,6 +22,7 @@ public class User {
 	private String gender;
 	private String provider;
 	private int addressId;
+	private String phoneNumber;
 	
 	private List<Authority> authorities;
 	
