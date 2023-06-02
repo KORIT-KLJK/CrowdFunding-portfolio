@@ -20,7 +20,6 @@ public class GivingService {
 	private final GivingRepository givingRepository;
 	
 	public List<GivingMainRespDto> toSaveGiving(SearchGivingReqDto searchGivingReqDto) {
-		System.out.println(searchGivingReqDto);
 		List<GivingMainRespDto> givingList = new ArrayList<>();
 		int index = (searchGivingReqDto.getPage() - 1) * 20;
 		Map<String, Object> map = new HashMap<>();

@@ -88,10 +88,6 @@ public class GivingRegisterReqDto {
     @NotBlank(message= "고객센터 전화번호를 입력해주세요.")
 	private String companyPhoneNumber;
     
-    @NotBlank(message= "이메일을 입력해주세요.")
-    @Email
-	private String email;
-    
 	public GiveRegisterPage toGiveRegisterEntity(String filePath) {
 		MultipartFile file = mainImgUrl;
 		if(file == null) {
@@ -172,7 +168,8 @@ public class GivingRegisterReqDto {
 	
 	public List<DonationUsePlan> toDonationUsePlanEntity() {
 	    List<DonationUsePlan> donationUsePlans = new ArrayList<>();
-	    for (int i = 0; i < giveUsing.size(); i++) {
+	    int size = Math.min(giveUsing.size(), donationExpense.size());
+	    for (int i = 0; i < size; i++) {
 	        String give = giveUsing.get(i);
 	        int donation = donationExpense.get(i);
 	        DonationUsePlan donationPlan = DonationUsePlan.builder()

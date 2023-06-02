@@ -27,7 +27,7 @@ public class GiveRegsterPageService {
 	@Value("${file.path}")
 	private String filePath;
 	
-	public void giveRegisterPage (GivingRegisterReqDto givingRegisterReqDto) {
+	public int giveRegisterPage (GivingRegisterReqDto givingRegisterReqDto) {
 		centerEntity = givingRegisterReqDto.toCenterEntity();
 		giveRegisterPageRepository.toSaveCenter(centerEntity);
 		
@@ -52,7 +52,7 @@ public class GiveRegsterPageService {
 		
 		GivingSubImg givingSubImgEntity = givingRegisterReqDto.togivingSubImgEntity(filePath);
 		givingSubImgEntity.setGivingPageId(giveRegisterPageEntity.getGivingPageId());
-		giveRegisterPageRepository.toSaveGivingSubImg(givingSubImgEntity);
+		return giveRegisterPageRepository.toSaveGivingSubImg(givingSubImgEntity);
 	}
 
 }

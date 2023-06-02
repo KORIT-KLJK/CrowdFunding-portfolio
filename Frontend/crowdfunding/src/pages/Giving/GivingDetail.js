@@ -483,7 +483,6 @@ const subImgBox = css`
     overflow: hidden;
     position: relative;
     height: 351px;
-    background: #000;
     text-align: center;
 `;
 
@@ -747,6 +746,15 @@ const GivingDetail = () => {
     });
 
     useEffect(() => {
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/v1/iamport.js"
+        document.head.appendChild(iamport);
+        return () => {
+            document.head.removeChild(iamport);
+        }
+    });
+
+    useEffect(() => {
         if (accessToken) {
           setAuthenticated(true);
         } else {
@@ -760,11 +768,11 @@ const GivingDetail = () => {
     }, [pageId]);
 
     const givingDetail = useQuery(["givingDetail"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/${pageId}`);
     });
     
     const mostGivings = useQuery(["mostGivings"], async () => {
-        return await axios.get(`http://localhost:8080/giving/most/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/most/${pageId}`);
     });
 
     const principalUser = useQuery(["principalUser"], async () => {
@@ -816,7 +824,7 @@ const GivingDetail = () => {
     })
 
     const ParticipationDetails = useQuery(["ParticipationDetails"], async () => {
-        return await axios.get(`http://localhost:8080/giving/detail/participation/${pageId}`);
+        return await axios.get(`http://localhost:8080/givingdetail/participation/${pageId}`);
     })
 
     const DonationUsePlan = useQuery(["DonationUsePlan"], async () => {
@@ -886,6 +894,7 @@ const GivingDetail = () => {
 
     const openModal = () => {
         if(!authenticated) {
+            alert("로그인 후 이용 가능합니다.")
             navigate("/login")
         }else {
             setIsOpen(true);
@@ -952,7 +961,7 @@ const GivingDetail = () => {
                         <div css={givingStoryBox}>
                             <div css={pageTitle}>{givingDetail.data.data.pageTitle}</div>
                             <div css={detailImgBox}>
-                                <img css={givingDetailImg} src={givingDetail.data.data.imgUrl} alt={givingDetail.data.data.pageTitle} />   
+                                <img css={givingDetailImg} src={`http://localhost:8080/image/main/${givingDetail.data.data.imgUrl}`} />   
                             </div>
                             <div>
                                 <div css={storyTitle}>{givingDetail.data.data.storyTitle}</div>
@@ -961,7 +970,7 @@ const GivingDetail = () => {
                         </div>
                             <div css={subImgContainer}>
                                 <div css={subImgBox}>
-                                    <div css={subImg}>이미지 들어올 곳</div>
+                                    <img css={subImg} src={`http://localhost:8080/image/sub/${givingDetail.data.data.subImgUrl}`}></img>
                                 </div>
                             </div>
                             <div css={donationTargetBenefitContainer}>
@@ -1088,7 +1097,7 @@ const GivingDetail = () => {
                                         {mostGivings.data.data.map(mostGiving => 
                                             <li css={todayCommendLi} key={mostGiving.pageId} onClick={() => toGivingPage(mostGiving.pageId)}>
                                                 <div css={todayImgBox}>
-                                                    <img css={todayImg} src={mostGiving.imgUrl} alt={mostGiving.pageTitle} />
+                                                    <img css={todayImg} src={`http://localhost:8080/image/main/${mostGiving.imgUrl}`} />
                                                 </div>
                                                 <div css={todayTextBox}>
                                                     <div css={todayText}>{mostGiving.pageTitle}</div>

@@ -12,6 +12,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer/Footer";
 
 const categoryImg = {
   전체: home,
@@ -36,7 +37,7 @@ const categoryName = css`
 `;
 
 const categoryArea = css`
-  background-color: #10c838;
+  background-color: #46649B;
 `;
 
 const categoryInner = css`
@@ -72,11 +73,11 @@ const categoryImgCss = css`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  border: 1px solid #0dab30;
+  border: 1px solid #46649B;
   border-radius: 50%;
   width: 52px;
   height: 52px;
-  background-color: #0eb432;
+  background-color: #46649B;
 `;
 
 const fundBank = css`
@@ -175,7 +176,7 @@ const cardToday = css`
   height: 363px;
   margin: 0 0 24px 24px;
   display: table;
-  background-color: #10c838;
+  background-color: #3C467D;
   font-family: 'LINESeedKR-Bd';
   text-align: center;
   color: #fff;
@@ -192,7 +193,7 @@ const labelToday = css`
   margin: 0 auto;
   padding: 6px 0 5px;
   background-clip: padding-box;
-  background-color: #0da82f;
+  background-color: #000069;
   font-weight: 700;
   letter-spacing: 0.3px;
   color: #fff;
@@ -292,7 +293,7 @@ const cardItemPercent = css`
   display: flex;
   justify-content: left;
   margin-top: 10px;
-  color: #10c838;
+  color: black;
   font-size: 15px;
   font-weight: 600;
 `;
@@ -528,7 +529,7 @@ const Giving = () => {
             {givingList.map((giving) => (
                 <div css={givingCard} key={giving.pageId} onClick={() => {givingDetailHandle(giving.pageId)}}>
                   <div css={cardImgContainer}>
-                    <img css={img} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                    <img css={img} src={`http://localhost:8080/image/main/${giving.imgUrl}`}></img>
                   </div>
                   <div css={cardItemContent}>
                     <div css={cardItemTitle}>{giving.pageTitle}</div>
@@ -551,6 +552,7 @@ const Giving = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

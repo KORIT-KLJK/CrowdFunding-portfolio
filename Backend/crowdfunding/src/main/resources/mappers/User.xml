@@ -60,6 +60,7 @@
 			ut.birth_day,
 			ut.gender,
 			ut.provider,
+			ut.phone_number,
 			
 			at.authority_id,
 			at.user_id,

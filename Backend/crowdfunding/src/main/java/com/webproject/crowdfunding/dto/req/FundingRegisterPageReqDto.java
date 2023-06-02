@@ -124,17 +124,19 @@ public class FundingRegisterPageReqDto {
 
 	public List<Reward> toRewardEntity() {
 	    List<Reward> rewards = new ArrayList<>();
-	    for (int i = 0; i < rewardName.size(); i++) {
+	    int size = Math.min(rewardName.size(), rewardPrice.size()); // 두 리스트 중 작은 크기를 선택
+
+	    for (int i = 0; i < size; i++) {
 	        String name = rewardName.get(i);
 	        int price = rewardPrice.get(i);
 	        Reward reward = Reward.builder()
-	        		.pageCategory(pageCategory)
-	        		.rewardName(name)
-	        		.rewardPrice(price)
-	        		.build();
+	            .pageCategory(pageCategory)
+	            .rewardName(name)
+	            .rewardPrice(price)
+	            .build();
 	        rewards.add(reward);
 	    }
- 
+
 	    return rewards;
 	}
 	

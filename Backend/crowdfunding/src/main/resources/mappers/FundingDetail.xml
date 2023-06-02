@@ -148,7 +148,9 @@
 				useGeneratedKeys="true">
 		insert into funder_tb
 		values
-		(0, #{userId}, NOW(), #{addressId}, #{rewardId})
+		<foreach collection="list" item="funder" separator=",">
+			(0, #{funder.userId}, NOW(), #{funder.addressId}, #{funder.rewardId})
+		</foreach>
 	</insert>
 	
 	<update id="saveFundingModify">

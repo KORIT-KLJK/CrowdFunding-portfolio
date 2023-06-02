@@ -20,8 +20,8 @@ const bannerColor = css`
   position: relative;
   width: 100%;
   height: 300px;
-  background-color: #10c838;
-
+  /* background-color: #10c838; */
+  background-color: #B2FA5C;
 `;
 
 const mainBanner = css`
@@ -76,7 +76,7 @@ const Slide = () => {
             pagination={{ clickable: true }}
             {...swiperParam}
           > 
-            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230519_235/1684466659301ob4Ix_PNG/%25B4%25ED%25BC%25EB_pc_2280x584_e2ffff.png"></img></div></SwiperSlide>
+            <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230524_35/1684892118337rwNTG_PNG/%25B4%25ED%25BC%25EB_PC_2280x584.png"></img></div></SwiperSlide>
             <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230526_61/1685064020114JYGS0_PNG/%25B4%25ED%25BC%25EB_pc_2280x584_41c98c.png"></img></div></SwiperSlide>
             <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230510_59/1683681529975fVYnl_PNG/%25B4%25ED%25BC%25EB_PC_2280x584__fcf4e8%252C_f0b154.png"></img></div></SwiperSlide>
             <SwiperSlide><div css={slide}><img css={slideImg} src="https://happybean-phinf.pstatic.net/20230530_140/1685415017749jnl07_JPEG/0530_%25EA%25B5%25D7%25D9%25EB%25B0%25A9%25EA%25B3%25B5_%25B4%25ED%25BC%25EB_PC_2280x584_e8e4fb.jpg"></img></div></SwiperSlide>

@@ -23,7 +23,6 @@ public class FundingService {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
 
 		int index = fundingEventReqDto.getPage() * 20;
-		System.out.println(index);
 		Map<String, Object> eventStatusMap = new HashMap<>();
 		eventStatusMap.put("index", index);
 		eventStatusMap.put("fundingSortingReward", fundingEventReqDto.getFundingSortingReward());
@@ -32,8 +31,6 @@ public class FundingService {
 		fundingRepository.saveFunding(eventStatusMap).forEach(funding -> {
 			fundingList.add(funding.toSaveFunding());
 		});
-		
-		System.out.println(eventStatusMap);
 		
 		int totalCount = fundingRepository.getTotalCount(eventStatusMap);
 		

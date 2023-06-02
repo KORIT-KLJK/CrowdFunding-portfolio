@@ -209,11 +209,11 @@ const SignUp = () => {
         try {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
             await axios.post("http://localhost:8080/auth/address", JSON.stringify(data), option)
-            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: ""})
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
             alert("회원가입 완료")
             window.location.replace("/login")
         }catch(error) {
-            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "",zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
         }
     });
 

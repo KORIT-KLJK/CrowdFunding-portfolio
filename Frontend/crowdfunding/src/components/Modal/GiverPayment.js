@@ -165,6 +165,7 @@ const givingBtn = css`
 const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
     const [ givingTotal, setGivingTotal ] = useState(0);
     const navigate = useNavigate();
+    const accessToken = localStorage.getItem("accessToken");
 
 
     const queryClient = useQueryClient();
@@ -173,11 +174,28 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
 
     const principalUser = useQuery(["principalUser"], async () => {
         const option = {
-            headers : {
-                Authorization : `Bearer ${localStorage.getItem("accessToken")}`
+            headers: {
+                Authorization: `Bearer ${accessToken}`
             }
         }
-        return await axios.get("http://localhost:8080/principal", option)
+        const response = await axios.get("http://localhost:8080/principal", option)
+        return response;
+    },{
+        enabled: !!accessToken
+    })
+
+    const getAddress = useQuery(["getAddress"], async () => {
+        const option = {
+            params: {
+                userId: principalUser.data.data.userId
+            },
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.get("http://localhost:8080/fundingdetail/address", option);
+    }, {
+        enabled: !!principalUser.data
     })
 
     const giverPost = useMutation(async () => {
@@ -192,28 +210,57 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post("http://localhost:8080/giver/payment", JSON.stringify(data), option);
+        const response = await axios.post("http://localhost:8080/givingdetail/payment", JSON.stringify(data), option);
         queryClient.fetchQuery("givingDetail");
         setIsOpen(false);
         return response;
+    }, {
+        onSuccess: () => {
+            alert("기부에 성공하였습니다.")
+        }
     });
 
-    const handleConfirm = async () => {
-            const confirmed = window.confirm("기부 하시겠습니까?");
-            if (confirmed) {
-                giverPost.mutate();
-            } else {
-                setIsOpen(false);
-            }
-        };
 
-        if(principalUser.isLoading) {
-            return <></>
-        } 
+    if(principalUser.isLoading || getAddress.isLoading) {
+        return <></>;
+    }
 
     const givingTotalInputHandle = (e) => {
         setGivingTotal(e.target.value);
     }
+
+    const handleConfirm = () => {
+        if (!window.IMP) return;
+        
+        const { IMP } = window;
+        IMP.init("imp26700005");
+
+        
+        const data = {
+            pg: "kakaopay",
+            pay_method: "kakaopay",
+            merchant_uid: `mid_${new Date().getTime()}`,
+            amount: givingTotal,
+            name: givingDetail.pageTitle,
+            buyer_name: principalUser.data.data.name,
+            buyer_tel: principalUser.data.data.phoneNumber,
+            buyer_email: principalUser.data.data.email,
+            buyer_addr: getAddress.data.data.address
+        };
+        const confirmed = window.confirm("결제를 진행 하시겠습니까?");
+
+        IMP.request_pay(data, (response) => {
+            const { success, error_msg } = response;
+
+            if (success && confirmed) {
+                alert("결제 성공");
+                giverPost.mutate();
+            } else {
+                alert(`결제 실패: ${error_msg}`);
+                setIsOpen(false);
+            }
+        });
+    };
 
     
     return (
@@ -222,7 +269,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                 <div css={modalBackDrop}>
                     <button css={modalCloseBtn} onClick={()=> {setTimeout(() => setIsOpen(false), 10) }}>✖</button>
                     <div css={modalHeaderBox}>
-                        <div css={modalPageTitle}>{givingDetail.pageTitle}<br /><span css={pageTitleUnicef}>By Unicef</span></div>
+                        <div css={modalPageTitle}>{givingDetail.pageTitle}<br /><span css={pageTitleUnicef}>By UniSecond</span></div>
                     </div>
                     <div css={modalBodyBox}>
                         <div css={modalGivingMentBox}>

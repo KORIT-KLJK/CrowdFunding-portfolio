@@ -79,7 +79,7 @@ const cardItemPercent = css`
     margin-top: 11px;
     font-size: 17px;
     letter-spacing: -.2px;
-    color: #00ab33;
+    color: black;
 `;
 const cardItemMoney = css`
     float: right;
@@ -115,7 +115,7 @@ const CardItemGiving = () => {
                 ) : (
                     givings.data.data.cardGivingList.map(giving => (
                     <li css={cardListItem} key={giving.pageId} onClick={() => givingDetailHandle(giving.pageId)}>
-                        <img css={cardItemImg} src={giving.imgUrl} alt={giving.imgUrl}></img>
+                        <img css={cardItemImg} src={`http://localhost:8080/image/main/${giving.imgUrl}`} alt={giving.imgUrl}></img>
                         <div css={cardItemContent}>
                             <strong css={cardItemTitle}>{giving.pageTitle}</strong>
                             <div css={cardItemOrganization}>{giving.centerName}</div>
