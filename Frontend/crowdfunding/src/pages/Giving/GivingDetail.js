@@ -493,6 +493,158 @@ const subImg = css`
     vertical-align: top;
 `;
 
+const donationTargetBenefitContainer = css`
+    position: relative;
+    margin: 0 0 40px;
+`;
+
+const donationUsePlanContainer = css`
+    line-height: 1.5;
+    letter-spacing: 1px;
+`;
+
+const donationUsePlanTitleBox = css`
+    position: relative;
+    z-index: 10;
+    margin-top: 48px;
+`;
+
+const donationUsePlanTitle = css`
+    margin-bottom: 15px;
+`;
+
+const donationUsePlanFont = css`
+    font-weight: 400;
+`;
+
+const donationUsePlanFontSpace = css`
+    display: inline-block;
+    height: 11px;
+    margin-right: 9px;
+    margin-left: 13px;
+    border-left: 1px solid #d9d9d9;
+    content: '';
+`;
+
+const donationUsePlanFont2 = css`
+    margin: 0;
+    padding-left: 9px;
+    font-weight: 400;
+    font-size: 16px;
+    color: #888;
+    letter-spacing: .01em;
+`;
+
+const donationUsePlanContentBox = css`
+    width: 100%;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-width: 1px 0;
+    font-size: 16px;
+`;
+
+const donationUsePlanContent = css`
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+`;
+
+const donationUsePlanGoalTotalBox = css`
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+`;
+
+const donationUsePlanGoalTotalFont = css`
+    margin-left: 10px;
+    margin-right: 4px;
+    line-height: normal;
+    font-weight: 700;
+    color: #00ab33;
+    letter-spacing: 0;
+    vertical-align: -1px;
+`;
+
+const donationUsePlanTd = css`
+    font-size: 16px;
+    color: #222;
+    letter-spacing: -.06em;
+    border-top: none;
+    background-color: #fcfcfe;
+    padding-top: 14px;
+    padding-bottom: 14px;
+`;
+
+const targetBenefitContainer = css`
+    padding-top: 60px;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    
+`;
+const targetBenefitTitleBox = css`
+    float: left;
+    margin-bottom: 19px;
+    margin: 35px 0 18px;
+`;
+
+const targetBenefitContentTbody = css`
+    vertical-align: middle;
+    border-color: inherit;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    display: table;
+    border-collapse: separate;
+    box-sizing: border-box;
+    text-indent: initial;
+`;
+
+const targetBenefitContentBox = css`
+    width: 100%;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-width: 1px 0;
+    font-size: 16px;
+`;
+
+const targetBenefitContentGroup = css`
+    display: table-column-group;
+`;
+
+const targetBenefitContentTr = css`
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+    font-size: 16px;
+`;
+
+const targetBenefitContentTh = css`
+    padding: 13px 0 13px 19px;
+    vertical-align: top;
+    height: 56px;
+    color: #222;
+    text-align: left;
+    box-sizing: border-box;
+`;
+
+const targetBenefitContentTd = css`
+    padding: 13px 0 13px 19px;
+    border-left: 1px solid #ebebeb;
+    vertical-align: top;
+`;
+
+const targetBenefitContentUl = css`
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+`;
+
+const targetBenefitContentLi = css`
+    position: relative;
+    padding-left: 10px;
+`;
+
 const participationContainer = css`
     width: 624px;
     overflow: hidden;
@@ -591,7 +743,7 @@ const GivingDetail = () => {
         givingPageId: pageId,
         givingName: "",
         endDate: 0,
-        goalTotal: 0
+        givingTotal: 0
     });
 
     useEffect(() => {
@@ -667,6 +819,14 @@ const GivingDetail = () => {
         return await axios.get(`http://localhost:8080/giving/detail/participation/${pageId}`);
     })
 
+    const DonationUsePlan = useQuery(["DonationUsePlan"], async () => {
+        return await axios.get(`http://localhost:8080/giving/detail/donationuseplan/${pageId}`);
+    })
+
+    const TargetBenefit = useQuery(["TargetBenefit"], async () => {
+        return await axios.get(`http://localhost:8080/giving/detail/targetbenefit/${pageId}`)
+    })
+
     if(principalUser.isLoading) {
         return <></>;
     }
@@ -676,6 +836,14 @@ const GivingDetail = () => {
     }
 
     if(ParticipationDetails.isLoading) {
+        return <></>
+    }
+
+    if(DonationUsePlan.isLoading) {
+        return <></>
+    }
+
+    if(TargetBenefit.isLoading) {
         return <></>
     }
 
@@ -796,6 +964,65 @@ const GivingDetail = () => {
                                     <div css={subImg}>이미지 들어올 곳</div>
                                 </div>
                             </div>
+                            <div css={donationTargetBenefitContainer}>
+                            <div css={donationUsePlanContainer}>
+                                        <div css={donationUsePlanTitleBox}>
+                                            <h3 css={donationUsePlanTitle}>
+                                                <strong css={donationUsePlanFont}>기부금 사용계획</strong>
+                                                <div css={donationUsePlanFontSpace}></div>
+                                                <span css={donationUsePlanFont2}>여러분들의 소중한 기부금 이렇게 사용됩니다.</span>
+                                            </h3>
+                                            <div css={donationUsePlanContentBox}>
+                                                <div css={donationUsePlanContent}>
+                                                {DonationUsePlan.data.data.donationUsePlanList.map(donationUsePlan => (
+                                                    <tr css={donationUsePlanGoalTotalBox}>
+                                                        <td>{donationUsePlan.content}</td>
+                                                        <td css={donationUsePlanTd}>
+                                                            <em css={donationUsePlanGoalTotalFont}>{new Intl.NumberFormat('en-US').format(donationUsePlan.donationExpense)}</em>원
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div css={targetBenefitContainer}>
+                                    {TargetBenefit.data.data.targetBenefitList.map(targetBenefit => (
+                                        <div css={targetBenefitContentBox}>
+                                            <h3 css={targetBenefitTitleBox}>
+                                                <strong>사업대상효과 및 기대효과</strong>
+                                            </h3>
+                                            <table>
+                                                <div css={targetBenefitContentTbody}>
+                                                    <tbody>
+                                                        <tr css={targetBenefitContentTr}>
+                                                            <th css={targetBenefitContentTh}>사업기간</th>
+                                                            <td css={targetBenefitContentTd}>{targetBenefit.registerDate} ~ {targetBenefit.endDate}</td>
+                                                        </tr>
+                                                        <tr css={targetBenefitContentTr}>
+                                                            <th css={targetBenefitContentTh}>사업 대상</th>
+                                                            <td css={targetBenefitContentTd}>{targetBenefit.target}</td>
+                                                        </tr>
+                                                        <tr css={targetBenefitContentTr}>
+                                                            <th css={targetBenefitContentTh}>대상 수</th>
+                                                            <td css={targetBenefitContentTd}>{targetBenefit.targetCount}</td>
+                                                        </tr>
+                                                        <tr css={targetBenefitContentTr}>
+                                                            <th css={targetBenefitContentTh}>기대 효과</th>
+                                                            <td css={targetBenefitContentTd}>
+                                                                <ul css={targetBenefitContentUl}>
+                                                                    <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
+                                                                    <li css={targetBenefitContentLi}>test</li>
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>   
+                                                </div>
+                                            </table>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                             <div css={participationContainer}>
                                 <div css={participationListUl}>참여내역</div>
                                 <div css={historyParticipationBox}>
@@ -832,7 +1059,7 @@ const GivingDetail = () => {
                                             : `D-${givingDetail.data.data.dday}`}
                             </div>
                             <div css={givingArea}>
-                                <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.goalTotal)}원</div>
+                                <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
                             </div>
                         </div>
                             <div css={givingButton} onClick={openModal}>

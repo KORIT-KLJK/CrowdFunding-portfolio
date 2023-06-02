@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.webproject.crowdfunding.dto.req.GivingModifyReqDto;
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
 import com.webproject.crowdfunding.entity.Giving;
@@ -56,5 +57,28 @@ public class GivingDetailService {
 		
 		return participationDetailsMap;
 	}
+	
+	public Map<String, Object> getDonationUsePlan(int pageId) {
+		List<GivingDonationUsePlanRespDto> donationUsePlanList = new ArrayList<>();
+		givingDetailRepository.getDonationUsePlan(pageId).forEach(donationUseplan -> {
+			donationUsePlanList.add(donationUseplan.toDonationUsePlan());
+		});
 		
+		Map<String, Object> donationUsePlanMap = new HashMap<>();
+		donationUsePlanMap.put("donationUsePlanList", donationUsePlanList);
+		
+		return donationUsePlanMap;
+	}
+		
+	public Map<String, Object> getTargetBenefit(int pageId) {
+		List<GivingDonationUsePlanRespDto> targetBenefitList = new ArrayList<>();
+		givingDetailRepository.getTargetBenefit(pageId).forEach(targetBenefit -> {
+			targetBenefitList.add(targetBenefit.toDonationUsePlan());
+		});
+		
+		Map<String, Object> targetBenefitMap = new HashMap<>();
+		targetBenefitMap.put("targetBenefitList", targetBenefitList);
+		
+		return targetBenefitMap;
+	}
 }

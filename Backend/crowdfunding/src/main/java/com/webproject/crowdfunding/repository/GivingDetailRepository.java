@@ -14,4 +14,6 @@ public interface GivingDetailRepository {
 	public int saveGivingModify(Giving giving);
 	public int saveGivingDelete(int pageId);
 	public List<Giving> getParticipationDetails(int pageId);
+	public List<Giving> getDonationUsePlan(int pageId);
+	public List<Giving> getTargetBenefit(int pageId);
 }

@@ -20,6 +20,11 @@
 		<result property="username" column="username"/>
 		<result property="givingDate" column="giving_date"/>
 		<result property="subImgUrl" column="sub_img_url"/>
+		<result property="content" column="content"/>
+		<result property="donationExpense" column="donation_expense"/>
+		<result property="target" column="target"/>
+		<result property="targetCount" column="target_count"/>
+		<result property="benefitEffect" column="benefit_effect"/>
 		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
 	</resultMap>
 	
@@ -56,7 +61,7 @@
 		    gpsit.img_url as sub_img_url,
 		    round(SUM(gt.giving_total) / goal_total * 100) as achievement_rate
 		FROM
-		    giving_page_tb gpt
+		    giving_page_tb gpt 
 		    left outer join center_tb ct on (ct.center_id = gpt.center_id)
 		    left outer join giver_tb gt on (gt.giving_page_id = gpt.giving_page_id)
 		    left outer join giving_category_tb gct on (gct.giving_category_id = gpt.category_id)
@@ -86,7 +91,7 @@
 		set
 			giving_name = #{pageTitle},
 			end_date = #{endDate},
-			goal_total = #{goalTotal}
+			giving_total = #{givingTotal}
 		where
 			giving_page_id = #{pageId};
 	</update>
@@ -112,6 +117,29 @@
 		WHERE
 		   giver_tb.giving_page_id = #{pageId};
 	</select>
+	
+	<select id="getDonationUsePlan" parameterType="integer" resultMap="GivingDetailMap">
+	   SELECT 
+	      dup.content, dup.donation_expense, gpt.goal_total
+	   FROM 
+	      donation_use_plan_tb AS dup
+	   JOIN 
+	      giving_page_tb AS gpt ON dup.giving_page_id = gpt.giving_page_id
+	   WHERE
+	      dup.giving_page_id = #{pageId};
+	</select>
+
+	<select id="getTargetBenefit" parameterType="integer" resultMap="GivingDetailMap">
+	    SELECT 
+	       tb.target, tb.target_count, tb.benefit_effect, gpt.register_date, gpt.end_date
+		FROM 
+		   target_benefit_tb AS tb
+		JOIN 
+		   giving_page_tb AS gpt ON tb.giving_page_id = gpt.giving_page_id
+		WHERE
+		   tb.giving_page_id = #{pageId};
+	</select>
+	
 	
 </mapper>
 

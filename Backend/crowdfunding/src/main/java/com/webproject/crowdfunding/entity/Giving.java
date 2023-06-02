@@ -3,8 +3,10 @@ package com.webproject.crowdfunding.entity;
 import java.time.LocalDate;
 
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingTargetBenefitRespDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +23,10 @@ public class Giving {
 	private int givingTotal;
 	private int goalTotal;
 	private String storyTitle;
+	private String storyContent;
 	private String eventStatus;
 	private String imgUrl;
 	private String subImgUrl;
-	private String content;
 	private int givingExpense;
 	private String centerName;
 	private int categoryId;
@@ -37,9 +39,13 @@ public class Giving {
 	private String dDay;
 	private int todayGivers;
 	private int todayDonations;
-	private String storyContent;
 	private int userId;
 	private String username;
+	private String content;
+	private int donationExpense;
+	private String target;
+	private int targetCount;
+	private String benefitEffect;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -74,7 +80,7 @@ public class Giving {
 				.registerDate(registerDate)
 				.endDate(endDate)
 				.dDay(dDay)
-				.goalTotal(goalTotal)
+				.givingTotal(givingTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
 				.centerId(givingGroupInfo.getCenterId())
@@ -100,6 +106,26 @@ public class Giving {
 				.username(username)
 				.givingTotal(givingTotal)
 				.givingDate(givingDate)
+				.build();
+	}
+	
+	public GivingDonationUsePlanRespDto toDonationUsePlan() {
+		return GivingDonationUsePlanRespDto.builder()
+				.content(content)
+				.donationExpense(donationExpense)
+				.pageId(pageId)
+				.goalTotal(goalTotal)
+				.build();
+	}
+	
+	public GivingTargetBenefitRespDto toTargetBenefit() {
+		return GivingTargetBenefitRespDto.builder()
+				.target(target)
+				.targetCount(targetCount)
+				.benefitEffect(benefitEffect)
+				.pageId(pageId)
+				.registerDate(registerDate)
+				.endDate(endDate)
 				.build();
 	}
 	
