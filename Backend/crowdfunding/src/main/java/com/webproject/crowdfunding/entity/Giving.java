@@ -46,6 +46,8 @@ public class Giving {
 	private String target;
 	private int targetCount;
 	private String benefitEffect;
+	private LocalDate businessStartDate;
+	private LocalDate businessEndDate;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -114,7 +116,6 @@ public class Giving {
 				.content(content)
 				.donationExpense(donationExpense)
 				.pageId(pageId)
-				.goalTotal(goalTotal)
 				.build();
 	}
 	
@@ -124,8 +125,8 @@ public class Giving {
 				.targetCount(targetCount)
 				.benefitEffect(benefitEffect)
 				.pageId(pageId)
-				.registerDate(registerDate)
-				.endDate(endDate)
+				.businessStartDate(businessStartDate)
+				.businessEndDate(businessEndDate)
 				.build();
 	}
 	

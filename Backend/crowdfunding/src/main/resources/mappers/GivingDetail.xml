@@ -25,6 +25,8 @@
 		<result property="target" column="target"/>
 		<result property="targetCount" column="target_count"/>
 		<result property="benefitEffect" column="benefit_effect"/>
+		<result property="businessStartDate" column="business_start_date"/>
+		<result property="businessEndDate" column="business_end_date"/>
 		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
 	</resultMap>
 	
@@ -136,7 +138,7 @@
 	
 	<select id="getDonationUsePlan" parameterType="integer" resultMap="GivingDetailMap">
 	   SELECT 
-	      dup.content, dup.donation_expense, gpt.goal_total
+	      dup.content, dup.donation_expense
 	   FROM 
 	      donation_use_plan_tb AS dup
 	   JOIN 
@@ -147,11 +149,11 @@
 
 	<select id="getTargetBenefit" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT 
-	       tb.target, tb.target_count, tb.benefit_effect, gpt.register_date, gpt.end_date
-		FROM 
-		   target_benefit_tb AS tb
-		JOIN 
-		   giving_page_tb AS gpt ON tb.giving_page_id = gpt.giving_page_id
+	       tb.target, tb.target_count, tb.benefit_effect, tb.business_start_date, tb.business_end_date
+	    FROM 
+	       target_benefit_tb AS tb
+	    JOIN 
+	      giving_page_tb AS gpt ON tb.giving_page_id = gpt.giving_page_id
 		WHERE
 		   tb.giving_page_id = #{pageId};
 	</select>

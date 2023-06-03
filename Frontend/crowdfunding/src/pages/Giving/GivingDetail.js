@@ -522,7 +522,6 @@ const donationUsePlanFontSpace = css`
     margin-right: 9px;
     margin-left: 13px;
     border-left: 1px solid #d9d9d9;
-    content: '';
 `;
 
 const donationUsePlanFont2 = css`
@@ -586,6 +585,15 @@ const targetBenefitTitleBox = css`
     margin: 35px 0 18px;
 `;
 
+const targetBenefitTitle = css`
+    float: left;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.1;
+    color: #222;
+    letter-spacing: .01em;
+`;
+
 const targetBenefitContentTbody = css`
     vertical-align: middle;
     border-color: inherit;
@@ -597,7 +605,7 @@ const targetBenefitContentTbody = css`
     text-indent: initial;
 `;
 
-const targetBenefitContentBox = css`
+const targetBenefitTable = css`
     width: 100%;
     margin: 0;
     border: 1px solid #ccc;
@@ -726,7 +734,6 @@ const historyCardAmountColor = css`
     color: #666;
 `;
 
-
 const GivingDetail = () => {
     const { pageId } = useParams();
     const [ refresh, setRefresh ] = useState(true);
@@ -738,6 +745,7 @@ const GivingDetail = () => {
     const [ role, setRole ] = useState();
     const [ modifyOpen, setModifyOpen ] = useState(false);
     const [ deleteOpen, setDeleteOpen ] = useState(false);
+    const [isDonationPeriodOver, setIsDonationPeriodOver] = useState(false);
     const [ modify, setModify ] = useState({
         givingPageId: pageId,
         givingName: "",
@@ -832,7 +840,7 @@ const GivingDetail = () => {
     })
 
     const TargetBenefit = useQuery(["TargetBenefit"], async () => {
-        return await axios.get(`http://localhost:8080/givingdetail/targetbenefit/${pageId}`)
+        return await axios.get(`http://localhost:8080/givingdetail/targetbenefit/${pageId}`);
     })
 
     if(principalUser.isLoading) {
@@ -996,41 +1004,35 @@ const GivingDetail = () => {
                                         </div>
                                 </div>
                                 <div css={targetBenefitContainer}>
+                                    <h3 css={targetBenefitTitle}>사업대상효과 및 기대효과</h3>
                                     {TargetBenefit.data.data.targetBenefitList.map(targetBenefit => (
-                                        <div css={targetBenefitContentBox}>
-                                            <h3 css={targetBenefitTitleBox}>
-                                                <strong>사업대상효과 및 기대효과</strong>
-                                            </h3>
-                                            <table>
-                                                <div css={targetBenefitContentTbody}>
-                                                    <tbody>
-                                                        <tr css={targetBenefitContentTr}>
-                                                            <th css={targetBenefitContentTh}>사업기간</th>
-                                                            <td css={targetBenefitContentTd}>{targetBenefit.registerDate} ~ {targetBenefit.endDate}</td>
-                                                        </tr>
-                                                        <tr css={targetBenefitContentTr}>
-                                                            <th css={targetBenefitContentTh}>사업 대상</th>
-                                                            <td css={targetBenefitContentTd}>{targetBenefit.target}</td>
-                                                        </tr>
-                                                        <tr css={targetBenefitContentTr}>
-                                                            <th css={targetBenefitContentTh}>대상 수</th>
-                                                            <td css={targetBenefitContentTd}>{targetBenefit.targetCount}</td>
-                                                        </tr>
-                                                        <tr css={targetBenefitContentTr}>
-                                                            <th css={targetBenefitContentTh}>기대 효과</th>
-                                                            <td css={targetBenefitContentTd}>
-                                                                <ul css={targetBenefitContentUl}>
-                                                                    <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
-                                                                    <li css={targetBenefitContentLi}>test</li>
-                                                                </ul>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>   
-                                                </div>
-                                            </table>
-                                        </div>
+                                        <table css={targetBenefitTable}>
+                                            <tbody>
+                                                <tr css={targetBenefitContentTr}>
+                                                    <th css={targetBenefitContentTh}>사업기간</th>
+                                                    <td css={targetBenefitContentTd}>{targetBenefit.businessStartDate} ~ {targetBenefit.businessEndDate}</td>
+                                                </tr>
+                                                <tr css={targetBenefitContentTr}>
+                                                    <th css={targetBenefitContentTh}>사업 대상</th>
+                                                    <td css={targetBenefitContentTd}>{targetBenefit.target}</td>
+                                                </tr>
+                                                <tr css={targetBenefitContentTr}>
+                                                    <th css={targetBenefitContentTh}>대상 수</th>
+                                                    <td css={targetBenefitContentTd}>{targetBenefit.targetCount}</td>
+                                                </tr>
+                                                <tr css={targetBenefitContentTr}>
+                                                    <th css={targetBenefitContentTh}>기대 효과</th>
+                                                    <td css={targetBenefitContentTd}>
+                                                    <ul css={targetBenefitContentUl}>
+                                                        <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
+                                                        <li css={targetBenefitContentLi}>test</li>
+                                                    </ul>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     ))}
-                                </div>
+                                    </div>
                             </div>
                             <div css={participationContainer}>
                                 <div css={participationListUl}>참여내역</div>
@@ -1071,10 +1073,12 @@ const GivingDetail = () => {
                                 <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
                             </div>
                         </div>
-                            <div css={givingButton} onClick={openModal}>
-                                <GiverPayment isOpen={isOpen} setIsOpen={setIsOpen} givingDetail={givingDetail.data.data} />
-                                모금함 기부하기
-                            </div>
+                            {!isDonationPeriodOver && (
+                                <div css={givingButton} onClick={openModal}>
+                                    <GiverPayment isOpen={isOpen} setIsOpen={setIsOpen} givingDetail={givingDetail.data.data} />
+                                    모금함 기부하기
+                                </div>
+                            )}
                             <div css={givingGroupBanner}>
                                 <div>기부하신 금액은 수수료없이
                                     <strong css={strongColor}> 100% 전달</strong>
