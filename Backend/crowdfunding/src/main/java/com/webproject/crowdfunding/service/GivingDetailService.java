@@ -14,6 +14,7 @@ import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingTargetBenefitRespDto;
 import com.webproject.crowdfunding.entity.Giving;
 import com.webproject.crowdfunding.repository.GivingDetailRepository;
 
@@ -74,9 +75,9 @@ public class GivingDetailService {
 	}
 		
 	public Map<String, Object> getTargetBenefit(int pageId) {
-		List<GivingDonationUsePlanRespDto> targetBenefitList = new ArrayList<>();
+		List<GivingTargetBenefitRespDto> targetBenefitList = new ArrayList<>();
 		givingDetailRepository.getTargetBenefit(pageId).forEach(targetBenefit -> {
-			targetBenefitList.add(targetBenefit.toDonationUsePlan());
+			targetBenefitList.add(targetBenefit.toTargetBenefit());
 		});
 		
 		Map<String, Object> targetBenefitMap = new HashMap<>();

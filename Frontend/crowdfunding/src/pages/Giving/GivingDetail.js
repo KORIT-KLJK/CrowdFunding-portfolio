@@ -592,6 +592,7 @@ const targetBenefitTitle = css`
     line-height: 1.1;
     color: #222;
     letter-spacing: .01em;
+    padding-bottom: 10px;
 `;
 
 const targetBenefitContentTbody = css`
@@ -625,12 +626,13 @@ const targetBenefitContentTr = css`
 `;
 
 const targetBenefitContentTh = css`
-    padding: 13px 0 13px 19px;
+    padding: 13px 13px 13px 19px;
     vertical-align: top;
     height: 56px;
     color: #222;
     text-align: left;
     box-sizing: border-box;
+    font-weight: 800;
 `;
 
 const targetBenefitContentTd = css`
@@ -639,17 +641,8 @@ const targetBenefitContentTd = css`
     vertical-align: top;
 `;
 
-const targetBenefitContentUl = css`
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
-`;
-
 const targetBenefitContentLi = css`
     position: relative;
-    padding-left: 10px;
 `;
 
 const participationContainer = css`
@@ -915,6 +908,8 @@ const GivingDetail = () => {
         }
     }
 
+    console.log(ParticipationDetails.data.data);
+
     return (
         <>
         {role ?
@@ -1023,9 +1018,8 @@ const GivingDetail = () => {
                                                 <tr css={targetBenefitContentTr}>
                                                     <th css={targetBenefitContentTh}>기대 효과</th>
                                                     <td css={targetBenefitContentTd}>
-                                                    <ul css={targetBenefitContentUl}>
+                                                    <ul>
                                                         <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
-                                                        <li css={targetBenefitContentLi}>test</li>
                                                     </ul>
                                                     </td>
                                                 </tr>
@@ -1037,7 +1031,7 @@ const GivingDetail = () => {
                             <div css={participationContainer}>
                                 <div css={participationListUl}>참여내역</div>
                                 <div css={historyParticipationBox}>
-                                    <p css={historyParticipationInner}>총 {ParticipationDetails.data.data.participationDetailsList.length}건이 기부되었습니다.</p>
+                                <p css={historyParticipationInner}>총 {ParticipationDetails.data.data.participationDetailsList.length}건이 기부되었습니다.</p>
                                 </div>
                                 {ParticipationDetails.data.data.participationDetailsList.map(participation => (
                                     <ul css={historyListUl}>

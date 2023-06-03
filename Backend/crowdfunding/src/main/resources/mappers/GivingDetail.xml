@@ -133,7 +133,7 @@
 		JOIN
 		   giver_tb on user_tb.user_id = giver_tb.user_id
 		WHERE
-		   giver_tb.giving_page_id = #{pageId};
+           giver_tb.giving_page_id = #{pageId};
 	</select>
 	
 	<select id="getDonationUsePlan" parameterType="integer" resultMap="GivingDetailMap">
