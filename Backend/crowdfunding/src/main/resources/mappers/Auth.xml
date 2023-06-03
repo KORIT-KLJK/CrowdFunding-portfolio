@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webproject.crowdfunding.repository.AuthRepository">
+
+	<insert id="toSaveFunder"
+				parameterType="com.webproject.crowdfunding.entity.Funder"
+				keyProperty="funderId"
+				useGeneratedKeys="true">
+		insert into funder_tb
+		values
+		<foreach collection="list" item="funder" separator=",">
+			(0, #{funder.userId}, NOW(), #{funder.addressId}, #{funder.rewardId})
+		</foreach>
+	</insert>
+	
+	<insert id="toGiverPayment" parameterType="com.webproject.crowdfunding.entity.GiverPayment">
+		insert into
+	        giver_tb
+	    values 
+	        (0, #{pageId}, #{userId}, #{givingTotal}, now())
+	</insert>
+	
+</mapper>

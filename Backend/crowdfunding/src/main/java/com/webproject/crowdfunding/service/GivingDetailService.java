@@ -12,8 +12,8 @@ import com.webproject.crowdfunding.dto.req.GiverPaymentReqDto;
 import com.webproject.crowdfunding.dto.req.GivingModifyReqDto;
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
-import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingParticipationDetailsRespDto;
+import com.webproject.crowdfunding.dto.resp.GivingTargetBenefitRespDto;
 import com.webproject.crowdfunding.entity.Giving;
 import com.webproject.crowdfunding.repository.GivingDetailRepository;
 
@@ -38,18 +38,6 @@ public class GivingDetailService {
 		return givingDetailRespDtos;
 	}
 	
-	public int givingModify(GivingModifyReqDto givingModifyReqDto) {
-		Giving givingEntity = givingModifyReqDto.givingModifyToEntity();
-		
-		return givingDetailRepository.saveGivingModify(givingEntity);
-	}
-	
-	public int givingDelete(int pageId) {
-		givingDetailRepository.saveGivingDonationUsePlan(pageId);
-		givingDetailRepository.saveGivingTargetBenefit(pageId);
-		return givingDetailRepository.saveGivingDelete(pageId);
-	}
-	
 	public Map<String, Object> getParticipationDetails(int pageId) {
 		List<GivingParticipationDetailsRespDto> participationDetailsList = new ArrayList<>();
 		givingDetailRepository.getParticipationDetails(pageId).forEach(participationDetails -> {
@@ -72,11 +60,11 @@ public class GivingDetailService {
 		
 		return donationUsePlanMap;
 	}
-		
+
 	public Map<String, Object> getTargetBenefit(int pageId) {
-		List<GivingDonationUsePlanRespDto> targetBenefitList = new ArrayList<>();
+		List<GivingTargetBenefitRespDto> targetBenefitList = new ArrayList<>();
 		givingDetailRepository.getTargetBenefit(pageId).forEach(targetBenefit -> {
-			targetBenefitList.add(targetBenefit.toDonationUsePlan());
+			targetBenefitList.add(targetBenefit.toTargetBenefit());
 		});
 		
 		Map<String, Object> targetBenefitMap = new HashMap<>();
@@ -85,7 +73,4 @@ public class GivingDetailService {
 		return targetBenefitMap;
 	}
 	
-	public int paymentGiver(@RequestBody GiverPaymentReqDto giverPaymentReqDto) {	
-		return givingDetailRepository.toGiverPayment(giverPaymentReqDto.toGiverPaymentEntity());
-	}
 }

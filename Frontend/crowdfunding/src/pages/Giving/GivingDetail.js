@@ -915,6 +915,8 @@ const GivingDetail = () => {
         }
     }
 
+    console.log(TargetBenefit);
+
     return (
         <>
         {role ?

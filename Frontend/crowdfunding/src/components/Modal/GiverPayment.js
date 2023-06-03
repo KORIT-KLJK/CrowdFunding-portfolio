@@ -210,7 +210,7 @@ const GiverPayment = ({ isOpen, setIsOpen, givingDetail }) => {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
         }
-        const response = await axios.post("http://localhost:8080/givingdetail/payment", JSON.stringify(data), option);
+        const response = await axios.post("http://localhost:8080/auth/giving/payment", JSON.stringify(data), option);
         queryClient.fetchQuery("givingDetail");
         setIsOpen(false);
         return response;
