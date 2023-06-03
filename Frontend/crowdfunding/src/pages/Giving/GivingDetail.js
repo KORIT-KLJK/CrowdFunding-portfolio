@@ -908,8 +908,6 @@ const GivingDetail = () => {
         }
     }
 
-    console.log(ParticipationDetails.data.data);
-
     return (
         <>
         {role ?

@@ -142,42 +142,4 @@
 			at.user_id = #{userId};
 	</select>
 	
-	<insert id="toSaveFunder"
-				parameterType="com.webproject.crowdfunding.entity.Funder"
-				keyProperty="funderId"
-				useGeneratedKeys="true">
-		insert into funder_tb
-		values
-		<foreach collection="list" item="funder" separator=",">
-			(0, #{funder.userId}, NOW(), #{funder.addressId}, #{funder.rewardId})
-		</foreach>
-	</insert>
-	
-	<update id="saveFundingModify">
-		update
-			funding_page_tb
-		set
-			funding_name = #{fundingTitle},
-			end_date = #{endDate},
-			goal_total = #{goalTotal}
-		where
-			funding_id = #{fundingId}
-	</update>
-	
-	<delete id="saveDeleteFundingId" parameterType="com.webproject.crowdfunding.entity.Reward">
-		delete
-		from
-			funding_page_tb
-		where
-			funding_id = #{fundingId};
-	</delete>
-	
-	<delete id="saveDeleteRewardId">
-		delete
-		from
-			reward_tb
-		where
-			reward_id = #{rewardId};
-	</delete>
-	
 </mapper>
