@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.webproject.crowdfunding.dto.req.SearchGivingReqDto;
 import com.webproject.crowdfunding.dto.resp.GivingCategoryRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingMainRespDto;
+import com.webproject.crowdfunding.dto.resp.TodayGivingRespDto;
 import com.webproject.crowdfunding.repository.GivingRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class GivingService {
 	
 	public List<GivingMainRespDto> toSaveGiving(SearchGivingReqDto searchGivingReqDto) {
 		List<GivingMainRespDto> givingList = new ArrayList<>();
-		int index = (searchGivingReqDto.getPage() - 1) * 20;
+		int index = (searchGivingReqDto.getPage() - 1) * 19;
 		Map<String, Object> map = new HashMap<>();
 		map.put("index", index);
 		map.put("selectedOrder", searchGivingReqDto.getSelectedOrder());
@@ -30,7 +31,6 @@ public class GivingService {
 		givingRepository.getGivings(map).forEach(giving -> {
 			givingList.add(giving.toMainRespDto());
 		});
-		
 		return givingList;
 	}
 	
@@ -41,6 +41,11 @@ public class GivingService {
 			givingCategorys.add(givingCategory.givingCategoryToDto());
 		});
 		return givingCategorys;
+	}
+	
+	public TodayGivingRespDto getTodayGiving() {
+		TodayGivingRespDto todayGivingEntity = givingRepository.getTodayGiving().todayGivingToEntity();
+		return todayGivingEntity;
 	}
 	
 	

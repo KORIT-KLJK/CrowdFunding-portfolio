@@ -885,7 +885,7 @@ const FundingDetail = () => {
             setSelectRewardHidden(true);
         }
     }
-    
+    console.log(joinFund)
     const selectRewardNameHandle = (fundingReward) => {
         const isDuplicate = rewards.some(reward => reward.fundingReward.rewardId === fundingReward.rewardId);
         if (isDuplicate) {

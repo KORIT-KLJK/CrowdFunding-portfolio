@@ -76,7 +76,7 @@
 	<select id="getGivingTotal" resultMap="StatisticsGiverMap">
    		select
 			count(distinct user_id) as giver_total,	
-		    sum(giving_total) as giving_total_sum
+		    ifnull(sum(giving_total), 0) as giving_total_sum
 		from
 			giver_tb
 		where

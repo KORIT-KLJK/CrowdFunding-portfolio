@@ -1,6 +1,8 @@
 package com.webproject.crowdfunding.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
@@ -37,8 +39,6 @@ public class Giving {
 	private LocalDate registerDate;
 	private LocalDate endDate;
 	private String dDay;
-	private int todayGivers;
-	private int todayDonations;
 	private int userId;
 	private String username;
 	private String content;
@@ -69,8 +69,6 @@ public class Giving {
 				.givingCategoryId(givingCount)
 				.givingDate(givingDate)
 				.dDay(dDay)
-				.todayGivers(todayGivers)
-				.todayDonations(todayDonations)
 				.build();
 	}
 	public GivingDetailRespDto givingDetail() {

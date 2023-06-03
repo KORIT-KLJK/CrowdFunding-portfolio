@@ -33,16 +33,6 @@ public class GivingDetailController {
 		return ResponseEntity.ok(givingDetailService.getMostGivings(pageId));
 	}
 	
-	@PutMapping("/admin/giving/modify")
-	public ResponseEntity<?> givingModifyInfo(@RequestBody GivingModifyReqDto givingModifyReqDto) {
-		return ResponseEntity.ok(givingDetailService.givingModify(givingModifyReqDto));
-	}
-	
-	@DeleteMapping("/admin/giving/delete/{pageId}")
-	public ResponseEntity<?> givingDeleteInfo(@PathVariable int pageId) {
-		return ResponseEntity.ok(givingDetailService.givingDelete(pageId));
-	}
-	
 	@GetMapping("/participation/{pageId}")
 	public ResponseEntity<?> participationDetails(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.getParticipationDetails(pageId));
@@ -56,11 +46,6 @@ public class GivingDetailController {
 	@GetMapping("/targetbenefit/{pageId}")
 	public ResponseEntity<?> targetBenefit(@PathVariable int pageId) {
 		return ResponseEntity.ok(givingDetailService.getTargetBenefit(pageId));
-	}
-		
-	@PostMapping("/payment")
-	public ResponseEntity<?> payment(@RequestBody GiverPaymentReqDto giverPaymentReqDto) {
-		return ResponseEntity.ok().body(givingDetailService.paymentGiver(giverPaymentReqDto));
 	}
 
 }
