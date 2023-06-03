@@ -48,6 +48,7 @@ public class Giving {
 	private String benefitEffect;
 	private LocalDate businessStartDate;
 	private LocalDate businessEndDate;
+	private int giverId;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -103,6 +104,7 @@ public class Giving {
 	
 	public GivingParticipationDetailsRespDto toParticipationDetails() {
 		return GivingParticipationDetailsRespDto.builder()
+				.giverId(giverId)
 				.pageId(pageId)
 				.userId(userId)
 				.username(username)

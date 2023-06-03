@@ -592,6 +592,7 @@ const targetBenefitTitle = css`
     line-height: 1.1;
     color: #222;
     letter-spacing: .01em;
+    padding-bottom: 10px;
 `;
 
 const targetBenefitContentTbody = css`
@@ -625,12 +626,13 @@ const targetBenefitContentTr = css`
 `;
 
 const targetBenefitContentTh = css`
-    padding: 13px 0 13px 19px;
+    padding: 13px 13px 13px 19px;
     vertical-align: top;
     height: 56px;
     color: #222;
     text-align: left;
     box-sizing: border-box;
+    font-weight: 800;
 `;
 
 const targetBenefitContentTd = css`
@@ -649,7 +651,6 @@ const targetBenefitContentUl = css`
 
 const targetBenefitContentLi = css`
     position: relative;
-    padding-left: 10px;
 `;
 
 const participationContainer = css`
@@ -1023,10 +1024,7 @@ const GivingDetail = () => {
                                                 <tr css={targetBenefitContentTr}>
                                                     <th css={targetBenefitContentTh}>기대 효과</th>
                                                     <td css={targetBenefitContentTd}>
-                                                    <ul css={targetBenefitContentUl}>
                                                         <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
-                                                        <li css={targetBenefitContentLi}>test</li>
-                                                    </ul>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1041,7 +1039,7 @@ const GivingDetail = () => {
                                 </div>
                                 {ParticipationDetails.data.data.participationDetailsList.map(participation => (
                                     <ul css={historyListUl}>
-                                        <li css={historyListLi}>
+                                        <li css={historyListLi} key={participation.giverId}>
                                             <div css={historyCard}>
                                                 <span css={historyCardDate}>{participation.givingDate}</span>
                                                 <strong css={historyCardName}>{participation.username}</strong>

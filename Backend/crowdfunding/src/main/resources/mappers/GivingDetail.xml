@@ -27,6 +27,7 @@
 		<result property="benefitEffect" column="benefit_effect"/>
 		<result property="businessStartDate" column="business_start_date"/>
 		<result property="businessEndDate" column="business_end_date"/>
+		<result property="giverId" column="giver_id"/>
 		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
 	</resultMap>
 	
@@ -125,6 +126,7 @@
 	<select id="getParticipationDetails" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT 
 	    	user_tb.user_id, user_tb.name AS username,
+	    	giver_tb.giver_id,
 	    	giver_tb.giving_page_id AS page_id, 
 	    	giver_tb.giving_total,
 	    	giver_tb.giving_date
