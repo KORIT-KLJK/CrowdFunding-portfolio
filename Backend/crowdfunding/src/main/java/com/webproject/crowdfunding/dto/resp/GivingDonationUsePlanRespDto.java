@@ -8,6 +8,5 @@ import lombok.Data;
 public class GivingDonationUsePlanRespDto {
 	private String content;
 	private int donationExpense;
-	private int goalTotal;
 	private int pageId;
 }

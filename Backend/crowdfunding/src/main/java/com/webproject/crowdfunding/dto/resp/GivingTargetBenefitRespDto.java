@@ -12,7 +12,7 @@ public class GivingTargetBenefitRespDto {
 	private int targetCount;
 	private String benefitEffect;
 	private int pageId;
-	private LocalDate registerDate;
-	private LocalDate endDate;
+	private LocalDate businessStartDate;
+	private LocalDate businessEndDate;
 
 }
