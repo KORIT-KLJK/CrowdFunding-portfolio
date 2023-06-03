@@ -22,22 +22,22 @@ public class AdminController {
 	
 	private final AdminService adminService;
 
-	@PutMapping("/admin/funding/modify")
+	@PutMapping("/funding/modify")
 	public ResponseEntity<?> toFundingModify(@RequestBody FundingModifyReqDto fundingModifyReqDto) {
 		return ResponseEntity.ok(adminService.fundingModify(fundingModifyReqDto));
 	}
 	
-	@DeleteMapping("/admin/funding/delete")
+	@DeleteMapping("/funding/delete")
 		public ResponseEntity<?> toFundingDelete(@RequestBody FundingDeleteReqDto fundingDeleteReqDto) {
 		return ResponseEntity.ok(adminService.fundingDelete(fundingDeleteReqDto));
 	}
 	
-	@PutMapping("/admin/giving/modify")
+	@PutMapping("/giving/modify")
 	public ResponseEntity<?> givingModifyInfo(@RequestBody GivingModifyReqDto givingModifyReqDto) {
 		return ResponseEntity.ok(adminService.givingModify(givingModifyReqDto));
 	}
 	
-	@DeleteMapping("/admin/giving/delete/{pageId}")
+	@DeleteMapping("/giving/delete/{pageId}")
 	public ResponseEntity<?> givingDeleteInfo(@PathVariable int pageId) {
 		return ResponseEntity.ok(adminService.givingDelete(pageId));
 	}

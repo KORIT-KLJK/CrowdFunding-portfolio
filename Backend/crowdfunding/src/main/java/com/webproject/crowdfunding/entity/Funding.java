@@ -52,7 +52,6 @@ public class Funding {
 	}
 	
 	public FundingDetailRespDto getDetailFunding() {
-		System.out.println(subImgUrl);
 		return FundingDetailRespDto.builder()
 				.fundingId(fundingId)
 				.fundingSummaryName(fundingSummaryName)

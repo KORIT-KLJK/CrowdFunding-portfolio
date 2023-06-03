@@ -366,6 +366,22 @@ const givingButton = css`
     cursor: pointer;
 `;
 
+const givingEndButton = css`
+    display: inline-block;
+    width: 281px;
+    height: 60px;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #dbdbdb;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 0 1px #086a1e;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+`;
+
 const collectGroupBox = css`
     width: 280px;
     border-top: 1px solid #e5e5e5;
@@ -738,7 +754,6 @@ const GivingDetail = () => {
     const [ role, setRole ] = useState();
     const [ modifyOpen, setModifyOpen ] = useState(false);
     const [ deleteOpen, setDeleteOpen ] = useState(false);
-    const [isDonationPeriodOver, setIsDonationPeriodOver] = useState(false);
     const [ modify, setModify ] = useState({
         givingPageId: pageId,
         givingName: "",
@@ -783,10 +798,12 @@ const GivingDetail = () => {
             }
         }
         const response = await axios.get("http://localhost:8080/principal", option)
-        setRole(response.data.authorities.split(",").includes("ROLE_ADMIN"));
         return response;
     },{
-        enabled: !!accessToken
+        enabled: !!accessToken,
+        onSuccess: (response) => {
+            setRole(response.data.authorities.split(",").includes("ROLE_ADMIN"));
+        }
     })
 
     const modifyInfo = useMutation(async () => {
@@ -855,6 +872,8 @@ const GivingDetail = () => {
     if(TargetBenefit.isLoading) {
         return <></>
     }
+
+    console.log(role);
 
     const givingDetailHandle = (pageId) => {
         navigate("/giving/" + pageId)
@@ -1065,12 +1084,14 @@ const GivingDetail = () => {
                                 <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
                             </div>
                         </div>
-                            {!isDonationPeriodOver && (
-                                <div css={givingButton} onClick={openModal}>
-                                    <GiverPayment isOpen={isOpen} setIsOpen={setIsOpen} givingDetail={givingDetail.data.data} />
-                                    모금함 기부하기
-                                </div>
-                            )}
+                        {givingDetail.data.data.dday === "모금 종료" ? 
+                        <button css={givingEndButton}>모금 종료</button> : 
+                        <div css={givingButton} onClick={openModal}>
+                        <GiverPayment isOpen={isOpen} setIsOpen={setIsOpen} givingDetail={givingDetail.data.data} />
+                        모금함 기부하기
+                        </div>
+                    }
+                            
                             <div css={givingGroupBanner}>
                                 <div>기부하신 금액은 수수료없이
                                     <strong css={strongColor}> 100% 전달</strong>

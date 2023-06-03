@@ -38,6 +38,14 @@
 		<result property="centerCEO" column="center_ceo"/>
 	</resultMap>
 	
+	<resultMap type="com.webproject.crowdfunding.entity.Test" id="TestMap">
+		<id property="pageId" column="page_id"/>
+		<result property="userId" column="user_id"/> 
+		<result property="username" column="username"/>
+		<result property="givingTotal" column="giving_total"/>
+		<result property="givingDate" column="giving_date"/>
+	</resultMap>
+	
 	<select id="getGivingDetail" parameterType="integer" resultMap="GivingDetailMap">
 	    SELECT
 		    gpt.giving_page_id as page_id,
@@ -87,18 +95,24 @@
 		limit 0, 5;
 	</select>
 	
-	<select id="getParticipationDetails" parameterType="integer" resultMap="GivingDetailMap">
-	    SELECT 
-	    	user_tb.user_id, user_tb.name AS username,
-	    	giver_tb.giving_page_id AS page_id, 
-	    	giver_tb.giving_total,
-	    	giver_tb.giving_date
-		FROM 
-		   user_tb
-		JOIN
-		   giver_tb on user_tb.user_id = giver_tb.user_id
-		WHERE
-           giver_tb.giving_page_id = #{pageId};
+	<select id="getParticipationDetails" parameterType="integer" resultMap="TestMap">
+	    select
+			ut.user_id,
+	    	ut.name AS username,
+	    	gt.giving_page_id AS page_id, 
+	    	gt.giving_total,
+	    	gt.giving_date
+		from
+		   user_tb ut
+           left outer join giver_tb gt on (gt.user_id = ut.user_id)
+		where
+           gt.giving_page_id = #{pageId}
+		group by
+			user_id,
+            username,
+            page_id,
+            giving_total,
+            giving_date;
 	</select>
 	
 	<select id="getDonationUsePlan" parameterType="integer" resultMap="GivingDetailMap">

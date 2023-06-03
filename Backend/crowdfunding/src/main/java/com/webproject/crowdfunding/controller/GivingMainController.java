@@ -25,4 +25,10 @@ public class GivingMainController {
 	public ResponseEntity<?> givingCategory() {
 		return ResponseEntity.ok(givingService.givingCategory());
 	}
+	
+	@GetMapping("/today")
+	public ResponseEntity<?> todayGiving() {
+		return ResponseEntity.ok(givingService.getTodayGiving());
+	}
+	
 }

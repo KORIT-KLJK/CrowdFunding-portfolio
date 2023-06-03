@@ -22,13 +22,14 @@
 	</delete>
 	
 	<delete id="saveDeleteRewardId" parameterType="com.webproject.crowdfunding.entity.Reward">
-		delete
-		from
-			reward_tb
-		where
-		<foreach collection="list" item="reward">
-			reward_id = #{reward.rewardId};
-		</foreach>
+		  delete
+		  from
+		 	reward_tb
+		  where
+		  	reward_id in
+	  <foreach collection="list" item="reward" open="(" separator="," close=")">
+	    	#{reward.rewardId}
+	  </foreach>
 	</delete>
 	
 	<update id="saveGivingModify">
@@ -37,7 +38,7 @@
 		set
 			giving_name = #{pageTitle},
 			end_date = #{endDate},
-			giving_total = #{givingTotal}
+			goal_total = #{goalTotal}
 		where
 			giving_page_id = #{pageId};
 	</update>
@@ -50,7 +51,7 @@
 			giving_page_id = #{pageId}
 	</delete>
 	
-	<delete id="saveGivingDonationUsePlan">
+	<delete id="saveDeleteGivingDonationUsePlan">
 		delete
 		from
 			donation_use_plan_tb
@@ -58,7 +59,7 @@
 			giving_page_id = #{pageId}
 	</delete>
 	
-	<delete id="saveGivingTargetBenefit">
+	<delete id="saveDeleteGivingTargetBenefit">
 		delete
 		from
 			target_benefit_tb
