@@ -52,7 +52,7 @@
 		<if test="pageCategory == '기부'">
 			insert into target_benefit_tb
 			values
-			(0, #{target}, #{targetCount}, #{benefitEffect}, #{givingPageId})
+			(0, #{target}, #{targetCount}, #{benefitEffect}, #{businessStartDate}, #{businessEndDate}, #{givingPageId})
 		</if>
 	</insert>
 	
