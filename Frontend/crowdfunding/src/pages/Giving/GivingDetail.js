@@ -348,6 +348,12 @@ const givingMoney = css`
     color: #444;
 `;
 
+const goalTotalTarget = css`
+    padding-top: 20px;
+    font-size: 18px;
+    color: #888;
+`;
+
 const givingButton = css`
     display: inline-block;
     width: 281px;
@@ -1035,7 +1041,7 @@ const GivingDetail = () => {
                                                 <tr css={targetBenefitContentTr}>
                                                     <th css={targetBenefitContentTh}>기대 효과</th>
                                                     <td css={targetBenefitContentTd}>
-                                                        <li css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</li>
+                                                        <div css={targetBenefitContentLi}>{targetBenefit.benefitEffect}</div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -1080,6 +1086,7 @@ const GivingDetail = () => {
                             </div>
                             <div css={givingArea}>
                                 <div css={givingMoney}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.givingTotal)}원</div>
+                                <div css={goalTotalTarget}>{new Intl.NumberFormat("en-US").format(givingDetail.data.data.goalTotal)}원(목표 금액)</div>
                             </div>
                         </div>
                         {givingDetail.data.data.dday === "모금 종료" ? 
