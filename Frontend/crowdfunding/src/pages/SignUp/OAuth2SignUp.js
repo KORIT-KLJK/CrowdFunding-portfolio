@@ -24,7 +24,7 @@ const mainContainer = css`
 const signupContainer = css`
     background:#f5f5f5 ;
     width: 1110px;
-    height: 840px;
+    height: fit-content;
     display: flex;
     flex-direction: row;
     box-shadow: 10px black;
@@ -87,8 +87,17 @@ const signupInputContainer = css`
 `;
 
 const signupInputContainerWrap = css`
-    width: 250px;
-    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    border-radius: 2px;
+`;
+
+const genderContainer = css`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 5px;
     border-radius: 2px;
 `;
 
@@ -114,13 +123,13 @@ const inputAddressNumMargin = css`
 
 const checkedAddress = css`
     position: relative;
-    margin-top: 55px;
-    margin-left: 10px;
     align-items: center;
     text-align: center;
+    margin-left: 30px;
     width: 110px;
     font-size: 11px;
     background-color: #0fb03a;
+    float: right;
 `;
 
 const addressFontSize = css`
@@ -299,7 +308,7 @@ const SignUp = () => {
                                                     <Lock />
                                                     </InputAdornment>
                                                 } />
-                                             {errorMessage.confirmPassword && <Alert css={errorCss} severity="error">{errorMessage.confirmPassword}</Alert>}
+                                            {errorMessage.confirmPassword && <Alert css={errorCss} severity="error">{errorMessage.confirmPassword}</Alert>}
                                     </FormControl>
                                 </div>
                                 <div css={signupInputContainerWrap}>
@@ -319,15 +328,15 @@ const SignUp = () => {
                                     </FormControl>
                                 </div>
 
-                                <div css={signupInputContainerWrap}>
+                                <div css={genderContainer}>
                                     <RadioGroup
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="gender">
                                         <FormControlLabel css={radioCheckBox} name="gender" value="male" onChange={onChangeHandler} control={<Radio/>} label="남성" />
                                         <FormControlLabel css={radioCheckBox} name="gender" value="female" onChange={onChangeHandler} control={<Radio/>} label="여성" />
-                                        {errorMessage.gender && <Alert css={errorCss} severity="error">{errorMessage.gender}</Alert>}
                                     </RadioGroup>                                  
+                                        {errorMessage.gender && <Alert css={errorCss} severity="error">{errorMessage.gender}</Alert>}
                                 </div>
 
                                 <div css={signupInputContainerWrap}>
@@ -335,7 +344,7 @@ const SignUp = () => {
                                             <Input id="input-with-icon-adornment"
                                                 label="생년월일" 
                                                 variant="outlined" 
-                                                placeholder="yyyy-MM-dd 형식으로 작성" 
+                                                placeholder="예) 2000-05-10" 
                                                 name="birthday" 
                                                 type="text" 
                                                 onChange={onChangeHandler} 
@@ -354,7 +363,7 @@ const SignUp = () => {
                                             css={inputMargin}
                                             label="전화번호" 
                                             variant="outlined"
-                                            placeholder="010-0000-0000"
+                                            placeholder="예) 010-1234-5678"
                                             name="phoneNumber" 
                                             type="text" 
                                             onChange={onChangeHandler} 
@@ -369,7 +378,6 @@ const SignUp = () => {
 
                                 <div css={signupInputContainerWrap}>
                                     <FormControl variant="standard">
-                                        <div css={postcodeAndBtn}>
                                             <Input id="input-with-icon-adornment"
                                                 css={inputAddressNumMargin}
                                                 label="우편번호" 
@@ -385,9 +393,10 @@ const SignUp = () => {
                                                     <Home />
                                                     </InputAdornment>
                                                 } />
-                                            <Button variant="contained" css={checkedAddress} onClick={openPostCode}>우편번호 검색</Button>
-                                        </div>
                                             {errorMessage.zonecode && <Alert css={errorCss} severity="error">{errorMessage.zonecode}</Alert>}
+                                        </FormControl>
+                                            <Button variant="contained" css={checkedAddress} onClick={openPostCode}>우편번호 검색</Button>
+                                        
                                         <div id='popupDom'>
                                         {isPopupOpen && (
                                             <PopupDom>
@@ -399,8 +408,8 @@ const SignUp = () => {
                                             </PopupDom>
                                         )}
                                         </div>
-                                        </FormControl>
                                     </div>
+                                    
                                     <div css={signupInputContainerWrap}>
                                         <FormControl variant="standard">
                                             <Input id="input-with-icon-adornment"

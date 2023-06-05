@@ -55,7 +55,7 @@ const AuthRoute = ({ path, element }) => {
         return <div>로딩중...</div>;
     }
 
-    const permitAll = ["/login", "/signup", "/auth/oauth2/login", "/auth/oauth2/register", "/auth/oauth2/merge"];
+    const permitAll = ["/login", "/signup", "/auth/oauth2/login", "/auth/oauth2/signup", "/auth/oauth2/merge"];
 
     if(!authenticated.data.data) {
         if(permitAll.includes(path)){

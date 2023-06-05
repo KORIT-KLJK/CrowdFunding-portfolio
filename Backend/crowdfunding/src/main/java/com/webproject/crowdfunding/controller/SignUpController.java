@@ -29,7 +29,6 @@ public class SignUpController {
 	@ValidAspect
 	@PostMapping("/checkemail")
 	public ResponseEntity<?> duplicatedEmail(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
-		System.out.println("중복 이메일 확인: " + email);
 		signUpService.duplicatedEmail(email.getEmail());
 		return ResponseEntity.ok().body(true);
 	}
@@ -40,7 +39,6 @@ public class SignUpController {
 	@ValidAspect
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
-		System.out.println("로그인 데이터 확인: " + signUpReqDto);
 		signUpService.signUp(signUpReqDto);
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.
 		return ResponseEntity.ok().body(true);

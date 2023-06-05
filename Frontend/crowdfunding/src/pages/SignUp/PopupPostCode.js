@@ -4,17 +4,13 @@ import React from 'react';
 import DaumPostcode from "react-daum-postcode";
 
 export const ModalContainer = css`
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-    height: 100%;
-
-    background-color: #000000aa;   
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background-color: #00000077;
 `;
 
 export const buttonHeader = css`
@@ -38,7 +34,6 @@ export const mainAddress = css`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
 `;
 
 

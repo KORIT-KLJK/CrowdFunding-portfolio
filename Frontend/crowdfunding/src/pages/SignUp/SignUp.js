@@ -23,7 +23,7 @@ const mainContainer = css`
 const signupContainer = css`
     background:#f5f5f5 ;
     width: 1110px;
-    height: 840px;
+    height: fit-content;
     display: flex;
     flex-direction: row;
     box-shadow: 10px black;
@@ -86,10 +86,28 @@ const signupInputContainer = css`
 `;
 
 const signupInputContainerWrap = css`
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    border-radius: 2px;
+`;
+
+const addressMarginTop = css`
+    width: 380px;
+    height: 30px;
+`;
+
+const postcodeAndBtn = css`
+width: 380px;
+height: 50px;
+`;
+
+const genderContainer = css`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     margin-top: 5px;
     border-radius: 2px;
-    align-items: center;
-    display: flex;
 `;
 
 const placeholderFontSize = css`
@@ -110,9 +128,10 @@ const inputMargin = css`
 
 const checkedEmail = css`
     position: relative;
-    margin-top: 7px;
-    margin-right: 60px;
-    width: 80px;
+    align-items: center;
+    text-align: center;
+    margin-left: 30px;
+    width: 110px;
     font-size: 11px;
     background-color: #0fb03a;
     float: right;
@@ -120,9 +139,9 @@ const checkedEmail = css`
 
 const checkedAddress = css`
     position: relative;
-    margin-left: 30px;
     align-items: center;
     text-align: center;
+    margin-left: 30px;
     width: 110px;
     font-size: 11px;
     background-color: #0fb03a;
@@ -134,15 +153,15 @@ const addressFontSize = css`
     margin-top: 10px;
 `;
 
-const availableEmail = css`
-  color: green;
-`;
-
 const signUpBtnContainer = css`
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+`;
+
+const availableEmail = css`
+  color: green;
 `;
 
 const signupBtn = css`
@@ -162,21 +181,26 @@ const SignUp = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const postcodeRef = useRef(null);
     const addressRef = useRef(null);
-    const [signUp, setSignUp] = useState({
-        email: "", 
-        password: "", 
-        confirmPassword: "", 
-        name: "", 
-        gender: "", 
-        birthday: "", 
-        phoneNumber: ""
-        });
+    const [signUp, setSignUp] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: ""});
     const [address, setAddress] = useState({zonecode: "", address: "", buildingName: "", bname: "", detailAddress: "", addressType: ""});
     const [errorMessage, setErrorMessages] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "", phoneNumber: ""});
+    const [emailErrorMessage, setEmailErrorMessage] = useState({email: ""});
     const [successMessage, setSuccessMessage] = useState({email: ""})
-    const [emailSubmitDisabled, setEmailSubmitDisabled] = useState(true);
+    const [emailSubmitDisabled, setEmailSubmitDisabled] = useState(false);
+
+    const onChangeHandler = (e) => {
+        const { name, value } = e.target;
+        setSignUp({...signUp, [name]: value})
+        setErrorMessages({...errorMessage, email: ""});
+    }
+
+    const onChangeAddressHandler = (e) => {
+        const { name, value } = e.target;
+        setAddress({...address, [name]: value})
+    }
 
     const checkDuplicateEmail = async () => {
+
         const data = {
             email: signUp.email
         }
@@ -189,14 +213,20 @@ const SignUp = () => {
         try {
             await axios.post("http://localhost:8080/auth/checkemail", JSON.stringify(data), option)
             setSuccessMessage({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
-            setEmailSubmitDisabled(false);
-        }catch(error) {
-            setErrorMessages({email: error.response.data.errorData.email})
             setEmailSubmitDisabled(true);
+        }catch(error) {
+            setEmailErrorMessage({email: error.response.data.errorData.email})
+            setEmailSubmitDisabled(false);
         }
     }
 
     const register = useMutation(async () => {
+        
+        if (!emailSubmitDisabled) {
+            setErrorMessages({ email: "이메일 중복 확인을 해주시기 바랍니다." });
+            return;
+        }
+
         if (signUp.password !== signUp.confirmPassword) {
             setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."});
             return;
@@ -212,24 +242,13 @@ const SignUp = () => {
         }
         try {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
-            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
+            setErrorMessages({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
             alert("회원가입 완료")
             window.location.replace("/login")
         }catch(error) {
-            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "",zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
+            setErrorMessages({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "",zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
         }
     });
-
-    const onChangeHandler = (e) => {
-        const { name, value } = e.target;
-        setSignUp({...signUp, [name]: value})
-        setErrorMessages({...errorMessage, email: ""});
-    }
-
-    const onChangeAddressHandler = (e) => {
-        const { name, value } = e.target;
-        setAddress({...address, [name]: value})
-    }
 
     // 팝업창 열기
     const openPostCode = () => {
@@ -263,6 +282,7 @@ const SignUp = () => {
                         </div>
                         <div css={signRightSide}>
                             <div css={signupInputContainer}>
+                            <div css={signupInputContainerWrap}>
                                 <FormControl variant="standard">
                                         <Input id="input-with-icon-adornment"
                                             css={placeholderFontSize}
@@ -277,10 +297,16 @@ const SignUp = () => {
                                                 <Mail />
                                                 </InputAdornment>
                                             } />
-                                        {successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>}
+                                        {emailSubmitDisabled ?
+                                        successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>
+                                        :
+                                        <>
                                         {errorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
+                                        {emailErrorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
+                                        </>}
                                     </FormControl>
                                     <Button variant="contained" css={checkedEmail} onClick={checkDuplicateEmail}>중복확인</Button>
+                                </div>
                                 
                                 <div css={signupInputContainerWrap}>
                                     <FormControl variant="standard">
@@ -337,15 +363,15 @@ const SignUp = () => {
                                     </FormControl>
                                 </div>
 
-                                <div css={signupInputContainerWrap}>
+                                <div css={genderContainer}>
                                     <RadioGroup
                                     row
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="gender">
                                         <FormControlLabel name="gender" value="male" onChange={onChangeHandler} control={<Radio/>} label="남성" />
                                         <FormControlLabel name="gender" value="female" onChange={onChangeHandler} control={<Radio/>} label="여성" />
-                                        {errorMessage.gender && <Alert css={errorCss} severity="error">{errorMessage.gender}</Alert>}
                                     </RadioGroup>                                  
+                                        {errorMessage.gender && <Alert css={errorCss} severity="error">{errorMessage.gender}</Alert>}
                                 </div>
 
                                 <div css={signupInputContainerWrap}>
@@ -371,7 +397,7 @@ const SignUp = () => {
                                             css={inputMargin}
                                             label="전화번호" 
                                             variant="outlined"
-                                            placeholder="010-0000-0000"
+                                            placeholder="예) 010-1234-5678"
                                             name="phoneNumber" 
                                             type="text" 
                                             onChange={onChangeHandler} 
@@ -384,38 +410,39 @@ const SignUp = () => {
                                     </FormControl>
                                 </div>
                                 <div css={signupInputContainerWrap}>
-                                    <FormControl variant="standard">
-                                        <Input id="input-with-icon-adornment"
-                                            css={inputMargin}
-                                            label="우편번호" 
-                                            variant="outlined"
-                                            value={address.zonecode}
-                                            placeholder="우편번호"
-                                            ref={postcodeRef}
-                                            name="zonecode" 
-                                            type="text" 
-                                            onChange={onChangeAddressHandler} 
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                <Home />
-                                                </InputAdornment>
-                                            } />
-                                            
-                                            {errorMessage.zonecode && <Alert css={errorCss} severity="error">{errorMessage.zonecode}</Alert>}
+                                        <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment"
+                                                css={inputMargin}
+                                                label="우편번호" 
+                                                variant="outlined"
+                                                value={address.zonecode}
+                                                placeholder="우편번호"
+                                                ref={postcodeRef}
+                                                name="zonecode" 
+                                                type="text" 
+                                                onChange={onChangeAddressHandler} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Home />
+                                                    </InputAdornment>
+                                                } />
+                                                {errorMessage.zonecode && <Alert css={errorCss} severity="error">{errorMessage.zonecode}</Alert>}
+                                            </FormControl>
+                                                <Button variant="contained" css={checkedAddress} onClick={openPostCode}>우편번호 검색</Button>
+
                                         <div id='popupDom'>
-                                        {isPopupOpen && (
-                                            <PopupDom>
-                                                <PopupPostCode 
-                                                    onClose={closePostCode}
-                                                    postcodeRef={postcodeRef}
-                                                    addressRef={addressRef}
-                                                    setAddress={setAddress}/>
-                                            </PopupDom>
-                                        )}
+                                            {isPopupOpen && (
+                                                <PopupDom>
+                                                    <PopupPostCode 
+                                                        onClose={closePostCode}
+                                                        postcodeRef={postcodeRef}
+                                                        addressRef={addressRef}
+                                                        setAddress={setAddress}/>
+                                                </PopupDom>
+                                            )}
                                         </div>
-                                        </FormControl>
-                                        <Button variant="contained" css={checkedAddress} onClick={openPostCode}>우편번호 검색</Button>
                                     </div>
+
                                     <div css={signupInputContainerWrap}>
                                         <FormControl variant="standard">
                                             <Input id="input-with-icon-adornment"
@@ -453,7 +480,6 @@ const SignUp = () => {
                                         </FormControl>
                                         <div css={signUpBtnContainer}>
                                             <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
-
                                         </div>
                             </div> 
                         </div>

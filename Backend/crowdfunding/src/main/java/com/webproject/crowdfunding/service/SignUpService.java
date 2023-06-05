@@ -21,7 +21,6 @@ public class SignUpService {
 	private User userEntity;
 	
 	 public void duplicatedEmail(String email) {
-		 System.out.println("중복 이메일 확인2: " + email);
 		if(signUpRepository.findUserByEmail(email) != null) {
 			throw new CustomException("Duplicated Email", 
 					ErrorMap.builder()
