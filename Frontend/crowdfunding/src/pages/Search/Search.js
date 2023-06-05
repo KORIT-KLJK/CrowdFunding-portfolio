@@ -38,7 +38,7 @@ const Search = () => {
                 ...searchParam
             }
         }
-        return await axios.get('http://localhost:8080/get/search/page',option)
+        return await axios.get('http://localhost:8080/page/get/searching',option)
     },{
         enabled:refresh,
         onSuccess: () => {

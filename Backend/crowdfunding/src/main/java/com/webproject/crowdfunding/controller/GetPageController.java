@@ -15,7 +15,7 @@ public class GetPageController {
 	
 	private final PageService pageService;
 	
-	@GetMapping("get/search/page")
+	@GetMapping("/page/get/searching")
 	public ResponseEntity<?> searchPage(SearchPageReqDto searchPageReqDto) {
 		System.out.println(searchPageReqDto);
 		return ResponseEntity.ok().body(pageService.searchPages(searchPageReqDto));

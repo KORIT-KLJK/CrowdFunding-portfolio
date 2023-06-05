@@ -22,7 +22,7 @@ public class SignUpReqDto {
 	private String password;
 	
 	@Pattern(regexp = "^[가-힣]{2,7}$",
-			message = "이름은 한글이름만 작성가능합니다.")
+			message = "이름은 한글 이름만 작성 	가능합니다.")
 	private String name;
 	
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
