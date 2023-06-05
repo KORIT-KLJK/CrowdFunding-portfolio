@@ -138,6 +138,13 @@ const availableEmail = css`
   color: green;
 `;
 
+const signUpBtnContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`;
+
 const signupBtn = css`
     width:95px;
     border: 0;
@@ -155,22 +162,19 @@ const SignUp = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const postcodeRef = useRef(null);
     const addressRef = useRef(null);
-    const [signUp, setSignUp] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: ""});
+    const [signUp, setSignUp] = useState({
+        email: "", 
+        password: "", 
+        confirmPassword: "", 
+        name: "", 
+        gender: "", 
+        birthday: "", 
+        phoneNumber: ""
+        });
     const [address, setAddress] = useState({zonecode: "", address: "", buildingName: "", bname: "", detailAddress: "", addressType: ""});
     const [errorMessage, setErrorMessages] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", zonecode: "", address: "", detailAddress: "", phoneNumber: ""});
     const [successMessage, setSuccessMessage] = useState({email: ""})
     const [emailSubmitDisabled, setEmailSubmitDisabled] = useState(true);
-
-    const onChangeHandler = (e) => {
-        const { name, value } = e.target;
-        setSignUp({...signUp, [name]: value})
-        setErrorMessages({...errorMessage, email: ""});
-    }
-
-    const onChangeAddressHandler = (e) => {
-        const { name, value } = e.target;
-        setAddress({...address, [name]: value})
-    }
 
     const checkDuplicateEmail = async () => {
         const data = {
@@ -208,7 +212,6 @@ const SignUp = () => {
         }
         try {
             await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/auth/address", JSON.stringify(data), option)
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
             alert("회원가입 완료")
             window.location.replace("/login")
@@ -216,6 +219,17 @@ const SignUp = () => {
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "",zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
         }
     });
+
+    const onChangeHandler = (e) => {
+        const { name, value } = e.target;
+        setSignUp({...signUp, [name]: value})
+        setErrorMessages({...errorMessage, email: ""});
+    }
+
+    const onChangeAddressHandler = (e) => {
+        const { name, value } = e.target;
+        setAddress({...address, [name]: value})
+    }
 
     // 팝업창 열기
     const openPostCode = () => {
@@ -339,7 +353,7 @@ const SignUp = () => {
                                             <Input id="input-with-icon-adornment"
                                                 label="생년월일" 
                                                 variant="outlined" 
-                                                placeholder="yyyy-MM-dd 형식으로 작성" 
+                                                placeholder="예) 2000-05-10" 
                                                 name="birthday" 
                                                 type="text" 
                                                 onChange={onChangeHandler} 
@@ -437,7 +451,10 @@ const SignUp = () => {
                                                 } />
                                             {errorMessage.detailAddress && <Alert css={errorCss} severity="error">{errorMessage.detailAddress}</Alert>}
                                         </FormControl>
-                                    <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
+                                        <div css={signUpBtnContainer}>
+                                            <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
+
+                                        </div>
                             </div> 
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,13 +21,15 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class SignUpController {
 	
 	private final SignUpService signUpService;
 	
 	@ValidAspect
-	@PostMapping("/auth/checkemail")
+	@PostMapping("/checkemail")
 	public ResponseEntity<?> duplicatedEmail(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
+		System.out.println("중복 이메일 확인: " + email);
 		signUpService.duplicatedEmail(email.getEmail());
 		return ResponseEntity.ok().body(true);
 	}
@@ -35,18 +38,13 @@ public class SignUpController {
 	// iuejeong: @Valid를 달아주면 dto 안에 있는 email(), Pattern()을 검사해준다
 	// iuejeong: @Valid와 BindingResult는 세트임. signUpReqDto의 오류를 BindingResult에게 모두 넘겨준다.
 	@ValidAspect
-	@PostMapping("/auth/signup")
+	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
+		System.out.println("로그인 데이터 확인: " + signUpReqDto);
 		signUpService.signUp(signUpReqDto);
 		// iuejeong: ok = 일반적으로 성공했다는 의미를 표시.
 		return ResponseEntity.ok().body(true);
 	}
 	
-	@ValidAspect
-	@PostMapping("/auth/address")
-	public ResponseEntity<?> address(@Valid @RequestBody AddressReqDto addressReqDto, BindingResult bindingResult) {
-		signUpService.address(addressReqDto);
-		return ResponseEntity.ok().body(true);
-	}
 	
 }

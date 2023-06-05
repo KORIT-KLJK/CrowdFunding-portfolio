@@ -1,6 +1,9 @@
 package com.webproject.crowdfunding.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webproject.crowdfunding.aop.ValidAspect;
 import com.webproject.crowdfunding.dto.AddressReqDto;
 import com.webproject.crowdfunding.dto.req.OAuth2ProviderMergeReqDto;
 import com.webproject.crowdfunding.dto.req.OAuth2SignUpReqDto;
@@ -27,9 +31,12 @@ public class OAuth2Controller {
 	
 	
 	@PostMapping("/oauth2/signup")
+	@ValidAspect
 	public ResponseEntity<?> signup(
 			@RequestHeader(value="registerToken") String registerToken,
-			@RequestBody OAuth2SignUpReqDto oAuth2SignUpReqDto) {
+			@Valid
+			@RequestBody OAuth2SignUpReqDto oAuth2SignUpReqDto,
+			BindingResult bindingResult) {
 		boolean validated = jwtTokenProvider.validateToken(jwtTokenProvider.getToken(registerToken));
 		
 		if(!validated) {
@@ -47,12 +54,6 @@ public class OAuth2Controller {
 		}
 		
 		return ResponseEntity.ok(oAuth2Service.oAuth2ProviderMerge(oAuth2ProviderMergeReqDto));
-	}
-	
-	@PostMapping("/oauth2/address")
-	public ResponseEntity<?> address(@RequestBody AddressReqDto addressReqDto) {
-		oAuth2Service.address(addressReqDto);
-		return ResponseEntity.ok().body(true);
 	}
 	
 }

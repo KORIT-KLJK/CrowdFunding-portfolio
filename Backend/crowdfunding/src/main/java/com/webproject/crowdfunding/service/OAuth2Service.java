@@ -47,21 +47,19 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
 	}
 	
 	public int oauth2signUp(OAuth2SignUpReqDto oAuth2RegisterReqDto) {
-		userEntity = oAuth2RegisterReqDto.toEntity();
-		System.out.println(userEntity);
+		System.out.println(oAuth2RegisterReqDto);
+		userEntity = oAuth2RegisterReqDto.toUserEntity();
 		userRepository.signUpUser(userEntity);
-		return userRepository.saveAuthority(
+		userRepository.saveAuthority(
 				Authority.builder()
 				.userId(userEntity.getUserId())
 				.roleId(1)
 				.build()
 			);
-	}
-	
-	public void address(AddressReqDto addressReqDto) {
-		Address addressEntity = addressReqDto.toEntity();
+		
+		Address addressEntity = oAuth2RegisterReqDto.toAddressEntity();
 		addressEntity.setUserId(userEntity.getUserId());
-		userRepository.saveAddress(addressEntity);
+		return userRepository.saveAddress(addressEntity);
 	}
 	
 	public boolean checkPassword(String email, String password) {

@@ -137,12 +137,19 @@ const postcodeAndBtn = css`
     height: 50px;
 `;
 
+const signUpBtnContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`;
+
 const signupBtn = css`
     width:95px;
     height:35px;
     border: 0;
     border-radius: 4px;
-    margin-top: 230px;
+    margin-top: 110px;
     float: right;
     display: flex;
     flex-direction: column;
@@ -163,20 +170,18 @@ const SignUp = () => {
     const name = searchParams.get("name");
     const provider = searchParams.get("provider");
     
-    const [signUp, setSignUp] = useState({email, password: "", confirmPassword: "", name, gender: "", birthday: "", phoneNumber:"", provider});
+    const [signUp, setSignUp] = useState({
+        email, 
+        password: "", 
+        confirmPassword: "", 
+        name, 
+        gender: "", 
+        birthday: "", 
+        phoneNumber:"", 
+        provider
+        });
     const [address, setAddress] = useState({zonecode: "", address: "", buildingName: "", bname: "", detailAddress: "", addressType: ""});
     const [errorMessage, setErrorMessages] = useState({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber:"", zonecode: "", address: "", detailAddress: ""});
-
-    const onChangeHandler = (e) => {
-        const { name, value } = e.target;
-        setSignUp({...signUp, [name]: value})
-        setErrorMessages({...errorMessage, email: ""});
-    }
-
-    const onChangeAddressHandler = (e) => {
-        const { name, value } = e.target;
-        setAddress({...address, [name]: value})
-    }
 
     const OAuth2register = useMutation(async () => {
         if (signUp.password !== signUp.confirmPassword) {
@@ -195,17 +200,24 @@ const SignUp = () => {
         }
         try {
             await axios.post("http://localhost:8080/auth/oauth2/signup", JSON.stringify(data), option)
-            await axios.post("http://localhost:8080/auth/oauth2/address", JSON.stringify(data), option)
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
             alert("회원가입 완료")
             window.location.replace("/login")
         }catch(error) {
+            console.log(error)
             setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
         }
     });
 
-    if(OAuth2register.isLoading) {
-        return <></>;
+    const onChangeHandler = (e) => {
+        const { name, value } = e.target;
+        setSignUp({...signUp, [name]: value})
+        setErrorMessages({...errorMessage, email: ""});
+    }
+
+    const onChangeAddressHandler = (e) => {
+        const { name, value } = e.target;
+        setAddress({...address, [name]: value})
     }
 
     // 팝업창 열기
@@ -424,15 +436,14 @@ const SignUp = () => {
                                                 } />
                                             {errorMessage.detailAddress && <Alert css={errorCss} severity="error">{errorMessage.detailAddress}</Alert>}
                                         </FormControl>
-                                    <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
+                                        <div css={signUpBtnContainer}>
+                                            <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
+                                        </div>
                             </div> 
                         </div>
                     </div>
                 </div>
             </main>
-            <footer>
-
-                </footer>
         </div>
     );
 };
