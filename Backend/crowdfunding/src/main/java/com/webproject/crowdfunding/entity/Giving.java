@@ -48,6 +48,7 @@ public class Giving {
 	private String benefitEffect;
 	private LocalDate businessStartDate;
 	private LocalDate businessEndDate;
+	private int giverId;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -81,6 +82,7 @@ public class Giving {
 				.endDate(endDate)
 				.dDay(dDay)
 				.givingTotal(givingTotal)
+				.goalTotal(goalTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
 				.centerId(givingGroupInfo.getCenterId())
@@ -101,6 +103,7 @@ public class Giving {
 	
 	public GivingParticipationDetailsRespDto toParticipationDetails() {
 		return GivingParticipationDetailsRespDto.builder()
+				.giverId(giverId)
 				.pageId(pageId)
 				.userId(userId)
 				.username(username)

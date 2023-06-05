@@ -27,6 +27,7 @@
 		<result property="benefitEffect" column="benefit_effect"/>
 		<result property="businessStartDate" column="business_start_date"/>
 		<result property="businessEndDate" column="business_end_date"/>
+		<result property="giverId" column="giver_id"/>
 		<association property="givingGroupInfo" resultMap="GivingGroupInfoMap"></association>
 	</resultMap>
 	
@@ -94,6 +95,22 @@
 			page_rand_index
 		limit 0, 5;
 	</select>
+	
+	<delete id="saveGivingDonationUsePlan">
+		delete
+		from
+			donation_use_plan_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
+	<delete id="saveGivingTargetBenefit">
+		delete
+		from
+			target_benefit_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
 	
 	<select id="getParticipationDetails" parameterType="integer" resultMap="TestMap">
 	    select
