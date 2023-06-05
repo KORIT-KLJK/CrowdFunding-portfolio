@@ -60,15 +60,11 @@ public class Giving {
 				.givingTotal(givingTotal)
 				.goalTotal(goalTotal)
 				.imgUrl(imgUrl)
-				.eventStatus(eventStatus)
 				.givingCategoryId(givingCategory.getGivingCategoryId())
 				.givingCategoryName(givingCategory.getGivingCategoryName())
 				.centerName(centerName)
-				.amountCollected(amountCollected)
 				.achievementRate(achievementRate)
-				.givingCategoryId(givingCount)
-				.givingDate(givingDate)
-				.dDay(dDay)
+				.givingCategoryId(categoryId)
 				.build();
 	}
 	public GivingDetailRespDto givingDetail() {

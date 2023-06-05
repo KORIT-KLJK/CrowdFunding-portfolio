@@ -88,12 +88,12 @@ const DonationStatisticsData = css`
 
 const GivingStatistics = () => {
     const statistics = useQuery(["statistics"], async () => {
-        const response = await axios.get("http://localhost:8080/main/givingStatistics")
+        const response = await axios.get("http://localhost:8080/main/giving/statistics")
         return response;
     });
     
     const statisticsFunding = useQuery(["statisticsFunding"], async () => {
-        const response = await axios.get("http://localhost:8080/main/fundingStatistics")
+        const response = await axios.get("http://localhost:8080/main/funding/statistics")
         return response;
     })
 

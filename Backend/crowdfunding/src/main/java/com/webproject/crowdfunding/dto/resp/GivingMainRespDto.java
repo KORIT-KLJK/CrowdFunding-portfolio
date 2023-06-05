@@ -16,10 +16,5 @@ public class GivingMainRespDto {
 	private int givingCategoryId;
 	private String givingCategoryName;
 	private String centerName;
-	private String eventStatus;
 	private int achievementRate;
-	private int amountCollected;
-	private int givingCount;
-	private LocalDate givingDate;
-	private String dDay;
 }

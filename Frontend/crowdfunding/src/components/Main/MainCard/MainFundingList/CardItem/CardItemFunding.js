@@ -93,7 +93,7 @@ const CardItemFunding = () => {
     const navigate = useNavigate();
     const fundings = useQuery(["CardItemFunding"], async () => {
     
-    const response = await axios.get("http://localhost:8080/main/cardItemFunding")
+    const response = await axios.get("http://localhost:8080/main/carditem/funding")
     return response;
     });
 
@@ -115,7 +115,7 @@ const CardItemFunding = () => {
                     </header>
                     <main>
                         <div css={fundingText}>
-                            <div css={fundingContainerMainTitlePrice}>{funding.userName}</div>
+                            <div css={fundingContainerMainTitlePrice}>{funding.fundingSummaryName}</div>
                             <strong css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</strong>
                             <span css={fundingContainerMainPricePadding}>
                                 <span css={fundingContainerMainPrice}>{funding.joinPercent}%</span>

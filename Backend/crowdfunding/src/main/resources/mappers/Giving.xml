@@ -41,7 +41,6 @@
 	        gpt.goal_total,
 	        gct.giving_category_id,
 	        gct.giving_category_name,
-	        if(now() &lt; end_date, '진행중', '종료') as event_status,
 	        round(sum(gt.giving_total) / gpt.goal_total * 100) as achievement_rate
 	    from
 	       giving_page_tb gpt
