@@ -13,8 +13,6 @@ import { Lock, Mail, Badge, Celebration, Home, Phone } from '@mui/icons-material
 import { useSearchParams } from 'react-router-dom';
 
 const mainContainer = css`
-    width: 100vw;
-    height: 100vh;
     background: #eff0f2;
     display: flex;
     justify-content: center;

@@ -12,8 +12,6 @@ import FormControl from '@mui/material/FormControl';
 import { Lock, Mail, Badge, Celebration, Home, Phone } from '@mui/icons-material';
 
 const mainContainer = css`
-    width: 100vw;
-    height: 100vh;
     background: #eff0f2;
     display: flex;
     justify-content: center;
@@ -200,6 +198,7 @@ const SignUp = () => {
     }
 
     const checkDuplicateEmail = async () => {
+        setErrorMessages({email: ""})
 
         const data = {
             email: signUp.email
@@ -223,6 +222,7 @@ const SignUp = () => {
     const register = useMutation(async () => {
         
         if (!emailSubmitDisabled) {
+            setEmailErrorMessage({email: ""})
             setErrorMessages({ email: "이메일 중복 확인을 해주시기 바랍니다." });
             return;
         }
@@ -266,9 +266,6 @@ const SignUp = () => {
 
     return (
         <div>
-            <header>
-                
-            </header>
             <main>
                 <div css={mainContainer}>
                     <div css={signupContainer}>
@@ -297,13 +294,14 @@ const SignUp = () => {
                                                 <Mail />
                                                 </InputAdornment>
                                             } />
-                                        {emailSubmitDisabled ?
-                                        successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>
-                                        :
-                                        <>
-                                        {errorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
-                                        {emailErrorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
-                                        </>}
+                                            {emailSubmitDisabled ? (
+                                            successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>
+                                        ) : (
+                                            <>
+                                                {emailErrorMessage.email && <Alert css={errorCss} severity="error">{emailErrorMessage.email}</Alert>}
+                                                {errorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
+                                            </>
+                                        )}
                                     </FormControl>
                                     <Button variant="contained" css={checkedEmail} onClick={checkDuplicateEmail}>중복확인</Button>
                                 </div>
