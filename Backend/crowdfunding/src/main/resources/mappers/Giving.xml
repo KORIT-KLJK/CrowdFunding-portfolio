@@ -79,7 +79,7 @@
 			giving_page_tb gpt
 			left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
 		where
-			DATE(giving_date) = CURDATE();
+			DATE(giving_date) = CURDATE()
 	</select>
 	
 	<select id="getGivingCategory" resultMap="GivingCategoryMap">
