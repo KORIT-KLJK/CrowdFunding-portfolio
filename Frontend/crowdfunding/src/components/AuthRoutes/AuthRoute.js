@@ -17,10 +17,15 @@ const AuthRoute = ({ path, element }) => {
             Authorization: `Bearer ${accessToken}`
         }
      }
-        const response = await axios.get("http://localhost:8080/auth/authenticated", option);
-        return response;
+        try {
+            const response = await axios.get("http://localhost:8080/auth/authenticated", option);
+            return response;
+        } catch(error) {
+            localStorage.removeItem("accessToken");
+            navigate("/login");
+        }
     }, {
-        enabled: refresh
+        refetchInterval: 1000 * 60
     });
 
     const principal = useQuery(["principal"], async () => {
@@ -29,6 +34,7 @@ const AuthRoute = ({ path, element }) => {
                 Authorization : `Bearer ${accessToken}`
             }
          }
+
         const response = await axios.get("http://localhost:8080/principal", option)
         return response;
         },{
@@ -39,7 +45,7 @@ const AuthRoute = ({ path, element }) => {
                     navigate("/");
                 }
             },
-            enabled: !!accessToken
+            enabled: !!accessToken && !!authenticated.data
     });
 
     useEffect(() => {
@@ -50,11 +56,11 @@ const AuthRoute = ({ path, element }) => {
     
     
 
-    if(authenticated.isLoading || principal.isLoading) {
+    if(authenticated.isLoading) {
         return <div>로딩중...</div>;
     }
 
-    const permitAll = ["/login", "/signup"];
+    const permitAll = ["/login", "/signup", "/auth/oauth2/login", "/auth/oauth2/signup", "/auth/oauth2/merge"];
 
     if(!authenticated.data.data) {
         if(permitAll.includes(path)){

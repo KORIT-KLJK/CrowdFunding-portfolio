@@ -17,14 +17,17 @@
 		<result property="achievementRate" column="achievement_rate"/>
 		<result property="givingDate" column="giving_date"/>
 		<result property="dDay" column="dDay"/>
-		<result property="todayGivers" column="today_givers"/>
-		<result property="todayDonations" column="today_donations"/>
 		<association property="givingCategory" resultMap="GivingCategoryMap"></association>
 	</resultMap>
 		
 	<resultMap type="com.webproject.crowdfunding.entity.GivingCategory" id="GivingCategoryMap">
 		<id property="givingCategoryId" column="giving_category_id"/>
 		<result property="givingCategoryName" column="giving_category_name"/>
+	</resultMap>
+	
+	<resultMap type="com.webproject.crowdfunding.entity.TodayGiving" id="TodayGivingMap">
+		<result property="todayGivers" column="today_givers"/>
+		<result property="todayDonations" column="today_donations"/>
 	</resultMap>
 	
 	<select id="getGivings" parameterType="hashMap" resultMap="GivingMap">
@@ -38,40 +41,27 @@
 	        gpt.goal_total,
 	        gct.giving_category_id,
 	        gct.giving_category_name,
-	        if(now() &lt; end_date, '진행중', '종료') as event_status,
-	        round(sum(gt.giving_total) / goal_total * 100) as achievement_rate,
-	        tdg.today_givers,
-	        tdg.today_donations
+	        round(sum(gt.giving_total) / gpt.goal_total * 100) as achievement_rate
 	    from
 	       giving_page_tb gpt
 	       left outer join center_tb ct on(ct.center_id = gpt.center_id)
 	       left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
 	       left outer join giving_category_tb gct on(gct.giving_category_id = gpt.category_id)
-           left outer join (SELECT 
-								giving_page_id,
-								COUNT(DISTINCT giver_id) AS today_givers, 
-								SUM(giving_total) AS today_donations
-							FROM 
-								giver_tb
-							WHERE 
-								DATE(giving_date) = CURDATE()
-							group by
-								giving_page_id) tdg on(tdg.giving_page_id = gpt.giving_page_id)
-	    where
-	        1 = 1
-	        <if test="categoryId != 0">
+		where
+			1 = 1     
+			<if test="categoryId != 0">
 	            and gpt.category_id = #{categoryId}
 	        </if>
 	    group by
 	       gpt.giving_page_id
-	    order by
+	     order by
 	    <choose>
-	        <when test='selectedOrder == "모금액 많은 순서"'>
-	            goal_total desc,
+	        <when test='selectedOrder == "기부액 많은 순서"'>
+	            giving_total desc,
 	            page_id desc
 	        </when>
-	        <when test='selectedOrder == "모금액 적은 순서"'>
-	            goal_total,
+	        <when test='selectedOrder == "기부액 적은 순서"'>
+	            giving_total,
 	            page_id desc
 	        </when>
 	        <otherwise>
@@ -79,6 +69,17 @@
 	        </otherwise>
 	    </choose>
 	   limit #{index}, 19;
+	</select>
+	
+	<select id="getTodayGiving" resultMap="TodayGivingMap">
+		select
+			COUNT(DISTINCT giver_id) AS today_givers, 
+			SUM(giving_total) AS today_donations
+        from
+			giving_page_tb gpt
+			left outer join giver_tb gt on(gt.giving_page_id = gpt.giving_page_id)
+		where
+			DATE(giving_date) = CURDATE()
 	</select>
 	
 	<select id="getGivingCategory" resultMap="GivingCategoryMap">

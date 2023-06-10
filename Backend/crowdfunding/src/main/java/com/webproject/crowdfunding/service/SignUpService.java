@@ -31,22 +31,19 @@ public class SignUpService {
 	 
 	
 	public int signUp(SignUpReqDto signUpReqDto) {
-		// iuejeong: dto에서 받은 정보들을 User 객체로 값을 넘겨야 하기 때문에 변환을 해서 저장소로 넘긴다.
-		userEntity = signUpReqDto.toEntity();
-		Address address = new Address();
+		userEntity = signUpReqDto.toUserEntity();
 		signUpRepository.signUpUser(userEntity);
-		
-		// iuejeong: 회원가입과 동시에 권한까지 저장소로 넘긴다.
-		return signUpRepository.saveAuthority(
+
+		signUpRepository.saveAuthority(
 				Authority.builder()
 				.userId(userEntity.getUserId())
 				.roleId(1)
 				.build());
-	}
-	
-	public int address(AddressReqDto addressReqDto) {
-		Address addressEntity = addressReqDto.toEntity();
+		
+		Address addressEntity = signUpReqDto.toAddressEntity();
 		addressEntity.setUserId(userEntity.getUserId());
+		
+		
 		return signUpRepository.saveAddress(addressEntity);
 	}
 	

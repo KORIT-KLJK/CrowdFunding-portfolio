@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.toyproject</groupId>
-	<artifactId>bookmanagement</artifactId>
+	<artifactId>CrowdFunding-portfolio</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bookmanagement</name>
-	<description>Book Management project for Spring Boot</description>
+	<name>CrowdFunding-portfolio</name>
+	<description>CrowdFunding-portfolio project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

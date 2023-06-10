@@ -6,6 +6,7 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.webproject.crowdfunding.entity.Address;
 import com.webproject.crowdfunding.entity.User;
 
 import lombok.Data;
@@ -21,7 +22,7 @@ public class SignUpReqDto {
 	private String password;
 	
 	@Pattern(regexp = "^[가-힣]{2,7}$",
-			message = "이름은 한글이름만 작성가능합니다.")
+			message = "이름은 한글 이름만 작성 	가능합니다.")
 	private String name;
 	
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
@@ -35,8 +36,22 @@ public class SignUpReqDto {
     @Pattern(regexp = "^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$",
     		message = "휴대전화번호 형식에 맞게 작성해주세요.")
     private String phoneNumber;
+    
+	@NotBlank(message = "우편번호는 필수 입력 값입니다.")
+	private String zonecode;
 	
-	public User toEntity() {
+	@NotBlank(message = "주소는 필수 입력 값입니다.")
+	private String address;
+	
+	private String buildingName;
+	private String bname;
+	
+	@NotBlank(message = "상세 주소는 필수 입력 값입니다.")
+	private String detailAddress;
+	
+	private String addressType;
+	
+	public User toUserEntity() {
 		return User.builder()
 				.email(email)
 				.password(new BCryptPasswordEncoder().encode(password))
@@ -46,4 +61,30 @@ public class SignUpReqDto {
 				.phoneNumber(phoneNumber)
 				.build();
 	}
+	
+	public Address toAddressEntity() {
+		return Address.builder()
+				.zonecode(zonecode)
+				.address(address)
+				.buildingName(buildingName)
+				.bname(bname)
+				.detailAddress(detailAddress)
+				.addressType(addressType)
+				.build();
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

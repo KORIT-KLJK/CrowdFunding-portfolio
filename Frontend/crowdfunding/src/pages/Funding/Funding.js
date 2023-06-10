@@ -69,6 +69,7 @@ export const fundingCategoryButton = css`
 `;
 
 export const fundingStatusDetail = css`
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -105,7 +106,7 @@ export const sortingFundingStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 5.6%;
+    top: 130%;
     margin: -10px 0px 0px -11px;
     background-color: white;
 
@@ -123,7 +124,7 @@ export const sortingFundingRewardStatusList = css`
     width: 125px;
     padding: 10px;
     z-index: 98;
-    top: 5.6%;
+    top: 130%;
     margin: -10px 0px 0px -11px;
     background-color: white;
 
@@ -443,7 +444,6 @@ const Funding = () => {
                             <div>
                                 <div css={imgBox}>
                                     <img css={img} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
-                                    <img css={img} src={funding.mainImgUrl} alt={funding.pageTitle} />
                                         <div css={checkFunding({funding})}>
                                             <div css={fundingTxt}>펀딩</div>
                                             <div>{funding.joinPercent >= 100 ? "성공" : "종료"}</div>

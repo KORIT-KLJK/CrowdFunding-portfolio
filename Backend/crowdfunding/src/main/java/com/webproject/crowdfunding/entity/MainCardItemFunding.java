@@ -17,9 +17,6 @@ public class MainCardItemFunding {
 	private String pageTitle;
 	private int joinPercent;
 	private String imgUrl;
-	private int funderId;
-	private int rewardPrice;
-	private int rewardId;
 	
 	public MainCardItemFundingRespDto toSaveMainCardFundingRespDto() {
 		return MainCardItemFundingRespDto.builder()
@@ -28,9 +25,6 @@ public class MainCardItemFunding {
 				.pageTitle(pageTitle)
 				.joinPercent(joinPercent)
 				.imgUrl(imgUrl)
-				.funderId(funderId)
-				.rewardPrice(rewardPrice)
-				.rewardId(rewardId)
 				.build();
 		
 	}

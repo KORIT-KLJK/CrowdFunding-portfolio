@@ -12,7 +12,4 @@ public class MainCardItemFundingRespDto {
 	private String userName;
 	private int joinPercent;
 	private String imgUrl;
-	private int funderId;
-	private int rewardPrice;
-	private int rewardId;
 }

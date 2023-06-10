@@ -65,26 +65,4 @@ public class FundingDetailService {
 		return fundingDetailRepository.getAddressId(userId);
 	}
 	
-	public int saveFunder(FunderReqDto funderReqDto) {
-		List<Funder> funderEntity = funderReqDto.toFunderEntity();
-		return fundingDetailRepository.toSaveFunder(funderEntity);
-	}
-	
-	public int fundingModify(FundingModifyReqDto fundingModifyReqDto) {
-		Funding fundingToEntity = fundingModifyReqDto.fundingToEntity();
-		return fundingDetailRepository.saveFundingModify(fundingToEntity);
-	}
-	
-	public int fundingDelete(FundingDeleteReqDto fundingDeleteReqDto) {
-		Funding fundingEntity = fundingDeleteReqDto.deleteFundingIdToEntity();
-		List<Reward> rewards = fundingDeleteReqDto.deleteRewardIdToEntity();
-		fundingDetailRepository.saveDeleteFundingId(fundingEntity);
-		rewards.forEach(reward -> {
-			fundingDetailRepository.saveDeleteRewardId(Reward.builder()
-													.rewardId(reward.getRewardId())
-													.build());
-		});
-		return fundingDetailRepository.saveDeleteFundingId(fundingEntity);
-	}
-	
 }

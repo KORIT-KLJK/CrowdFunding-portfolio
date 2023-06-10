@@ -37,7 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 			String name = oAuth2User.getAttribute("name");
 			response
 			.sendRedirect(
-					"http://localhost:3000/auth/oauth2/register"
+					"http://localhost:3000/auth/oauth2/signup"
 							+ "?registerToken=" + registerToken
 							+ "&email=" + email
 							+ "&name=" + URLEncoder.encode(name, "UTF-8")

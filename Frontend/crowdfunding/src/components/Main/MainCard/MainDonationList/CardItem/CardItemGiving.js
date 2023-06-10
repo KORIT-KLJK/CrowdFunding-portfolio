@@ -92,7 +92,7 @@ const cardItemMoney = css`
 const CardItemGiving = () => {
     const givings = useQuery(["CardItemGiving"], async () => {
 
-    const response = await axios.get("http://localhost:8080/main/cardItemGiving")
+    const response = await axios.get("http://localhost:8080/main/carditem/giving")
     return response;
    });
 

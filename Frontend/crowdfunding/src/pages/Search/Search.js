@@ -38,7 +38,7 @@ const Search = () => {
                 ...searchParam
             }
         }
-        return await axios.get('http://localhost:8080/get/search/page',option)
+        return await axios.get('http://localhost:8080/page/get/searching',option)
     },{
         enabled:refresh,
         onSuccess: () => {
@@ -182,7 +182,7 @@ const Search = () => {
                     {getPageData.isLoading ? "" : getPageData.data.data.pageList.map(page=> (
                              <div key={page.pageId} css={S.searchResultPanel} onClick={() => getPageNavigateHandler(page.pageId)}>
                              <div css={S.panelImgContainer}>
-                                 <img css={S.panelImg} src={page.imgUrl} alt={page.imgUrl}/>
+                                 <img css={S.panelImg} src={`http://localhost:8080/image/main/${page.imgUrl}`} />
                              </div>
                              <div css={S.panelInfo}>
                                  <div css={S.panelTitle}>

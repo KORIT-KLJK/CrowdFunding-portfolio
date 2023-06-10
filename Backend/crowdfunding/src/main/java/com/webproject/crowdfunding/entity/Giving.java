@@ -1,6 +1,8 @@
 package com.webproject.crowdfunding.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.webproject.crowdfunding.dto.resp.GivingDetailRespDto;
 import com.webproject.crowdfunding.dto.resp.GivingDonationUsePlanRespDto;
@@ -37,8 +39,6 @@ public class Giving {
 	private LocalDate registerDate;
 	private LocalDate endDate;
 	private String dDay;
-	private int todayGivers;
-	private int todayDonations;
 	private int userId;
 	private String username;
 	private String content;
@@ -46,6 +46,9 @@ public class Giving {
 	private String target;
 	private int targetCount;
 	private String benefitEffect;
+	private LocalDate businessStartDate;
+	private LocalDate businessEndDate;
+	private int giverId;
 	
 	private GivingCategory givingCategory;
 	private GivingGroupInfo givingGroupInfo;
@@ -57,17 +60,11 @@ public class Giving {
 				.givingTotal(givingTotal)
 				.goalTotal(goalTotal)
 				.imgUrl(imgUrl)
-				.eventStatus(eventStatus)
 				.givingCategoryId(givingCategory.getGivingCategoryId())
 				.givingCategoryName(givingCategory.getGivingCategoryName())
 				.centerName(centerName)
-				.amountCollected(amountCollected)
 				.achievementRate(achievementRate)
-				.givingCategoryId(givingCount)
-				.givingDate(givingDate)
-				.dDay(dDay)
-				.todayGivers(todayGivers)
-				.todayDonations(todayDonations)
+				.givingCategoryId(categoryId)
 				.build();
 	}
 	public GivingDetailRespDto givingDetail() {
@@ -81,6 +78,7 @@ public class Giving {
 				.endDate(endDate)
 				.dDay(dDay)
 				.givingTotal(givingTotal)
+				.goalTotal(goalTotal)
 				.storyTitle(storyTitle)
 				.storyContent(storyContent)
 				.centerId(givingGroupInfo.getCenterId())
@@ -101,6 +99,7 @@ public class Giving {
 	
 	public GivingParticipationDetailsRespDto toParticipationDetails() {
 		return GivingParticipationDetailsRespDto.builder()
+				.giverId(giverId)
 				.pageId(pageId)
 				.userId(userId)
 				.username(username)
@@ -114,7 +113,6 @@ public class Giving {
 				.content(content)
 				.donationExpense(donationExpense)
 				.pageId(pageId)
-				.goalTotal(goalTotal)
 				.build();
 	}
 	
@@ -124,8 +122,8 @@ public class Giving {
 				.targetCount(targetCount)
 				.benefitEffect(benefitEffect)
 				.pageId(pageId)
-				.registerDate(registerDate)
-				.endDate(endDate)
+				.businessStartDate(businessStartDate)
+				.businessEndDate(businessEndDate)
 				.build();
 	}
 	

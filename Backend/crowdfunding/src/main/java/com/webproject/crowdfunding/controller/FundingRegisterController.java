@@ -22,7 +22,6 @@ public class FundingRegisterController {
 	@ValidAspect
 	@PostMapping("/admin/funding/registerpage")
 	public ResponseEntity<?> registerPage(@Valid FundingRegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
-		System.out.println(registerPageReqDto);
 		fundingRegisterPageService.registerPage(registerPageReqDto);
 		return ResponseEntity.ok().body(true);
 	}

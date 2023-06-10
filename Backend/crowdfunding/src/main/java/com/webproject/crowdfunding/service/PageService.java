@@ -31,8 +31,6 @@ public class PageService {
 		map.put("searchTema", searchPageReqDto.getSearchTema());
 		map.put("searchValue", searchPageReqDto.getSearchValue());
 		
-		System.out.println(map);
-		
 		pageRepository.searchPageInfo(map).forEach(page-> {
 			list.add(page.toDto());
 		});
@@ -42,7 +40,6 @@ public class PageService {
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("totalCount", totalCount);
 		responseMap.put("pageList", list);
-		System.out.println(responseMap);
 		return responseMap;
 	}
 }

@@ -387,9 +387,18 @@ const Giving = () => {
     }
     );
 
+    const todayGiving = useQuery(["todayGiving"], async () => {
+      return await axios.get("http://localhost:8080/giving/today")
+    })
+
   if (givingCategorys.isLoading || givingData.isLoading) {
     return <></>;
   }
+
+  if(todayGiving.isLoading) {
+    return <></>;
+  }
+
 
   const ClickView = (e) => {
     if (e.type !== "click") {
@@ -423,6 +432,8 @@ const Giving = () => {
   const givingDetailHandle = (pageId) => {
     navigate("/giving/" + pageId)
   }
+
+  console.log(todayCardDatas)
 
   return (
     <div css={mainContainer}>
@@ -478,9 +489,9 @@ const Giving = () => {
                       data-order=""
                       data-sorttype="desc"
                       aria-selected="true"
-                      onClick={() => handleSortByAmount("모금액 많은 순서")}
+                      onClick={() => handleSortByAmount("기부액 많은 순서")}
                     >
-                      <span>모금액 많은 순서</span>
+                      <span>기부액 많은 순서</span>
                     </li>
                     <li
                       role="option"
@@ -489,9 +500,9 @@ const Giving = () => {
                       data-order="giving.amountCollected"
                       data-sorttype="desc"
                       aria-selected="true"
-                      onClick={() => handleSortByAmount("모금액 적은 순서")}
+                      onClick={() => handleSortByAmount("기부액 적은 순서")}
                     >
-                      <span>모금액 적은 순서</span>
+                      <span>기부액 적은 순서</span>
                     </li>
                   </ul>
                 )}
@@ -507,7 +518,7 @@ const Giving = () => {
                 <strong css={cardTodayTitle}>오늘 함께한 기부금</strong>
                 <span css={cardTodayText}>
                   <strong css={point}>
-                    <span css={scrollNumber}>{todayCardDatas.todayGivers}</span>
+                    <span css={scrollNumber}>{todayGiving.data.data.todayGivers}</span>
                     <span css={scrollNumber}>명</span>
                   </strong>
                   <span css={scrollNumber}>이</span>
@@ -515,7 +526,7 @@ const Giving = () => {
                   <strong css={point}>
                     <span css={scrollNumber}>
                       {new Intl.NumberFormat("en-US").format(
-                        todayCardDatas.todayDonations
+                        todayGiving.data.data.todayDonations
                       )}
                     </span>
                     원

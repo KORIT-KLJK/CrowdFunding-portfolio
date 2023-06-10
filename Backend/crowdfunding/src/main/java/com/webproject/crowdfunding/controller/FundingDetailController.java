@@ -55,21 +55,6 @@ public class FundingDetailController {
 		return ResponseEntity.ok(fundingDetailService.getAddressId(userId));
 	}
 	
-	@PostMapping("/auth/funding/payment")
-	public ResponseEntity<?> toPaymentInfo(@RequestBody FunderReqDto funderReqDto) {
-		return ResponseEntity.ok(fundingDetailService.saveFunder(funderReqDto));
-	}
-	
-	@PutMapping("/admin/funding/modify")
-	public ResponseEntity<?> toFundingModify(@RequestBody FundingModifyReqDto fundingModifyReqDto) {
-		return ResponseEntity.ok(fundingDetailService.fundingModify(fundingModifyReqDto));
-	}
-	
-	@DeleteMapping("/admin/funding/delete")
-		public ResponseEntity<?> toFundingDelete(@RequestBody FundingDeleteReqDto fundingDeleteReqDto) {
-		return ResponseEntity.ok(fundingDetailService.fundingDelete(fundingDeleteReqDto));
-	}
-	
 }
 
 

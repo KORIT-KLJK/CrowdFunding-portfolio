@@ -39,7 +39,6 @@ public class Funding {
 				.pageId(fundingId)
 				.fundingSummaryName(fundingSummaryName)
 				.pageTitle(fundingTitle)
-				.username(username)
 				.recentSort(recentSort)
 				.nearDeadlineSort(nearDeadline)
 				.eventStatus(eventStatus)
@@ -52,12 +51,10 @@ public class Funding {
 	}
 	
 	public FundingDetailRespDto getDetailFunding() {
-		System.out.println(subImgUrl);
 		return FundingDetailRespDto.builder()
 				.fundingId(fundingId)
 				.fundingSummaryName(fundingSummaryName)
 				.fundingTitle(fundingTitle)
-				.username(username)
 				.deadline(nearDeadline)
 				.goalTotal(goalTotal)
 				.totalRewardPrice(totalRewardPrice)

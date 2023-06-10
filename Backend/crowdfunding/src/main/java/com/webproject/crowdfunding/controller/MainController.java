@@ -16,22 +16,22 @@ public class MainController {
 	
 	private final MainService mainService;
 	
-	@GetMapping("/cardItemFunding")
+	@GetMapping("/carditem/funding")
 	public ResponseEntity<?> CardItemFundingData() {
 		return ResponseEntity.ok(mainService.toSaveCardItemFunding());
 	}
 	
-	@GetMapping("/cardItemGiving")
+	@GetMapping("/carditem/giving")
 	public ResponseEntity<?> CardItemGivingData() {
 		return ResponseEntity.ok(mainService.toSaveCardItemGiving());
 	}
 	
-	@GetMapping("/givingStatistics")
+	@GetMapping("/giving/statistics")
 	public ResponseEntity<?> StatisticsGiverData() {
 		return ResponseEntity.ok(mainService.giver());
 	}
 	
-	@GetMapping("/fundingStatistics")
+	@GetMapping("/funding/statistics")
 	public ResponseEntity<?> StatisticsFunderData() {
 		return ResponseEntity.ok(mainService.funder());
 	}

@@ -51,7 +51,7 @@ public class JwtTokenProvider {
 
 		String authorities = builder.toString();	// iuejeong: role 권한들을 문자열로 바꾸기 위해서
 
-		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60 * 24)); // 현재시간 + 하루
+		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60));
 
 		String accessToken = Jwts.builder()
 				.setSubject(authentication.getName()) // code8144: 토큰의 제목(큰이름), getName() = email

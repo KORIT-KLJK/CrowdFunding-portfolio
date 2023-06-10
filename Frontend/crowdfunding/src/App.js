@@ -36,7 +36,7 @@ function App() {
         <Route path="/funding/:pageId" element={<FundingDetail />} />
         <Route path="/admin/register/page" element={<AuthRoute path="/admin/register/page" element={<RegisterPage />}/>} />
         <Route path='/auth/oauth2/login' element={<AuthRoute path={"/auth/oauth2/login"} element={<OAuth2Login />}/>} />
-        <Route path='/auth/oauth2/register' element={<AuthRoute path={"/auth/oauth2/register"} element={<OAuth2SignUp />}/>} />
+        <Route path='/auth/oauth2/signup' element={<AuthRoute path={"/auth/oauth2/signup"} element={<OAuth2SignUp />}/>} />
         <Route path='/auth/oauth2/merge' element={<AuthRoute path={"/auth/oauth2/merge"} element={<OAuth2Merge />}/>} />
       </Routes>
     </>
