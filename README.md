@@ -61,3 +61,11 @@
 
 <br />
 
+## **개발 일정**
+
+**제작 기간:** 2023.05.03 ~ 2023.06.07
+
+![스크린샷(1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/4f7ea0ba-3d55-4106-9672-da1fde38a496)
+
+**참고 웹사이트:** https://happybean.naver.com/
+
