@@ -1,20 +1,38 @@
+ 
+
+
+
 ## **📗 목차**
 
-<b>
 
-📝 [팀원 및 프로젝트 소개](#-팀원-및-프로젝트-소개)
-  
-🛠 [메뉴구조도](#-메뉴구조도)
-  
+🏆 [프로젝트 소개](#-프로젝트-소개)
+
+👨🏻‍💻 [팀원 소개](#-팀원-소개)
+
+🛠 [개발 도구](#-개발-도구)
+
+⏰ [프로젝트 일정](#-프로젝트-일정)
+
 🔗 [API와 ERD명세서](#-API와-ERD명세서)
+  
+📝 [메뉴구조도](#-메뉴구조도)
   
 ✨ [WEB 화면 구현](#-WEB-화면-구현)
   
 👨🏻‍💻 [느낀점](#-느낀점)
 
-</b>
 
-## **📝 팀원 및 프로젝트 소개**
+## **🏆 프로젝트 소개**
+
+- 프로젝트 제목 - 펀딩 및 기부 서비스 테스트
+
+- 프로젝트 목적 - 배운 것들을 복습 및 활용, 협업에 대한 이해
+
+- 분류 - 팀프로젝트
+
+- 제작 기간 - 2023.05.03 ~ 2023.06.07
+
+## **👨🏻‍💻 팀원 소개**
 
 > **팀장: 정의현** 
 - 사용한 통계에 프로젝트 설계
@@ -41,7 +59,7 @@
 - 데이터 크롤링
 - 검색 기능
 
-## **개발 도구**
+## **🛠 개발 도구**
 
 ### FrontEnd
 
@@ -59,13 +77,16 @@
 ### 형상 관리
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 
-<br />
 
-## **개발 일정**
+## **⏰ 프로젝트 일정**
 
-**제작 기간: 2023.05.03 ~ 2023.06.07**
 
 ![스크린샷(1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/4f7ea0ba-3d55-4106-9672-da1fde38a496)
 
 **참고 웹사이트:** https://happybean.naver.com/
+
+## **🔗 API와 ERD명세서**
+
+![스크린샷(2)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/263c80b5-0421-4bb8-b7ac-96c53100b837)
+
 
