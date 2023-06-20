@@ -9,7 +9,7 @@
 
 ⏰ [프로젝트 일정](#-프로젝트-일정)
 
-🔗 [API와 ERD명세서](#-API와-ERD명세서)
+🔗 [API명세서와 ERD설계도](#-API명세서와-ERD설계도도)
   
 📝 [메뉴구조도](#-메뉴구조도)
   
@@ -98,7 +98,7 @@
 
 <br/>
 
-## **🔗 API와 ERD명세서**
+## **🔗 API명세서와 ERD설계도**
 
 ### API 명세서
 
@@ -106,7 +106,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### ERD 명세서
+### ERD 설계도
 
 
 <div align="center">
