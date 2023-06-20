@@ -110,19 +110,20 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <div align="center">
  
- ### 펀딩
+ ### 펀딩 ERD
  
 </div>
 
-![스크린샷(3)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/6a1eb6e1-e6f2-4d0c-a442-167ebf67971e)
+![KakaoTalk_20230605_153904436](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/c6a471b0-85f3-4d27-a258-0ac460f730d4)
 
 <br/><br/>
 
 <div align="center">
  
- ### 기부
+ ### 기부 ERD
 
-![스크린샷(4)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/174074a8-ad5e-4a03-93d2-2d5624a7b3fc)
+![KakaoTalk_20230605_154821409](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/86dc51b4-dca5-4fa9-bfb5-7398474b865f)
+
 
  
 </div>
