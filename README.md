@@ -39,7 +39,7 @@
 - 사용한 통계에 프로젝트 설계
 - 펀딩페이지 CRUD 기능 구현 및 CSS
 - 로그인 및 회원가입 기능 구현
-- security jwt 및 accessToken 작업
+- security jwt 및 accessToken 디테일 작업
 - 파일 입출력
 - API 명세서
 - 관리자 CRUD 기능 구현
@@ -55,6 +55,7 @@
 - 기부페이지 CRUD 기능구현 및 CSS
 - 로그인 회원가입 페이지 CSS
 - ERD 명세서
+- security jwt 및 accessToken 틀 작업
 
 > **팀원: 이해강** 
 - 데이터 크롤링
