@@ -234,7 +234,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 ### **펀딩 상세 페이지 화면 구현 영상**
 
 <details>
-<summary>현재 진행 중</summary>
+<summary>현재 진행 중인 펀딩</summary>
 <div markdown="1">
 
 ![상세페이지 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/03dbfdd9-aa06-49b6-ae18-cbc3eb8a917a)
@@ -243,7 +243,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 </details>
 
 <details>
-<summary>펀딩 참여(결제)</summary>
+<summary>펀딩 참여하기(결제)</summary>
 <div markdown="1">
 
 ![결제 처음 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/efa13972-cf36-46ce-8d24-88ef1951057a)
@@ -261,6 +261,15 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 ![KakaoTalk_20230624_165355960_03](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/d8413386-8d92-42d4-a32c-69af3ceb6727)
 
 <br/><br/>
+
+</div>
+</details>
+
+<details>
+<summary>종료된 펀딩</summary>
+<div markdown="1">
+
+![종료된 펀딩](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/238f395c-98bc-4262-99c6-e3ce59013b34)
 
 </div>
 </details>
