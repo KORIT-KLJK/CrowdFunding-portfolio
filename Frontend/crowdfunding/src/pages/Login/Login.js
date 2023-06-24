@@ -230,6 +230,9 @@ const Login = () => {
             window.location.replace("/");
         } catch(error) {
             setErrorMessages({email: "", password: "", ...error.response.data.errorData});
+            if(error.response.data.message === "로그인 실패") {
+                alert("사용자 정보를 확인해주세요.")
+            }
         }
     })
 
