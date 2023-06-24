@@ -139,6 +139,92 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 ## **✨ 화면 구현 및 코드 리뷰**
 
+<br/>
 
+### **회원가입 화면 구현 영상**
+
+<details>
+<summary>이메일 유효성 검사</summary>
+<div markdown="1">
+
+![이메일 유효성 검사](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/0bf30e4f-bf10-4864-a202-cba2c63a045d)
+  
+</div>
+</details>
+
+<details>
+<summary>그 외 유효성 검사 및 회원가입 성공</summary>
+<div markdown="1">
+
+![그 외 유효성 검사 및 회원가입 성공](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/2dac8417-6567-427f-855a-fe6c728a2fd1)
+  
+</div>
+</details>
+
+<br/>
+
+### **로그인 화면 구현 영상**
+
+<details>
+<summary>로그인 유효성 검사 및 예외 처리</summary>
+<div markdown="1">
+
+![로그인 유효성 검사 및 예외처리](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/f095cb2f-d0a7-4127-9279-44e37efbe79a)
+  
+</div>
+</details>
+
+<br />
+
+### **펀딩 메인 페이지 화면 구현 영상**
+
+<details>
+<summary>1. 카테고리 적용</summary>
+<div markdown="1">
+  
+![카테고리 - Clipchamp로 제작 (1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/402755b6-cfc9-4570-8a93-0c4274a2d2e8)
+
+  
+</div>
+</details>
+
+<details>
+<summary>2. 정렬(전체, 진행중, 종료)</summary>
+<div markdown="1">
+
+![정렬(전체, 진행중, 종료)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/8b3de60f-18f2-4500-bc2b-12b6f255214b)
+  
+</div>
+</details>
+
+<details>
+<summary>3. 정렬(최신 순, 참여 금액 순, 참여율 순, 종료 임박 순)</summary>
+<div markdown="1">
+<br/>
+
+- 최신 순
+  
+![최신 순 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/6ee7a5ac-fa0e-491a-ab49-4d046c3c7a93)
+
+<br/><br/>
+
+- 참여금액 순
+  
+![참여 금액 순 - Clipchamp로 제작 (1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/2c598491-a31d-4f0b-887e-b296e686cd10)
+
+<br/><br/>
+
+- 참여율 순
+
+![참여율 순 - Clipchamp로 제작 (1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/8034d691-c756-449c-b0fe-bd40a648a002)
+
+<br/><br/>
+
+- 종료 임박 순
+
+![종료 임박 순 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/edbb6514-334a-4ae8-a8a5-dff336992268)
+  
+</div>
+</details>
 
 
