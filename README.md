@@ -17,6 +17,7 @@
   - [회원가입 화면 구현 영상](#회원가입-화면-구현-영상)
   - [로그인 화면 구현 영상](#로그인-화면-구현-영상)
   - [펀딩 메인 페이지 화면 구현 영상](#펀딩-메인-페이지-화면-구현-영상)
+  - [펀딩 상세 페이지 화면 구현 영상](#펀딩-상세-페이지-화면-구현-영상)
   
 👨🏻‍💻 [느낀점](#-느낀점)
 
@@ -227,6 +228,40 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 ![종료 임박 순 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/edbb6514-334a-4ae8-a8a5-dff336992268)
   
+</div>
+</details>
+
+### **펀딩 상세 페이지 화면 구현 영상**
+
+<details>
+<summary>현재 진행 중</summary>
+<div markdown="1">
+
+![상세페이지 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/03dbfdd9-aa06-49b6-ae18-cbc3eb8a917a)
+
+</div>
+</details>
+
+<details>
+<summary>펀딩 참여(결제)</summary>
+<div markdown="1">
+
+![결제 처음 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/efa13972-cf36-46ce-8d24-88ef1951057a)
+
+<br/><br/>
+
+![KakaoTalk_20230624_165355960_01](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/3fab79c9-46f7-4985-8761-4cdb7d354bed)
+
+<br/><br/>
+
+![KakaoTalk_20230624_165355960_02](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/bf156ff1-3fbe-4c58-aba3-f42d68983b0c)
+
+<br/><br/>
+
+![KakaoTalk_20230624_165355960_03](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/d8413386-8d92-42d4-a32c-69af3ceb6727)
+
+<br/><br/>
+
 </div>
 </details>
 
