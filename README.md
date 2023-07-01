@@ -207,7 +207,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 ```
 
---- 
+</br>
 
 - input 창에 이메일 입력을 받고, 중복확인 버튼도 넣어준다.
 - input 창에는 onChange, button에는 onClick을 넣어줌으로써 내가 취한 행동에 대한 값을 함수로 넘겨준다.
@@ -227,7 +227,7 @@ const onChangeHandler = (e) => {
 
 ```
 
----
+</br>
 
 - name에는 email, value에는 email이라는 이름을 가진 input창에 값이 들어가있다.
 - 입력 받은 값을 setSignUp(useState로 렌더링이 될 때 마다 상태가 업데이트가 된다)에 데이터를 넣어준다.
@@ -264,7 +264,7 @@ const checkDuplicateEmail = async () => {
 
 ```
 
----
+</br>
 
 - Javascript는 싱글 쓰레드이기 때문에 모든 코드가 비동기 처리로 돼서 요청에서 오류가 꽤 생길 수 있다. 예를 들어, 요청에 대한 코드 바로 다음에 응답으로 받은 데이터를 가지고 처리하는 코드가 있다 치자. 서버에 데이터 요청을 보내고 응답이 오지도 않았고, 필요한 데이터를 받지도 못했는데 다음 코드가 실행이 된다. 그래서 비동기 처리 과정을 동기적인 것처럼 실행하기 위해 async 함수와 함께 await 키워드를 쓴다. (비동기 처리가 실제 동기 처리가 되는 것이 아니고, 동기와 유사하게 보이는 것임)
 
@@ -283,6 +283,8 @@ const checkDuplicateEmail = async () => {
 </br></br>
 
 ## BackEnd
+
+---
   
 </div>
 </details>
