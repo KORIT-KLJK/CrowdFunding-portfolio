@@ -284,7 +284,142 @@ const checkDuplicateEmail = async () => {
 
 ## BackEnd
 
+**Controller**
+
+```java
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/auth")
+public class SignUpController {
+	
+	private final SignUpService signUpService;
+	
+	@ValidAspect
+	@PostMapping("/checkemail")
+	public ResponseEntity<?> duplicatedEmail(@Valid @RequestBody DuplicatedEmailReqDto email, BindingResult bindingResult) {
+		signUpService.duplicatedEmail(email.getEmail());
+		return ResponseEntity.ok().body(true);
+	}
+	
+}
+
+```
+
+</br>
+
+- 프론트에서 보낸 email을 받아준다.
+- Post요청(CRUD 중 Create)에 대한 데이터 처리.
+- @Valid를 달아주면 dto 안에 있는 email(), Pattern() 등을 검사해준다.
+- @Valid와 BindingResult는 세트임. signUpReqDto의 오류를 BindingResult에게 모두 넘겨준다.
+
 ---
+
+</br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class DuplicatedEmailReqDto {
+	@Email
+	@NotBlank(message="이메일을 입력하세요")
+	private String email;
+}
+
+```
+
+</br>
+
+- @Email과 @NotBlank 등 validation과 관련된 어노테이션을 써주면 거기에 해당되는 메세지를 에러 메세지로 반환해준다. 
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+public void duplicatedEmail(String email) {
+  if(signUpRepository.findUserByEmail(email) != null) {
+    throw new CustomException("Duplicated Email", 
+        ErrorMap.builder()
+        .put("email", "사용 중인 email입니다.")
+        .build());
+  }
+}
+
+```
+
+</br>
+
+- Controller에서 보낸 email을 받아서 데이터베이스에 있는 이메일과 비교를 한다.
+- 이메일이 존재한다면 따로 만들어준 CustomException이라는 객체와 ErrorMap이라는 객체에 "email"이라는 키와 "사용 중인 email입니다."라는 value를 넣어준다.
+- 이 에러 메세지를 만들어줌으로써 프론트에서 이 메세지를 처리할 수 있게 된다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface UserRepository {
+	public User findUserByEmail(String email);
+}
+
+```
+
+</br>
+
+- xml file로 대체
+- interface를 써야 Mapper를 쓸 수 있고, mybatis에서 받을 수 있다.
+- Service에서 보낸 email을 데이터베이스로 들고가서 확인을 한다.
+
+---
+
+</br></br>
+
+**Sql**
+
+```sql
+
+<select id="findUserByEmail" resultMap="userMap">
+  select
+    ut.user_id,
+    ut.email,
+    ut.password,
+    ut.name,
+    ut.birth_day,
+    ut.gender,
+    ut.provider,
+    ut.phone_number,
+    
+    at.authority_id,
+    at.user_id,
+    at.role_id,
+    
+    rt.role_id,
+    rt.role_name
+  from
+    user_tb ut
+    left outer join authority_tb at on(at.user_id = ut.user_id)
+    left outer join role_tb rt on(rt.role_id = at.role_id)
+  where
+    ut.email = #{email}
+</select>
+
+```
+
+</br></br>
+
+**데이터베이스**
+
+![이메일 확인 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/4134da16-3bcb-4f44-9750-e0f443b83860)
   
 </div>
 </details>
