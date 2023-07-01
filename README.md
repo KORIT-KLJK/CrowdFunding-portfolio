@@ -162,9 +162,17 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 <summary>이메일 유효성 검사</summary>
 <div markdown="1">
 
+</br>
+
+**영상**
+
+</br>
+
 ![이메일 유효성 검사](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/0bf30e4f-bf10-4864-a202-cba2c63a045d)
 
 </br></br>
+
+## FrontEnd
 
 **웹에서 이메일 입력 받기**
 
@@ -268,9 +276,13 @@ const checkDuplicateEmail = async () => {
 
 - 에러가 있다면 검사해서 떴던 에러 내용을 setEmailErrorMessage에 담는다.
 
-- setEmailSubmitDisabled에 넣어준 상태 값은 아래 회원가입에 설명이 있다.
+- setEmailSubmitDisabled에 넣어준 상태 값은 아래 회원가입 성공에 설명이 있다.
   
 ---
+
+</br></br>
+
+## BackEnd
   
 </div>
 </details>
@@ -280,6 +292,10 @@ const checkDuplicateEmail = async () => {
 <div markdown="1">
 
 ![그 외 유효성 검사 및 회원가입 성공](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/2dac8417-6567-427f-855a-fe6c728a2fd1)
+
+</br></br>
+
+
   
 </div>
 </details>
