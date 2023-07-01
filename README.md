@@ -21,8 +21,8 @@
   - [관리자 펀딩 및 기부 등록 페이지 화면 구현 영상](#관리자-펀딩-및-기부-등록-페이지-화면-구현-영상)
   - [관리자 펀딩 및 기부 수정 화면 구현 영상](#관리자-펀딩-및-기부-수정-화면-구현-영상)
   - [관리자 펀딩 및 기부 삭제 화면 구현 영상](#관리자-펀딩-및-기부-삭제-화면-구현-영상)
-  - [OAuth2 로그인 화면 구현 영상](#OAuth2-로그인-화면-구현-영상)
-  - [OAuth2 회원가입 화면 구현 영상](#OAuth2-회원가입-화면-구현-영상)
+  - [OAuth2 회원가입 및 로그인 화면 구현 영상](#OAuth2-회원가입-및-로그인-화면-구현-영상)
+  - [OAuth2 계정 통합 화면 구현 영상](#OAuth2-계정-통합-화면-구현-영상)
   
 👨🏻‍💻 [느낀점](#-느낀점)
 
@@ -364,10 +364,29 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **OAuth2 로그인 화면 구현 영상**
+### **OAuth2 회원가입 및 로그인 화면 구현 영상**
+
+<details>
+<summary>OAuth2 회원가입 및 로그인</summary>
+<div markdown="1">
+  
+![OAuth2 회원가입 및 로그인 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/c2bebc58-65d9-4b68-adba-dc939e1d0883)
+
+</div>
+</details>
 
 <br/>
 
-### **OAuth2 회원가입 화면 구현 영상**
+### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상**
+
+<details>
+<summary>OAuth2 계정 통합</summary>
+<div markdown="1">
+  
+![OAuth2 계정 통합 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/478e6782-37a1-4e0b-b352-fcbd70c0b817)
+
+
+</div>
+</details>
 
 <br/>
