@@ -289,6 +289,33 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 ### **관리자 펀딩 및 기부 등록 페이지 화면 구현 영상**
 
+<details>
+<summary>기부 및 펀딩 등록 유효성 검사</summary>
+<div markdown="1">
+
+![관리자 페이지 유효성 검사 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/d5d256ce-e970-40a9-9496-9aa57a43197f)
+
+</div>
+</details>
+
+<details>
+<summary>기부 등록</summary>
+<div markdown="1">
+
+![기부 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/311a9a48-11e9-44a9-8691-0def0355ba07)
+
+</div>
+</details>
+
+<details>
+<summary>펀딩 등록</summary>
+<div markdown="1">
+
+![펀딩 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/69890336-542c-42f2-b6fd-43ee0dbd6f89)
+
+</div>
+</details>
+
 <br/>
 
 ### **OAuth2 로그인 화면 구현 영상**
