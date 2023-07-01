@@ -318,6 +318,28 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
+### **관리자 펀딩 및 기부 수정 화면 구현 영상**
+
+<details>
+<summary>기부 수정</summary>
+<div markdown="1">
+
+![기부 수정 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/65ce4d46-6748-4936-bcba-4bd0ca3d5a26)
+
+</div>
+</details>
+
+<details>
+<summary>펀딩 수정</summary>
+<div markdown="1">
+  
+![펀딩 수정 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/5c1ae2c5-038e-49be-8fbc-611f014ca421)
+
+</div>
+</details>
+
+<br/>
+
 ### **OAuth2 로그인 화면 구현 영상**
 
 <br/>
