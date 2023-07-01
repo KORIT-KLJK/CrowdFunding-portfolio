@@ -415,11 +415,25 @@ public interface UserRepository {
 
 ```
 
+</br>
+
+- id는 Repository에 있는 findUserByEmail이고, 반환 값은 Repository에 있는 User 객체다.
+- where문에는 user 테이블에 있는 email과 findUserByEmail에 매개변수 email을 받아서 비교해준다.
+- 이 where문에서 이메일 비교를 했을 때, email이 존재하다면 위 Service에서 에러 메세지를 띄우게 되는 것.
+
+---
+
 </br></br>
 
 **데이터베이스**
 
-![이메일 확인 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/4134da16-3bcb-4f44-9750-e0f443b83860)
+![이메일 확인 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/a2e41380-3059-4807-a2b4-3c60148afe85)
+
+</br>
+
+- 영상에서 보여졌던 dmlgus3585@gmail.com이라는 이메일이 이미 존재하다는 것을 사진을 통해 확인할 수 있다.
+
+---
   
 </div>
 </details>
