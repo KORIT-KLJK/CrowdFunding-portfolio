@@ -340,6 +340,28 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
+### **관리자 펀딩 및 기부 삭제 화면 구현 영상**
+
+<details>
+<summary>기부 삭제</summary>
+<div markdown="1">
+  
+![기부 삭제 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/91f9ff1a-73c5-4350-9682-3bfb66b8552d)
+
+</div>
+</details>
+
+<details>
+<summary>펀딩 삭제</summary>
+<div markdown="1">
+  
+![펀딩 삭제 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/b0d12753-abce-45a6-9fa3-caca513d43f4)
+
+</div>
+</details>
+
+<br/>
+
 ### **OAuth2 로그인 화면 구현 영상**
 
 <br/>
