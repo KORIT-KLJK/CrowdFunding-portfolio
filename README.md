@@ -14,15 +14,15 @@
 📝 [메뉴구조도](#-메뉴구조도)
   
 ✨ [화면 구현 및 코드 리뷰](#-화면-구현-및-코드-리뷰)
-  - [회원가입 화면 구현 영상](#회원가입-화면-구현-영상)
-  - [로그인 화면 구현 영상](#로그인-화면-구현-영상)
-  - [펀딩 메인 페이지 화면 구현 영상](#펀딩-메인-페이지-화면-구현-영상)
-  - [펀딩 상세 페이지 화면 구현 영상](#펀딩-상세-페이지-화면-구현-영상)
-  - [관리자 펀딩 및 기부 등록 페이지 화면 구현 영상](#관리자-펀딩-및-기부-등록-페이지-화면-구현-영상)
-  - [관리자 펀딩 및 기부 수정 화면 구현 영상](#관리자-펀딩-및-기부-수정-화면-구현-영상)
-  - [관리자 펀딩 및 기부 삭제 화면 구현 영상](#관리자-펀딩-및-기부-삭제-화면-구현-영상)
-  - [OAuth2 회원가입 및 로그인 화면 구현 영상](#OAuth2-회원가입-및-로그인-화면-구현-영상)
-  - [OAuth2 Google, Kakao 계정 통합 화면 구현 영상](#OAuth2-Google-Kakao-계정-통합-화면-구현-영상)
+  - [회원가입 화면 구현 영상 및 코드 리뷰](#회원가입-화면-구현-영상-및-코드-리뷰)
+  - [로그인 화면 구현 영상 및 코드 리뷰](#로그인-화면-구현-영상-및-코드-리뷰)
+  - [펀딩 메인 페이지 화면 구현 영상 및 코드 리뷰](#펀딩-메인-페이지-화면-구현-영상-및-코드-리뷰)
+  - [펀딩 상세 페이지 화면 구현 영상 및 코드 리뷰](#펀딩-상세-페이지-화면-구현-영상-및-코드-리뷰)
+  - [관리자 펀딩 및 기부 등록 페이지 화면 구현 영상 및 코드 리뷰](#관리자-펀딩-및-기부-등록-페이지-화면-구현-영상-및-코드-리뷰)
+  - [관리자 펀딩 및 기부 수정 화면 구현 영상 및 코드 리뷰](#관리자-펀딩-및-기부-수정-화면-구현-영상-및-코드-리뷰)
+  - [관리자 펀딩 및 기부 삭제 화면 구현 영상 및 코드 리뷰](#관리자-펀딩-및-기부-삭제-화면-구현-영상-및-코드-리뷰)
+  - [OAuth2 회원가입 및 로그인 화면 구현 영상 및 코드 리뷰](#OAuth2-회원가입-및-로그인-화면-구현-영상-및-코드-리뷰)
+  - [OAuth2 Google, Kakao 계정 통합 화면 구현 영상 및 코드 리뷰](#OAuth2-Google-Kakao-계정-통합-화면-구현-영상-및-코드-리뷰)
   
 👨🏻‍💻 [느낀점](#-느낀점)
 
@@ -156,13 +156,121 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **회원가입 화면 구현 영상**
+### **회원가입 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>이메일 유효성 검사</summary>
 <div markdown="1">
 
 ![이메일 유효성 검사](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/0bf30e4f-bf10-4864-a202-cba2c63a045d)
+
+</br></br>
+
+**웹에서 이메일 입력 받기**
+
+```html
+
+<div css={signupInputContainerWrap}>
+    <FormControl variant="standard">
+            <Input id="input-with-icon-adornment"
+                css={placeholderFontSize}
+                label="email" 
+                variant="outlined" 
+                placeholder="이메일 주소 입력" 
+                name="email" 
+                type="text" 
+                onChange={onChangeHandler} 
+                startAdornment={
+                    <InputAdornment position="start">
+                    <Mail />
+                    </InputAdornment>
+                } />
+                {emailSubmitDisabled ? (
+                successMessage.email && <Alert css={errorCss} severity="success">{successMessage.email}</Alert>
+            ) : (
+                <>
+                    {emailErrorMessage.email && <Alert css={errorCss} severity="error">{emailErrorMessage.email}</Alert>}
+                    {errorMessage.email && <Alert css={errorCss} severity="error">{errorMessage.email}</Alert>}
+                </>
+            )}
+        </FormControl>
+        <Button variant="contained" css={checkedEmail} onClick={checkDuplicateEmail}>중복확인</Button>
+    </div>
+
+```
+
+--- 
+
+- input 창에 이메일 입력을 받고, 중복확인 버튼도 넣어준다.
+- input 창에는 onChange, button에는 onClick을 넣어줌으로써 내가 취한 행동에 대한 값을 함수로 넘겨준다.
+
+---
+
+</br></br>
+
+**입력 받은 값 처리**
+
+```javascript
+
+const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setSignUp({...signUp, [name]: value});
+}
+
+```
+
+---
+
+- name에는 email, value에는 email이라는 이름을 가진 input창에 값이 들어가있다.
+- 입력 받은 값을 setSignUp(useState로 렌더링이 될 때 마다 상태가 업데이트가 된다)에 데이터를 넣어준다.
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
+
+const checkDuplicateEmail = async () => {
+    setErrorMessages({email: ""})
+
+    const data = {
+        email: signUp.email
+    }
+    const option = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    try {
+        await axios.post("http://localhost:8080/auth/checkemail", JSON.stringify(data), option)
+        setSuccessMessage({email: <div css={availableEmail}>사용 가능한 이메일입니다.</div>})
+        setEmailSubmitDisabled(true);
+    }catch(error) {
+        setEmailErrorMessage({email: error.response.data.errorData.email})
+        setEmailSubmitDisabled(false);
+    }
+}
+
+```
+
+---
+
+- Javascript는 싱글 쓰레드이기 때문에 모든 코드가 비동기 처리로 돼서 요청에서 오류가 꽤 생길 수 있다. 예를 들어, 요청에 대한 코드 바로 다음에 응답으로 받은 데이터를 가지고 처리하는 코드가 있다 치자. 서버에 데이터 요청을 보내고 응답이 오지도 않았고, 필요한 데이터를 받지도 못했는데 다음 코드가 실행이 된다. 그래서 비동기 처리 과정을 동기적인 것처럼 실행하기 위해 async 함수와 함께 await 키워드를 쓴다. (비동기 처리가 실제 동기 처리가 되는 것이 아니고, 동기와 유사하게 보이는 것임)
+
+- 서버로 보낸 요청 데이터를 동기적인 것처럼 실행을 하고 싶기 때문에 await 뒤에 요청 url을 넣어준다.
+
+- 아까 input 창에서 입력 받은 값을 요청 데이터로 보낸다.
+
+- 만약 유효성 검사에서 에러 없이 성공적으로 처리가 됐다면 사용 가능한 이메일을 띄워준다.
+
+- 에러가 있다면 검사해서 떴던 에러 내용을 setEmailErrorMessage에 담는다.
+
+- setEmailSubmitDisabled에 넣어준 상태 값은 아래 회원가입에 설명이 있다.
+  
+---
   
 </div>
 </details>
@@ -178,7 +286,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **로그인 화면 구현 영상**
+### **로그인 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>로그인 유효성 검사 및 예외 처리</summary>
@@ -191,7 +299,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br />
 
-### **펀딩 메인 페이지 화면 구현 영상**
+### **펀딩 메인 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>1. 카테고리 적용</summary>
@@ -244,7 +352,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **펀딩 상세 페이지 화면 구현 영상**
+### **펀딩 상세 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>현재 진행 중인 펀딩</summary>
@@ -289,7 +397,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **관리자 펀딩 및 기부 등록 페이지 화면 구현 영상**
+### **관리자 펀딩 및 기부 등록 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>기부 및 펀딩 등록 유효성 검사</summary>
@@ -320,7 +428,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **관리자 펀딩 및 기부 수정 화면 구현 영상**
+### **관리자 펀딩 및 기부 수정 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>기부 수정</summary>
@@ -342,7 +450,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **관리자 펀딩 및 기부 삭제 화면 구현 영상**
+### **관리자 펀딩 및 기부 삭제 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>기부 삭제</summary>
@@ -364,7 +472,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **OAuth2 회원가입 및 로그인 화면 구현 영상**
+### **OAuth2 회원가입 및 로그인 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>OAuth2 회원가입 및 로그인</summary>
@@ -377,7 +485,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 
 <br/>
 
-### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상**
+### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상 및 코드 리뷰**
 
 <details>
 <summary>OAuth2 계정 통합</summary>
