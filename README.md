@@ -606,6 +606,175 @@ const onChangeHandler = (e) => {
 - 에러가 있을 경우 errorMeesages에 유효성 검사를 하면서 줬던 메세지가 입력이 되고 저장이 된다. 그리고 에러 없이 요청이 간 부분에는 에러 메세지를 공백으로 비워준다.
 
 ---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
+
+```java
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/auth")
+public class SignUpController {
+	
+	private final SignUpService signUpService;
+
+	@ValidAspect
+	@PostMapping("/signup")
+	public ResponseEntity<?> signup(@Valid @RequestBody SignUpReqDto signUpReqDto, BindingResult bindingResult) {
+		signUpService.signUp(signUpReqDto);
+		return ResponseEntity.ok().body(true);
+	}
+	
+}
+
+```
+
+</br>
+
+- 요청에서 받은 데이터로 유효성 검사 실시 후 성공하면 signUpService에 signUp에 넘긴다.
+
+---
+
+</br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class SignUpReqDto {
+	@Email
+	@NotBlank(message="이메일을 입력하세요")
+	private String email;
+	
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$",
+		message = "비밀번호는 영문자, 숫자, 특수문자를 포함하여 8 ~ 16자로 작성")
+	private String password;
+	
+	@Pattern(regexp = "^[가-힣]{2,7}$",
+		message = "이름은 한글 이름만 작성 	가능합니다.")
+	private String name;
+	
+    	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+            	message = "생년월일을 형식에 맞게 작성해주세요.")
+	private String birthday;
+    
+	@Pattern(regexp = "^(male|female)$",
+            	message = "성별을 체크해주세요.")
+	private String gender;
+    
+    	@Pattern(regexp = "^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$",
+    		message = "휴대전화번호 형식에 맞게 작성해주세요.")
+    	private String phoneNumber;
+    
+	@NotBlank(message = "우편번호는 필수 입력 값입니다.")
+	private String zonecode;
+	
+	@NotBlank(message = "주소는 필수 입력 값입니다.")
+	private String address;
+	
+	private String buildingName;
+	private String bname;
+	
+	@NotBlank(message = "상세 주소는 필수 입력 값입니다.")
+	private String detailAddress;
+	
+	private String addressType;
+	
+	public User toUserEntity() {
+		return User.builder()
+				.email(email)
+				.password(new BCryptPasswordEncoder().encode(password))
+				.name(name)
+				.birthday(birthday)
+				.gender(gender)
+				.phoneNumber(phoneNumber)
+				.build();
+	}
+	
+	public Address toAddressEntity() {
+		return Address.builder()
+				.zonecode(zonecode)
+				.address(address)
+				.buildingName(buildingName)
+				.bname(bname)
+				.detailAddress(detailAddress)
+				.addressType(addressType)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 유효성 검사 실패 시에 띄워지는 메세지들이다.
+- 데이터가 잘 들어왔다면 toUserEntity와 toAddressEntity에 유저 정보들이 들어간다.
+- 비밀번호는 보안성을 위해 BCrypt로 바꿔줬는데, 이 BCrypt는 Spring Security에서 제공하는 비밀번호 암호화기이기 때문에 사용을 하기 위해서는 Bean에 등록이 되어야 한다.
+
+```java
+
+@Bean
+public BCryptPasswordEncoder passwordEncoder() {
+	return new BCryptPasswordEncoder();
+}
+
+```
+
+- 이 코드는 웹 관련해 보안을 다루는 객체를 따로 만들었는데 그건 아래 jwt와 oauth2, 관리자 페이지에서 같이 다룰 것이다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class SignUpService {
+	
+	private final UserRepository signUpRepository;
+	private User userEntity;
+
+	public int signUp(SignUpReqDto signUpReqDto) {
+		userEntity = signUpReqDto.toUserEntity();
+		signUpRepository.signUpUser(userEntity);
+
+		signUpRepository.saveAuthority(
+				Authority.builder()
+				.userId(userEntity.getUserId())
+				.roleId(1)
+				.build());
+		
+		Address addressEntity = signUpReqDto.toAddressEntity();
+		addressEntity.setUserId(userEntity.getUserId());
+		
+		
+		return signUpRepository.saveAddress(addressEntity);
+	}
+}
+
+```
+
+</br>
+
+- 회원가입을 할 때 주소 검색을 해서 주소가 들어갈 경우, 위에 들어갔던 상태값들이 초기화가 되는 문제가 생겼었다.(이 때는 signUp 상태에 주소 정보까지 다 넣었었음)
+어떻게 해도 안 되길래 결국 둘로 나눠서 요청을 보냈다.
+
+- 여기서 두 번째 문제가 발생했다. 데이터베이스에 주소 테이블에는 userId가 있는데 데이터를 확인해보니 유저 테이블에는 userId가 잘 들어가있는데 주소 테이블에는 userId가 계속 0이었다. 그래서 출력으로 하나씩 추적해서 찾아봤더니 머릿속으로는 이해가 되질 않아 이 방법 저 방법 써보다가 User 객체를 전역 변수로 빼니까 됐다!
+
+- Authority는 현재 유저가 보유하고 있는 권한을 의미하는 객체이고, roleId는 1번이 ROLE_USER, 2번이 ROLE_ADMIN이다.
+- 그래서 이건 일반 회원가입이기 때문에 ROLE_USER를 부여해준 것.
+
+---
+
+</br></br>
   
 </div>
 </details>
