@@ -278,6 +278,9 @@ const checkDuplicateEmail = useMutation(async () => {
 
 </br>
 
+- useMutation을 사용해 요청을 보내면 상태 관리나 에러 처리 부분에 있어서 용이하다. 그래서 get 요청을 제외하고는 useMutation을 사용하여 요청을 보내는 것이 좋다.
+  get 요청에 관한 것은 아래에서 다룰 것이다. 
+
 - Javascript는 싱글 쓰레드이기 때문에 모든 코드가 비동기 처리로 돼서 요청에서 오류가 꽤 생길 수 있다. 예를 들어, 요청에 대한 코드 바로 다음에 응답으로 받은 데이터를 가지고 처리하는 코드가 있다 치자. 서버에 데이터 요청을 보내고 나서 응답이 오지도 않음과 동시에 필요한 데이터를 받지도 못했는데 다음 코드가 실행이 되는 상황이 생겨버린다. 그래서 비동기 처리 과정을 동기적인 것처럼 실행하기 위해 async 함수와 함께 await 키워드를 쓴다. (비동기 처리가 실제 동기 처리가 되는 것이 아니고, 동기와 유사하게 보이는 것임)
 
 - 서버로 보낸 요청 데이터를 동기적인 것처럼 실행을 하고 싶기 때문에 await 뒤에 요청 url을 넣어준다.
@@ -548,7 +551,9 @@ const onChangeHandler = (e) => {
 </div>
 
 ```
+
 </br>
+
 ```javascript
 
     const signUpSubmit = () => {
@@ -556,7 +561,9 @@ const onChangeHandler = (e) => {
     }
 
 ```
+
 </br>
+
 ```javascript
 
     const register = useMutation(async () => {
@@ -594,7 +601,9 @@ const onChangeHandler = (e) => {
 
 </br>
 
+- 이메일 중복확인 부분에서 setEmailSubmitDisabled에 true나 false를 줬다. 만약 false인 경우 이메일 중복확인을 하지 않고 가입하기를 눌렀을 때 서버에서 데이터를 처리하기 어려워 이렇게 처리를 해줬다. 비밀번호 재입력 부분도 마찬가지.
 
+- 에러가 있을 경우 errorMeesages에 유효성 검사를 하면서 줬던 메세지가 입력이 되고 저장이 된다. 그리고 에러 없이 요청이 간 부분에는 에러 메세지를 공백으로 비워준다.
 
 ---
   
