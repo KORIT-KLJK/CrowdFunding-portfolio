@@ -446,9 +446,13 @@ public interface UserRepository {
 <summary>그 외 유효성 검사 및 회원가입 성공</summary>
 <div markdown="1">
 
-![그 외 유효성 검사 및 회원가입 성공](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/2dac8417-6567-427f-855a-fe6c728a2fd1)
+</br>
 
-</br></br>
+**영상**
+
+</br>
+
+![그 외 유효성 검사 및 회원가입 성공](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/2dac8417-6567-427f-855a-fe6c728a2fd1)
 
 </br></br>
 
