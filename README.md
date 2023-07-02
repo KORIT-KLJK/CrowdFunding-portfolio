@@ -450,7 +450,61 @@ public interface UserRepository {
 
 </br></br>
 
+</br></br>
 
+## FrontEnd
+
+**회원가입 정보 입력**
+
+```html
+
+<div css={signupInputContainerWrap}>
+    <FormControl variant="standard">
+	    <Input id="input-with-icon-adornment"
+		css={inputMargin}
+		label="password"
+		variant="outlined"
+		placeholder="8-16자의 영문 및 숫자, 특수문자를 모두 포함"
+		name="password"
+		type="password"
+		onChange={onChangeHandler} 
+		startAdornment={
+		    <InputAdornment position="start">
+		    <Lock />
+		    </InputAdornment>
+		} />
+	    {errorMessage.password && <Alert css={errorCss} severity="error">{errorMessage.password}</Alert>}
+    </FormControl>
+</div>
+
+<div css={signupInputContainerWrap}>
+    <FormControl variant="standard">
+	    <Input id="input-with-icon-adornment" 
+		label="password" 
+		variant="outlined" 
+		placeholder="비밀번호 재입력" 
+		name="confirmPassword" 
+		type="password" 
+		onChange={onChangeHandler} 
+		startAdornment={
+		    <InputAdornment position="start">
+		    <Lock />
+		    </InputAdornment>
+		} />
+	     {errorMessage.confirmPassword && <Alert css={errorCss} severity="error">{errorMessage.confirmPassword}</Alert>}
+    </FormControl>
+</div>
+
+```
+
+</br>
+
+- 비밀번호 입력하는 부분만 예시로 넣었다. 나머지는 형식이 똑같음.
+
+
+---
+
+</br></br>
   
 </div>
 </details>
