@@ -421,7 +421,7 @@ public interface UserRepository {
 
 </br>
 
-- id는 Repository에 있는 findUserByEmail이고, 반환 값은 Repository에 있는 User 객체다.
+- id는 Repository에 있는 findUserByEmail이고, 그 반환 값은 User 객체다.
 - where문에는 user 테이블에 있는 email과 findUserByEmail에 매개변수 email을 받아서 비교해준다.
 - 이 where문에서 이메일 비교를 했을 때, email이 존재하다면 위 Service에서 에러 메세지를 띄우게 되는 것.
 
