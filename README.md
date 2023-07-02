@@ -204,7 +204,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
                 </>
             )}
         </FormControl>
-        <Button variant="contained" css={checkedEmail} onClick={checkDuplicateEmail}>중복확인</Button>
+        <Button variant="contained" css={checkedEmail} onClick={checkedEmailSubmit}>중복확인</Button>
     </div>
 
 ```
@@ -241,8 +241,14 @@ const onChangeHandler = (e) => {
 **요청**
 
 ```javascript
+    const checkedEmailSubmit = () => {
+        checkDuplicateEmail.mutate();
+    }
+```
+</br>
+```javascript
 
-const checkDuplicateEmail = async () => {
+const checkDuplicateEmail = useMutation(async () => {
     setErrorMessages({email: ""})
 
     const data = {
@@ -262,7 +268,7 @@ const checkDuplicateEmail = async () => {
         setEmailErrorMessage({email: error.response.data.errorData.email})
         setEmailSubmitDisabled(false);
     }
-}
+})
 
 ```
 
@@ -505,10 +511,88 @@ public interface UserRepository {
 
 - 비밀번호 입력하는 부분만 예시로 넣었다. 나머지는 형식이 똑같음.
 
+---
+
+</br></br>
+
+**입력 받은 값 처리**
+
+```javascript
+
+const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setSignUp({...signUp, [name]: value});
+}
+
+```
+
+</br>
+
+- 위 내용에서 name, value에는 이메일만 들어간 모습을 보여주었지만 여기서는 이메일 포함 모든 입력 값들이 들어가있다
+- 입력 받은 값을 setSignUp에 데이터를 넣어준다.
 
 ---
 
 </br></br>
+
+**요청**
+
+```html
+
+<div css={signUpBtnContainer}>
+    <Button variant="contained" css={signupBtn} onClick={signUpSubmit}>가입하기</Button>
+</div>
+
+```
+</br>
+```javascript
+
+    const signUpSubmit = () => {
+        register.mutate();
+    }
+
+```
+</br>
+```javascript
+
+    const register = useMutation(async () => {
+        
+        if (!emailSubmitDisabled) {
+            setEmailErrorMessage({email: ""})
+            setErrorMessages({ email: "이메일 중복 확인을 해주시기 바랍니다." });
+            return;
+        }
+
+        if (signUp.password !== signUp.confirmPassword) {
+            setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."});
+            return;
+        }
+        const data = {
+            ...signUp, ...address
+        }
+
+        const option = {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/auth/signup", JSON.stringify(data), option)
+            setErrorMessages({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
+            alert("회원가입 완료")
+            window.location.replace("/login")
+        }catch(error) {
+            setErrorMessages({email: "", password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "",zonecode: "", address: "", detailAddress: "", ...error.response.data.errorData})
+        }
+    });
+
+```
+
+</br>
+
+
+
+---
   
 </div>
 </details>
