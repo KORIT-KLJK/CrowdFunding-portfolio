@@ -241,11 +241,15 @@ const onChangeHandler = (e) => {
 **요청**
 
 ```javascript
+
     const checkedEmailSubmit = () => {
         checkDuplicateEmail.mutate();
     }
+
 ```
+
 </br>
+
 ```javascript
 
 const checkDuplicateEmail = useMutation(async () => {
