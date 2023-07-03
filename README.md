@@ -442,7 +442,7 @@ public interface UserRepository {
 
 </br></br>
 
-**데이터베이스**
+**Database**
 
 ![이메일 확인 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/a2e41380-3059-4807-a2b4-3c60148afe85)
 
@@ -771,9 +771,103 @@ public class SignUpService {
 
 - Authority는 유저의 권한을 의미하는 객체이고, roleId는 1번이 ROLE_USER, 2번이 ROLE_ADMIN이다. 그래서 이건 일반 회원가입이기 때문에 ROLE_USER를 부여해준 것.
 
+- 반환 자료형은 성공 건수로 실패 시 0, 성공 시 1이기 때문에 int로 잡아줌.
+
 ---
 
 </br></br>
+
+**Repository**
+
+```java
+@Mapper
+public interface UserRepository {
+	public int saveAddress(Address address);
+	public int signUpUser(User user);
+	public int saveAuthority(Authority authority);
+}
+
+```
+
+- Service에서 주소 정보, 유저 정보, 권한 정보 받음.
+
+---
+
+**Sql**
+
+- 주소 정보 넣기
+
+```sql
+
+<insert id="saveAddress" 
+	parameterType="com.webproject.crowdfunding.entity.Address"
+	useGeneratedKeys="true"
+	keyProperty="addressId">
+
+	insert into address_tb
+	values
+	(0, #{userId}, #{zonecode}, #{address}, #{buildingName}, #{bname}, #{detailAddress}, #{addressType})
+</insert>
+
+```
+
+- 유저 정보 넣기
+
+```sql
+
+<insert id="signUpUser"
+	parameterType="com.webproject.crowdfunding.entity.User"
+	useGeneratedKeys="true"
+	keyProperty="userId">
+
+	insert into user_tb
+	values
+	(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, #{provider}, #{phoneNumber})
+</insert>
+
+```
+  
+- 권한 정보 넣기
+
+```sql
+
+<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">
+	insert into authority_tb
+	values
+	(0, #{userId}, #{roleId})
+</insert>
+
+```
+
+- 반환 자료형을 넣어주고, insert가 된 후에 자동생성된 키값을 해당 id에 맞게 넣어주고 있다.
+
+---
+
+</br></br>
+
+**Database**
+
+- 유저 정보 데이터
+
+![회원가입 성공 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/351f5483-cfac-4fcd-aa3e-7d9884bce0a1)
+
+</br>
+
+- 주소 정보 데이터
+
+![주소 정보 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/28027045-fda0-4313-932d-96bbbd5a33b8)
+
+</br>
+
+- 권한 정보 데이터
+
+![권한 정보 데이터](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/0ced2a4d-b50b-4dd8-93fe-8439e8a89c1d)
+
+</br>
+
+- 이렇게 데이터를 확인할 수 있다.
+
+---
   
 </div>
 </details>
