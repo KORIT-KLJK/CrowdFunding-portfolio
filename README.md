@@ -883,7 +883,7 @@ public interface UserRepository {
 ### **로그인 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>로그인 유효성 검사 및 예외 처리</summary>
+<summary>로그인 유효성 검사 및 예외 처리 그 외 토큰 부여 및 권한 코드 리뷰</summary>
 <div markdown="1">
 
 </br>
@@ -1041,6 +1041,150 @@ export const authenticatedState = atom({
 - 이 코드를 만든 이유는 로그인을 한 사람과 하지 않은 사람에게 다른 이용을 할 수 있도록 하기 위해 만들었다.
 
 ---
+
+</br></br>
+
+**권한이 필요한 웹페이지에 권한 부여**
+
+```javascript
+
+export const refreshState = atom({
+    key: "refreshState",
+    default: true
+});
+
+```
+
+</br>
+
+```javascript
+
+const AuthRoute = ({ path, element }) => {
+    const [ refresh, setRefresh ] = useRecoilState(refreshState);
+    const accessToken = localStorage.getItem("accessToken");
+    const navigate = useNavigate();
+
+    const authenticated = useQuery(["authenticated"], async () => {
+     const option = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+     }
+        try {
+            const response = await axios.get("http://localhost:8080/auth/authenticated", option);
+            return response;
+        } catch(error) {
+            localStorage.removeItem("accessToken");
+            navigate("/login");
+        }
+    }, {
+        refetchInterval: 1000 * 60
+    });
+
+    const principal = useQuery(["principal"], async () => {
+        const option = {
+            headers: {
+                Authorization : `Bearer ${accessToken}`
+            }
+         }
+
+        const response = await axios.get("http://localhost:8080/principal", option)
+        return response;
+        },{
+            onSuccess: (response) => {
+                const roles = response.data.authorities.split(",");
+                if (path !== "/" && path.startsWith("/admin") && !roles.includes("ROLE_ADMIN")) {
+                    alert("접근 권한이 없습니다.");
+                    navigate("/");
+                }
+            },
+            enabled: !!accessToken && !!authenticated.data
+    });
+
+    useEffect(() => {
+        if(!refresh) {
+            setRefresh(true);
+        }
+    }, [refresh]);
+    
+    
+
+    if(authenticated.isLoading) {
+        return <div>로딩중...</div>;
+    }
+
+    const permitAll = ["/login", "/signup", "/auth/oauth2/login", "/auth/oauth2/signup", "/auth/oauth2/merge"];
+
+    if(!authenticated.data.data) {
+        if(permitAll.includes(path)){
+            return element;
+        }
+    }
+
+    if(permitAll.includes(path)){
+        navigate("/");
+    }
+
+    return element;
+};
+
+```
+
+</br>
+
+- useEffect를 사용함으로써 렌더링이 될 때 refresh가 false이면 true로 주면서, 강제로 작업을 수행할 수 있게 만들었다.
+
+- 렌더링이 될 때 마다 로그인을 하면서 발급 받은 토큰를 1시간(refetchInterval: 1000 * 60에서 1000은 1분을 의미한다) 마다 인증을 하는데, 토큰이 만료가 되거나 잘못된 형식 등 예외가 터지면 토큰을 제거하고 로그아웃을 시킨다.
+
+- 렌더링이 될 때 마다 인증이 된 토큰을 보내는데, 이 토큰에는 유저의 정보들이 담겨 있다. 이 정보 속을 열어보면 부여해준 권한이 ROLE_ADMIN이 아닌데 웹 주소창에 /admin이라는 페이지를 강제로 열어서 접근을 했을 때 권한이 없다는 것을 알려준다.
+
+- authenticated에서 인증되지 않은 사용자에 대해 permitAll에 있는 경로를 이용할 수 있게 하고, 인증된 사용자들은 저 경로를 이용할 수 없도록 메인 화면으로 보낸다.
+이렇게 만들어준 이유는 인증이 됐다는 것은 로그인이 된 것을 의미하는데, 로그인이 된 사람이 다시 로그인 창을 들어가는 상황이나 회원가입을 하는 상황 등 옳지 않은 상황들을 생각하여 넣어줬다.
+
+</br>
+
+```javascript
+
+function App() {
+  return (
+    <>
+      <Global styles={Reset}></Global>
+      <HeaderMain />
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/login" element={<AuthRoute path="/login" element={<Login />} />} />
+        <Route path="/signup" element={<AuthRoute path="/signup" element={<SignUp />}/>} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/giving" element={<Giving />} />
+        <Route path="/giving/:pageId" element={<GivingDetail />} />
+        <Route path="/funding" element={<Funding />} />
+        <Route path="/funding/:pageId" element={<FundingDetail />} />
+        <Route path="/admin/register/page" element={<AuthRoute path="/admin/register/page" element={<RegisterPage />}/>} />
+        <Route path='/auth/oauth2/login' element={<AuthRoute path={"/auth/oauth2/login"} element={<OAuth2Login />}/>} />
+        <Route path='/auth/oauth2/signup' element={<AuthRoute path={"/auth/oauth2/signup"} element={<OAuth2SignUp />}/>} />
+        <Route path='/auth/oauth2/merge' element={<AuthRoute path={"/auth/oauth2/merge"} element={<OAuth2Merge />}/>} />
+      </Routes>
+    </>
+  );
+}
+
+```
+
+</br>
+
+- 경로 관련 app.js 코드다.
+
+---
+
+## BackEnd
+
+**Controller**
+
+```java
+
+
+
+```
   
 </div>
 </details>
