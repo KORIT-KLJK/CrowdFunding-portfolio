@@ -1182,9 +1182,352 @@ function App() {
 
 ```java
 
-
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/auth")
+public class LoginController {
+	
+	private final LoginService loginService;
+	
+	@ValidAspect
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
+		return ResponseEntity.ok(loginService.login(loginReqDto));
+	}
+	 
+	@GetMapping("/authenticated")
+	public ResponseEntity<?> authenticated(@RequestHeader(value = "Authorization") String accessToken) {
+		return ResponseEntity.ok().body(loginService.authenticated(accessToken));
+	}
+}
 
 ```
+
+- 값을 ok 안에 넣거나, body 안에 넣거나 똑같다. 하지만 badRequest는 안 됨. ok만 가능
+
+---
+
+</br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class LoginReqDto {
+	@Email(message = "존재하지 않는 이메일입니다.")
+	@NotBlank(message="이메일을 입력하세요")
+	private String email;
+	
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$",
+			message = "비밀번호는 영문자, 숫자, 특수문자를 포함하여 8 ~ 16자로 작성")
+	private String password;
+}
+
+```
+
+</br>
+
+- 로그인 유효성 검사
+
+---
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class LoginService {
+
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	
+	public JwtRespDto login(LoginReqDto loginReqDto) {
+		
+		User userEntity = userRepository.findUserByEmail(loginReqDto.getEmail());
+		
+		if(userEntity == null || !passwordEncoder.matches(loginReqDto.getPassword(), userEntity.getPassword())) {
+			throw new CustomException("로그인 실패", ErrorMap.builder().put("login", "사용자 정보를 확인하세요").build());
+		}
+		
+		UsernamePasswordAuthenticationToken authenticationToken = 
+				new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword());
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		return jwtTokenProvider.generateToken(authentication);
+	}
+	
+	public boolean authenticated(String accessToken) {
+		return jwtTokenProvider.validateToken(jwtTokenProvider.getToken(accessToken));
+	}
+}
+
+```
+
+- 먼저, 데이터베이스에서 저장되어있는 이메일을 들고와서 현재 로그인 하려는 이메일과 비교를 했을 때 일치하지 않거나, 정보가 없으면 에러메세지를 띄우게 했다. 
+
+- 그 다음 UsernamePasswordAuthenticationToken을 선언해주면서 로그인한 아이디와 비밀번호를 가지고 인증 토큰을 하나 만든다.
+
+- 그 토큰을 가지고 authenticationManagerBuilder.getObject().authenticate(authenticationToken)에다 넣어주는데 여기서부터 스프링부트 내에서 authenticationManagerBuilder가 이 토큰 정보를 가지고 loadByUsername라는 함수를 실행시킨다.
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class PrincipalDetailsService implements UserDetailsService {
+
+	private final UserRepository signUpRepository;
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		User userEntity = signUpRepository.findUserByEmail(email);
+		return userEntity.toPrincipal();
+	}
+
+}
+
+```
+
+</br>
+
+- 위를 실행시킨다는 의미인데, 여기는 로그인 정보를 담고 있는 부분이다.
+
+- 반환하고 있는 toPrincipal을 보자면 아래와 같이 되어있다.
+
+```java
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+	private int userId;
+	private String email;
+	private String password;
+	private String name;
+	private String birthday;
+	private String gender;
+	private String provider;
+	private int addressId;
+	private String phoneNumber;
+	private List<Authority> authorities;
+	
+	public PrincipalUserDetails toPrincipal() {
+		return PrincipalUserDetails.builder()
+				.userId(userId)
+				.email(email)
+				.password(password)
+				.roles(authorities)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+```java
+
+@Getter
+@Builder
+public class PrincipalUserDetails implements UserDetails{
+
+	private static final long serialVersionUID = -8654755481982862798L;
+	
+	private int userId;
+	private String email;
+	private String password;
+	private List<Authority> roles;
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		roles.forEach(role -> {
+			authorities.add(new SimpleGrantedAuthority(role.getRole().getRoleName()));
+		});
+		return authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	// 사용기간 만료 = false
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	// 계정을 잠궈버림 = false
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	// 비밀번호 5회 틀렸을 때 잠궈버림 = false
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	// 계정 비활성 상태(이메일 인증을 완료해야 하거나 또는 전화번호 인증을 하지 않았을 때) = false
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+}
+
+```
+
+</br>
+
+- 권한 객체를 생성해준다.
+
+- 권한 목록을 반환, List가 Collection으로 업캐스팅됨
+
+- User 객체에서 Builder를 이용해 값들을 넣어준 다음, 권한 객체까지 만들어주면 이제 Service에서 Authentication이라는 객체가 생성이 된다.
+
+</br>
+
+위 코드를 보면 생성된 Authentication 객체를 jwtTokenProvider.generateToken에 넣어주는데, 이제 jwtTokenProvider로 가보자.
+
+```java
+
+@Component
+public class JwtTokenProvider {
+	@Autowired
+	private UserRepository userRepository;
+	private final Key key;
+
+	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {	// @Component일 때 사용 가능. yml의 key값이 매개변수로 들어간다
+		key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+	}
+
+	public JwtRespDto generateToken(Authentication authentication) {
+		StringBuilder builder = new StringBuilder();
+		authentication.getAuthorities().forEach(authority -> {
+			builder.append(authority.getAuthority() + ",");		// 문자열 사용가능, role이 하나씩 나온다.
+
+		});
+
+		builder.delete(builder.length() - 1, builder.length());		// ~부터 ~까지 지워라. 쉼표를 지우기 위해 씀
+
+		String authorities = builder.toString();	// role 권한들을 문자열로 바꾸기 위해서
+
+		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60));	// 1000 * 60을 하면 1분이다. 그래서 1시간을 만료 시간으로 설정
+
+		String accessToken = Jwts.builder()
+				.setSubject(authentication.getName())	// 토큰의 제목(큰이름), getName() = email
+				.claim("auth", authorities)	// 토큰 정보를 표현하기 위해 이미 정해진 종류의 데이터들로 모두 선택적으로 작성이 가능함
+				.setExpiration(tokenExpiresDate)	// 토큰의 만료기간
+				.signWith(key, SignatureAlgorithm.HS256)	// 토큰 암호화
+				.compact();
+
+		return JwtRespDto.builder().grantType("Bearer").accessToken(accessToken).build();	// 이후 controller가 받는다.
+
+	}
+
+	// Bearer를 뗀 토큰 값을 풀어서 검사함.
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parserBuilder()	// Jwt 형태를 Json이 아닌 java 형태로 쓰겠다
+			.setSigningKey(key)		// token이 만들어진 key로 되어있는지 확인
+			.build()
+			.parseClaimsJws(token);		// 유효성 검사
+
+			return true;
+
+		// Security 라이브러리에 오류가 있거나, JSON의 format이 잘못된 형식의 JWT가 들어왔을 때 예외
+		}catch (SecurityException | MalformedJwtException e) {
+		}catch (ExpiredJwtException e) {
+		}catch(UnsupportedJwtException e) {
+		}catch(IllegalArgumentException e) {
+		}catch(Exception e) {
+
+		}
+
+		// 예외가 일어나면 인증되지 않았다, 쓸 수 없는 토큰이다
+		return false;
+	}
+	// 요청할 때 토큰을 Bearer ~~~~~~~~~~라는 값으로 보내는데, 토큰값만 넘겨주기 위해 앞에 Bearer를 잘라주는 과정.
+	// 토큰 앞에 Bearer를 붙인 이유는 개발자끼리의 약속이라고 한다.
+	public String getToken(String token) {
+		String type = "Bearer ";
+		if(StringUtils.hasText(token) && token.startsWith(type)) {
+			return token.substring(type.length());
+			
+		}
+		return null;
+		
+	}
+	public Claims getClaims(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
+	}
+	
+	public Authentication getAuthentication(String accessToken) {
+		Authentication authentication = null;
+		
+		Claims claims = getClaims(accessToken);		// Claims 통째로 들고오기
+
+		// Spring에서 기본적으로 지원해주는 UserDedatils임
+		// new User(username, password, 권한) == PrincipalDetails
+		// password는 공개되면 안 되기 때문에 공백이다
+		User user = userRepository.findUserByEmail(claims.getSubject());
+		PrincipalUserDetails principalUserDetails = user.toPrincipal();
+		
+		// new UsernamePasswordAuthenticationToken(User객체, 자격 증명 객체(SSL 등 회사든 공공에서든 인증서가 필요할 때. https에서 증명할 때 쓰임), 권한)
+		// return하면 업캐스팅이 돼서 Authentication 객체가 된다. UsernamePasswordAuthenticationToken를 타고 들어가면 Authentication을 implement 하고 있다.
+		// 임시의 Authentication 객체가 생성
+		authentication = new UsernamePasswordAuthenticationToken(principalUserDetails, null, principalUserDetails.getAuthorities());
+		return authentication;
+	}
+}
+
+```
+
+</br>
+
+- 여기에다가 정리하려니 복잡해서 한 줄 주석으로 정리를 했다. 이제 토큰이 잘 가공이 되면 JwtRespDto라는 객체가 반환이 되는데 코드는 아래와 같다.
+
+```java
+
+@Builder
+@Data
+public class JwtRespDto {
+	private String grantType;
+	private String accessToken;
+
+}
+
+```
+
+</br>
+
+- 이제 로그인할 때 필요한 인증을 거치고, 인증의 표시인 토큰까지 발급을 받게 되면 웹페이지에서 권한이 들어간 서비스를 사용할 수 있게 된다.
+
+이제 종합적으로 보면
+
+1. Service에서 아이디와 비밀번호를 가지고 인증에 필요한 토큰을 하나 만든다.
+2. 그 토큰으로 데이터베이스에 있는 유저가 맞는지 이메일로 확인을 한다.
+3. 이메일 확인이 되면 userId, 이메일, 비밀번호, 권한 내용까지 반환을 한다.
+4. Authentication이라는 객체가 생성이 되면서 유저가 인증이 된 것이다.
+5. 생성된 Authentication 객체의 정보를 jwtTokenProvider.generateToken에 넘기는데 여기서 토큰을 가공을 해준다.
+6. 이상없이 가공이 끝나면 가공된 토큰을 Controller로 반환을 해주고 웹에서 받는다.
+
+---
   
 </div>
 </details>
