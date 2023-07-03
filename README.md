@@ -1010,7 +1010,7 @@ public interface UserRepository {
 
 - 데이터가 성공적으로 들어갔으면 웹페이지를 이용할 수 있는 토큰을 부여한다.
 
-- setAuthenticated는 상태를 전역으로 관리를 하는 것인데, useRecoilState를 사용했다.
+- useRecoilState는 상태를 전역으로 관리를 하는 것.
 
 </br>
 
