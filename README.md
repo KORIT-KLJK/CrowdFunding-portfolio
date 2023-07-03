@@ -811,6 +811,8 @@ public interface UserRepository {
 
 ```
 
+</br>
+
 - 유저 정보 넣기
 
 ```sql
@@ -826,6 +828,8 @@ public interface UserRepository {
 </insert>
 
 ```
+
+</br>
   
 - 권한 정보 넣기
 
@@ -838,6 +842,8 @@ public interface UserRepository {
 </insert>
 
 ```
+
+</br>
 
 - 반환 자료형을 넣어주고, insert가 된 후에 자동생성된 키값을 해당 id에 맞게 넣어주고 있다.
 
