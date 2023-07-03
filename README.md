@@ -886,7 +886,161 @@ public interface UserRepository {
 <summary>로그인 유효성 검사 및 예외 처리</summary>
 <div markdown="1">
 
+</br>
+
+**영상**
+
+</br>
+
 ![로그인 유효성 검사 및 예외처리](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/f095cb2f-d0a7-4127-9279-44e37efbe79a)
+
+</br></br>
+
+## FrontEnd
+
+**웹에서 로그인 정보 입력**
+
+```html
+
+    <div css={loginRightSide}>
+	<div css={loginInputContainer}>
+	    <div css={loginInputContainerWrapId}>
+		<i css={inputI}></i>
+		<FormControl variant="standard">
+		    <Input id="input-with-icon-adornment" 
+			label="email" 
+			variant="outlined" 
+			placeholder="email" 
+			name="email" 
+			type="text" 
+			onChange={informationHandle} 
+			startAdornment={
+			    <InputAdornment position="start">
+			    <Mail />
+			    </InputAdornment>
+			} />
+		    {errorMessages.email && <Alert css={errorCss} severity="error">{errorMessages.email}</Alert>}
+		</FormControl>
+	    </div>
+	    <div css={loginInputContainerWrapPw}>
+		<i css={inputI}></i>
+		<FormControl variant="standard">
+		    <Input id="input-with-icon-adornment" 
+			label="password" 
+			variant="outlined" 
+			placeholder="password" 
+			name="password" 
+			type="Password" 
+			onChange={informationHandle}
+			onKeyPress={handleOnKeyPress}
+			startAdornment={
+			    <InputAdornment position="start">
+			    <Lock />
+			    </InputAdornment>
+			} />
+		    {errorMessages.password && <Alert css={errorCss} severity="error">{errorMessages.password}</Alert>}
+		</FormControl>
+	    </div>
+	</div>
+	<div>
+	    <button css={loginBtn} onClick={loginHandleSubmit}>로그인</button>
+	</div>
+
+```
+
+</br>
+
+- 아이디와 비밀번호를 입력한 후 로그인 버튼을 클릭하고, 오류가 있을 시에 에러 메세지를 띄우게 설계
+
+---
+
+</br></br>
+
+**입력 받은 값 처리**
+
+```javascript
+
+    const informationHandle = (e) => {
+        const { name, value } = e.target;
+        setLoginUser({...loginUser, [name]: value})
+    }
+
+```
+
+</br>
+
+- 위에서 다뤘던 내용과 동일
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
+
+    const login = useMutation(async() => {
+        const option = {
+            headers: {
+                "Content-Type": "application/json"
+            }   
+        }
+        try{
+            const response = await axios.post("http://localhost:8080/auth/login", JSON.stringify(loginUser), option);
+            setErrorMessages({email: "", password: ""});
+            const accessToken = response.data.accessToken;
+            localStorage.setItem("accessToken", accessToken); 
+            setAuthenticated(true);
+            window.location.replace("/");
+        } catch(error) {
+            setErrorMessages({email: "", password: "", ...error.response.data.errorData});
+            if(error.response.data.message === "로그인 실패") {
+                alert("사용자 정보를 확인해주세요.")
+            }
+        }
+    })
+
+    const loginHandleSubmit = () => {
+        login.mutate();
+    }
+
+```
+
+</br>
+
+- 데이터가 성공적으로 들어갔으면 웹페이지를 이용할 수 있는 토큰을 부여한다.
+
+- setAuthenticated는 상태를 전역으로 관리를 하는 것인데, useRecoilState를 사용했다.
+
+</br>
+
+```javascript
+
+const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+
+```
+
+</br>
+
+```javascript
+
+
+export const authenticatedState = atom({
+    key: "authenticatedState",
+    default: false
+});
+
+```
+
+</br>
+
+- 기본 값은 false이고, 상태 하나하나를 atom으로 보는 것인데 여기서 atom이란 하나의 상태를 나타내는 객체로 생각하면 된다.
+
+- 데이터가 성공적으로 들어갔으면 기본 값이 false였던 것을 로그인 코드에서 true로 바꿔주는 것이다.
+
+- 이 코드를 만든 이유는 로그인을 한 사람과 하지 않은 사람에게 다른 이용을 할 수 있도록 하기 위해 만들었다.
+
+---
   
 </div>
 </details>
