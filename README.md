@@ -1642,10 +1642,6 @@ public class JwtRespDto {
 
 </br></br>
 
-**응답 받은 데이터 가공**
-
-</br></br>
-
 **펀딩 메인 페이지 html 코드**
 
 ```html
@@ -1739,9 +1735,82 @@ public class JwtRespDto {
 
 - 나머지는 데이터베이스에서 들고온 데이터들을 그대로 넣어준 것.
 
+---
+
+</br></br>
+
+**응답 받은 데이터 가공**
+
+```javascript
+
+    const handleCategoryClick = (categoryId) => {
+        setSelectedCategoryId(categoryId);
+    };
+
+    const statussortingHidden = () => {
+        if(statusHiddenFlag) {
+            setStatusHiddenFlag(false);
+        }else {
+            setStatusHiddenFlag(true);
+        }
+    }
+
+    const rewardsortingHidden = () => {
+        if(rewardHiddenFlag) {
+            setRewardHiddenFlag(false);
+        }else {
+            setRewardHiddenFlag(true);
+        }
+    }
+
+    const sortingStatusHandle = (e) => {
+        const statusText = e.target.textContent;
+        setSearchParam({...searchParam, fundingSortingStatus: statusText, page: 1})
+        setSortingStatus(statusText);
+        setStatusHiddenFlag(false);
+        setRefresh(true);
+    }
+
+    const sortingRewardHandle = (e) => {
+        const rewardText = e.target.textContent;
+        setSearchParam({ ...searchParam, fundingSortingReward: rewardText, page: 1});
+        setSortingReward(rewardText);
+        setRewardHiddenFlag(false);
+        setRefresh(true);
+    };
+
+    const fundingDetailHandle = (pageId) => {
+        navigate("/funding/" + pageId);
+    }
+
+    const loadMore = () => {
+        if(!refresh) {
+            setSearchParam({ ...searchParam, page: searchParam.page + 1});
+            setRefresh(true);
+        }
+    };
+
+```
+
+</br>
+
+- 카테고리 선택에 보면 html에서 카테고리 버튼을 누르면 해당 카테고리 id가 들어가는데 그러면 그 id에 해당하는 목록들만 보여진다. 초기 값은 null인데 아무것도 누르지 않은 null인 상태면 전부 다 보여지는 전체 카테고리도 만들었다.
+
+- 정렬 버튼 열고 닫기
+
+- 정렬의 상태가 바뀌면 바뀐 값을 넣어주면서 상태를 업데이트함.
+
+- 보고 싶은 펀딩의 상세 내용이 궁금해 클릭을 하면 펀딩 상세페이지로 이동을 한다.
+
 - 더보기를 누를 때 마다 index가 0부터 1씩 증가하는데 자세한 페이지네이션 기능은 아래 코드 리뷰에서 진행할 것이다. 
 
 ---
+
+## BackEnd
+
+**Controller**
+
+</br></br>
   
 </div>
 </details>
