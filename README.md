@@ -1595,6 +1595,51 @@ public class JwtRespDto {
 
 **요청**
 
+- 메인 페이지에 쓸 것
+
+```javascript
+    const [ searchParam, setSearchParam ] = useState({page: 1, fundingSortingReward: "최신 순", fundingSortingStatus: "전체"});
+    const [ refresh, setRefresh ] = useState(true);
+
+    const fundingData = useQuery(["fundingData"], async () => {
+        const option = {
+            params : {
+                ...searchParam
+            }
+        }
+        const response = await axios.get("http://localhost:8080/funding/main", option);
+        return response;
+    }, {
+        enabled: refresh,
+        onSuccess: () => {
+            setRefresh(false);
+        }
+    });
+
+```
+
+</br>
+
+- 카테고리에 쓸 것
+
+```javascript
+
+    const fundingCategorys = useQuery(["fundingCategory"], async () => { 
+        return await axios.get("http://localhost:8080/funding/category");
+    });
+
+```
+
+</br>
+
+- post요청을 보낼 땐 useMutation을 썼는데 여기서는 useQuery를 쓰는 모습을 볼 수 있다. 먼저, useMutation은 post, put, delete와 같은 요청을 처리하는 데에 있어서 쓸 수 있고, useQuery는 데이터를 조회할 때 사용하기 때문에 get 요청에 쓰인다. useQuery도 마찬가지로 상태관리나 에러 처리에 있어서 용이하기에 사용을 한다.
+
+- searchParam은 페이지네이션과 정렬을 가공하기 위해 요청 데이터로 보냈다.
+
+- enabled는 요청을 활성화할 것인지 비활성화를 할 것인지 결정을 한다. 초기값에 true를 넣어줌으로써 처음 요청을 보내는데 활성화를 시키고, 요청이 오고나면 onSuccess가 작동을 해 다시 refresh를 false로 주면서 enabled를 비활성화 시키는 모습을 볼 수 있다. 이는 데이터를 처음 한 번만 가져오면서 에러를 최소화를 시킬 수 있고, 로딩 시간도 짧게 할 수 있기 때문에 사용을 했다.
+
+---
+
 </br></br>
 
 **응답 받은 데이터 가공**
