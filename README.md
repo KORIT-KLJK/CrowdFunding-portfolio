@@ -159,7 +159,7 @@ https://third-tempo-8c0.notion.site/4b573b520b424c3590c6ce244e1df794?v=f2f7a9beb
 ### **회원가입 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>이메일 유효성 검사</summary>
+<summary>이메일 유효성 검사 영상과 코드 리뷰</summary>
 <div markdown="1">
 
 </br>
@@ -456,7 +456,7 @@ public interface UserRepository {
 </details>
 
 <details>
-<summary>그 외 유효성 검사 및 회원가입 성공</summary>
+<summary>그 외 유효성 검사 및 회원가입 성공 영상과 코드 리뷰</summary>
 <div markdown="1">
 
 </br>
@@ -883,7 +883,7 @@ public interface UserRepository {
 ### **로그인 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>로그인 유효성 검사 및 예외 처리 그 외 토큰 부여 및 권한 코드 리뷰</summary>
+<summary>로그인 유효성 검사 및 예외 처리 영상 그 외 토큰 부여 및 권한 코드 리뷰</summary>
 <div markdown="1">
 
 </br>
@@ -1539,7 +1539,7 @@ public class JwtRespDto {
 ### **펀딩 메인 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>1. 카테고리 적용</summary>
+<summary>1. 카테고리 적용 영상</summary>
 <div markdown="1">
   
 ![카테고리 - Clipchamp로 제작 (1)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/402755b6-cfc9-4570-8a93-0c4274a2d2e8)
@@ -1549,7 +1549,7 @@ public class JwtRespDto {
 </details>
 
 <details>
-<summary>2. 정렬(전체, 진행중, 종료)</summary>
+<summary>2. 정렬(전체, 진행중, 종료) 영상</summary>
 <div markdown="1">
 
 ![정렬(전체, 진행중, 종료)](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/8b3de60f-18f2-4500-bc2b-12b6f255214b)
@@ -1558,7 +1558,7 @@ public class JwtRespDto {
 </details>
 
 <details>
-<summary>3. 정렬(최신 순, 참여 금액 순, 참여율 순, 종료 임박 순)</summary>
+<summary>3. 정렬(최신 순, 참여 금액 순, 참여율 순, 종료 임박 순) 영상</summary>
 <div markdown="1">
 <br/>
 
@@ -1583,6 +1583,120 @@ public class JwtRespDto {
 - 종료 임박 순
 
 ![종료 임박 순 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/edbb6514-334a-4ae8-a8a5-dff336992268)
+  
+</div>
+</details>
+
+<details>
+<summary>카테고리 관련 코드 리뷰</summary>
+<div markdown="1">
+
+## FrontEnd
+
+**요청**
+
+</br></br>
+
+**응답 받은 데이터 가공**
+
+</br></br>
+
+**펀딩 메인 페이지 html 코드**
+
+```html
+
+<div>
+    <div css={welcomeFunding}><FundingSlide /></div>
+    <div css={fundingMain}>
+	<div css={fundingHeader}>
+	    <button css={fundingCategoryMainButton} onClick={() => handleCategoryClick(null)}>전체</button>
+	    {fundingCategorys.isLoading ? <div>...불러오는 중</div> : fundingCategorys.data.data.map(fundingCategory => (
+		<div css={fundingCategoryContainer}>
+		    <button css={fundingCategoryButton}
+			    onClick={() =>handleCategoryClick(fundingCategory.fundingCategoryId)}
+			    key={fundingCategory.fundingCategoryId}>
+			{fundingCategory.categoryName}
+		    </button>
+		</div>
+	    ))}
+	</div>
+	    <div css={sortingFundingStatusContainer}>
+		<div css={fundingStatusDetail} onClick={statussortingHidden}>
+		    <button css={fundingStatus}>{sortingStatus}</button>
+		    <div>{statusHiddenFlag ? "△" : "▽"}</div>
+		    {statusHiddenFlag ? (<ul css={sortingFundingStatusList}>
+			<li css={sortingFundingStatus} onClick={sortingStatusHandle}>전체</li>
+			<li css={sortingFundingStatus} onClick={sortingStatusHandle}>진행중</li>
+			<li css={sortingFundingStatus} onClick={sortingStatusHandle}>종료</li>
+		    </ul>) : ""}
+		</div>
+		<div css={fundingStatusDetail} onClick={rewardsortingHidden}>
+		    <button css={fundingStatus}>{sortingReward}</button>
+		    <div>{rewardHiddenFlag ? "△" : "▽"}</div>
+		{rewardHiddenFlag ? (<ul css={sortingFundingRewardStatusList}>
+		    <li css={sortingFundingReward} onClick={sortingRewardHandle}>최신 순</li>
+		    <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여 금액 순</li>
+		    <li css={sortingFundingReward} onClick={sortingRewardHandle}>참여율 순</li>
+		    <li css={sortingFundingReward} onClick={sortingRewardHandle}>종료 임박 순</li>
+		</ul>) : ""}
+		</div>
+	    </div>
+	<div css={fundingMainConatiner}>
+	    {fundingData.data.data.fundingList.filter(
+	    funding => selectedCategoryId === null ||
+	    funding.fundingCategoryId === selectedCategoryId).map(funding => (
+		<div css={fundingContainer} onClick={() => {fundingDetailHandle(funding.pageId)}}>
+		    <div>
+			<div css={imgBox}>
+			    <img css={img} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
+				<div css={checkFunding({funding})}>
+				    <div css={fundingTxt}>펀딩</div>
+				    <div>{funding.joinPercent >= 100 ? "성공" : "종료"}</div>
+				</div>
+			</div>
+		    </div>
+			<div key={funding.pageId}>
+			    <div css={fundingContainerMainTitlePrice}>
+				<div css={fundingContainerMainTitlePageTitle}>{funding.pageTitle}</div>
+				<div css={fundingContainerMainPricePadding}>
+				    <div css={fundingContainerMainPrice}>{funding.joinPercent}%</div>
+				</div>
+			    </div>
+			    <div css={fundingContainerMainUsername}>{funding.fundingSummaryName}</div>
+			</div>
+		    <div css={fundingContainerFooter}>
+			    <div css={fundingContainerFooterEventStatus}>{funding.eventStatus}</div>
+			    <div css={fundingContainerFooterPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
+		    </div>
+		</div>
+	    ))}
+	</div>
+	<div>
+	    <div css={pageNationContainer}>
+		<div css={pageNationIndex} onClick={loadMore}>더보기</div>
+	    </div>
+	</div>
+	    <div css={footerContainer}>
+		<Footer />
+	    </div>
+    </div>
+</div>
+
+```
+
+</br>
+
+- 카테고리에 전체만 따로 빼놓은 이유는 현재 데이터베이스에는 전체라는 카테고리가 존재하지 않아 따로 처리해주었다. onClick 속성 안에 handleCategoryClick은 categoryId를 넘겨준다.
+
+- 정렬 방식에서 열림과 닫힘을 넣기 위해 클릭 시에 작동하는 true false 상태를 주었다.
+
+- 펀딩 기간이 종료가 됐을 때 펀딩 금액이 목표 금액에 100퍼센트 미만일 경우에 종료, 이상일 경우에 성공을 줌으로써 유저들이 종료된 펀딩 상품들의 가치를 쉽게 파악할 수 있다.
+
+- 나머지는 데이터베이스에서 들고온 데이터들을 그대로 넣어준 것.
+
+- 더보기를 누를 때 마다 index가 0부터 1씩 증가하는데 자세한 페이지네이션 기능은 아래 코드 리뷰에서 진행할 것이다. 
+
+---
   
 </div>
 </details>
