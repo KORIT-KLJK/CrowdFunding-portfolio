@@ -1812,7 +1812,154 @@ public class JwtRespDto {
 
 **Controller**
 
+```java
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/funding")
+public class FundingMainController {
+ 
+	private final FundingService fundingService;
+	
+	@GetMapping("/main")
+	public ResponseEntity<?> fundingData(FundingEventReqDto fundingMainReqDto) {
+		System.out.println(fundingMainReqDto);
+		return ResponseEntity.ok(fundingService.toSaveFunding(fundingMainReqDto));
+	}
+	
+	@GetMapping("/category")
+	public ResponseEntity<?> fundingCategory() {
+		return ResponseEntity.ok(fundingService.fundingCategory());
+	}
+	
+}
+
+```
+
+- 위에서 보낸 요청 데이터를 받고 Service로 넘긴다.
+
+---
+
 </br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class FundingEventReqDto {
+	private int page;
+	private String fundingSortingReward;
+	private String fundingSortingStatus;
+}
+
+```
+
+- 요청에서 보낸 것처럼 기본 값으로 page: 1, fundingSortingReward: 최신 순, fundingSortingStatus: 전체가가 들어간다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class FundingService {
+	private final FundingRepository fundingRepository;
+	
+	public Map<String, Object> toSaveFunding(FundingEventReqDto fundingEventReqDto) {
+		List<FundingMainRespDto> fundingList = new ArrayList<>();
+
+		int index = fundingEventReqDto.getPage() * 20;
+		Map<String, Object> eventStatusMap = new HashMap<>();
+		eventStatusMap.put("index", index);
+		eventStatusMap.put("fundingSortingReward", fundingEventReqDto.getFundingSortingReward());
+		eventStatusMap.put("fundingSortingStatus", fundingEventReqDto.getFundingSortingStatus());
+		
+		fundingRepository.saveFunding(eventStatusMap).forEach(funding -> {
+			fundingList.add(funding.toSaveFunding());
+		});
+		
+		int totalCount = fundingRepository.getTotalCount(eventStatusMap);
+		
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("totalCount", totalCount);
+		responseMap.put("fundingList", fundingList);
+		return responseMap;
+	}
+	
+	public List<FundingCategoryRespDto> fundingCategory() {
+		List<FundingCategoryRespDto> fundingCategorys = new ArrayList<>();
+		
+		fundingRepository.getFundingCategory().forEach(fundingCategory -> {
+			fundingCategorys.add(fundingCategory.fundingCategoryToDto());
+		});
+		return fundingCategorys;
+	}
+	
+	
+}
+
+```
+
+- FundingMainRespDto, FundingCategoryRespDto에는 펀딩 메인페이지에 필요한 sql에서 가공한 데이터가 들어간다. 많은 데이터가 담겨있기 때문에 List로 담았다.
+
+- page는 더보기를 클릭할수록 20개씩 보여지기 위해 page가 1부터 증가할 때 마 20을 곱하도록 했다.
+
+- Map을 써준 이유는 프론트에서 데이터를 파악하기 쉽게 value에 걸맞은 key 값을 설정을 해주고 있다.
+
+- 나머지도 sql에서 가공한 데이터를 들고온다.
+
+- 뒤에서도 이런 형식의 코드를 주로 사용할 것이다.
+
+---
+
+</br></br>
+
+**ResponseDto**
+
+- 펀딩 메인
+
+```java
+
+@Builder
+@Data
+public class FundingMainRespDto {
+	private int pageId;
+	private String fundingSummaryName;
+	private String pageTitle;
+	private String username;
+	private int recentSort;
+	private String nearDeadlineSort;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String mainImgUrl;
+	private int fundingCategoryId;
+}
+
+```
+
+
+
+**Repository**
+
+```java
+
+@Mapper
+public interface FundingRepository {
+	public List<FundingCategory> getFundingCategory();
+	public List<Funding> saveFunding(Map<String, Object> eventStatusMap);
+	public int getTotalCount(Map<String, Object> totalMap);
+}
+
+```
+
+---
   
 </div>
 </details>
