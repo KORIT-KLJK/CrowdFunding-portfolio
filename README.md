@@ -2372,6 +2372,84 @@ public interface FundingRepository {
 </div>
 </details>
 
+<details>
+<summary>펀딩 상세 페이지 코드 리뷰</summary>
+<div markdown="1">
+
+</br>
+
+**요청**
+
+- 주요 내용
+
+```javascript
+
+    const fundingDetail = useQuery(["fundingDetail"], async () => {
+        return await axios.get(`http://localhost:8080/fundingdetail/${pageId}`);
+    });
+
+    const fundingDetailReward = useQuery(["fundingDetailReward"], async () => {
+        return await axios.get(`http://localhost:8080/fundingdetail/reward/${pageId}`);
+    });
+
+    const fundingBusinessInfo = useQuery(["fundingBusinessInfo"], async () => {
+        return await axios.get(`http://localhost:8080/fundingdetail/businessinfo/${pageId}`);
+    })
+
+    const fundingJoinBreakdown = useQuery(["fundingJoinBreakDown"], async () => {
+        return await axios.get(`http://localhost:8080/fundingdetail/breakdown/${pageId}`);
+    })
+
+```
+
+</br>
+
+- 로그인한 유저에 대한 정보 확인
+
+```javascript
+
+    const principalUser = useQuery(["principalUser"], async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.get("http://localhost:8080/principal", option)
+        setRole(response.data.authorities.split(",").includes("ROLE_ADMIN"));
+        return response;
+    },{
+        enabled: !!accessToken
+    })
+
+    const getAddress = useQuery(["getAddress"], async () => {
+        const option = {
+            params: {
+                userId: principalUser.data.data.userId
+            },
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.get("http://localhost:8080/fundingdetail/address", option);
+    }, {
+        enabled: !!principalUser.data
+    })
+
+```
+
+</br>
+
+- 현재 경로의 URL 매개변수를 들고오기 위해 변수명을 pageId로 한 useParams를 받아줬다.
+
+- 나머지는 백에서 가공된 데이터를 들고올 것이다.
+
+- 유저에 대한 정보를 들고온 이유는 결제할 때 유저의 정보가 필요해서 들고왔다.
+
+---
+
+</div>
+</details>
+
 <br/>
 
 ### **관리자 펀딩 및 기부 등록 페이지 화면 구현 영상 및 코드 리뷰**
