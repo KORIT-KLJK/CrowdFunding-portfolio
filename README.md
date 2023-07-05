@@ -1873,7 +1873,7 @@ public class FundingService {
 	public Map<String, Object> toSaveFunding(FundingEventReqDto fundingEventReqDto) {
 		List<FundingMainRespDto> fundingList = new ArrayList<>();
 
-		int index = fundingEventReqDto.getPage() * 20;
+		int index = (fundingEventReqDto.getPage() * 20) - 1;
 		Map<String, Object> eventStatusMap = new HashMap<>();
 		eventStatusMap.put("index", index);
 		eventStatusMap.put("fundingSortingReward", fundingEventReqDto.getFundingSortingReward());
@@ -1883,10 +1883,7 @@ public class FundingService {
 			fundingList.add(funding.toSaveFunding());
 		});
 		
-		int totalCount = fundingRepository.getTotalCount(eventStatusMap);
-		
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("totalCount", totalCount);
 		responseMap.put("fundingList", fundingList);
 		return responseMap;
 	}
@@ -1931,7 +1928,6 @@ public class FundingMainRespDto {
 	private int pageId;
 	private String fundingSummaryName;
 	private String pageTitle;
-	private String username;
 	private int recentSort;
 	private String nearDeadlineSort;
 	private String eventStatus;
@@ -1944,7 +1940,103 @@ public class FundingMainRespDto {
 
 ```
 
+</br>
 
+- 펀딩 메인 페이지에 사용할 것들이다. 순서대로
+	- pageId는 상세 페이지 이동을 위해 넣어줌.
+	- fundingSummaryName은 기업체에서 사용하는 닉네임을 뜻함.
+ 	- pageTitle은 펀딩 제목.
+  	- recentSort는 최신 순부터 숫자로 표시했다.
+  	- nearDeadlineSort는 종료 임박 순을 숫자로 표시했다.
+  	- eventStatus는 종료까지 남은 일 수를 표시해준다.
+  	- goalTotal은 목표 금액.
+  	- totalRewardPrice는 펀딩한 사람들의 총 금액이다.
+  	- joinPercent는 목표 금액 대비 참여한 금액 수의 총 퍼센트이다.
+  	- mainImgUrl은 펀딩에 들어갈 이미지다.
+  	- fundingCategoryId는 카테고리 테이블에 있는 categoryId.
+
+---
+
+</br>
+
+- 펀딩 카테고리
+
+```java
+
+@Data
+@Builder
+public class FundingCategoryRespDto {
+	private int fundingCategoryId;
+	private String categoryName;
+}
+
+```
+
+- 카테고리 테이블에 있는 것. 내용은 아래 Database에 사진을 첨부할 것이다. 
+
+---
+
+</br></br>
+
+**Entity**
+
+- Funding
+
+```java
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Funding {
+	private int fundingId;
+	private int userId;
+	private String fundingTitle;
+	private LocalDate endDate;
+	private String fundingSummaryName;
+	private String username;
+	private int recentSort;
+	private String nearDeadline;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String mainImgUrl;
+	private String subImgUrl;
+	private int fundingCategoryId;
+	private String storyTitle;
+	private String storyContent;
+	
+	public FundingMainRespDto toSaveFunding() {
+		return FundingMainRespDto.builder()
+				.pageId(fundingId)
+				.fundingSummaryName(fundingSummaryName)
+				.pageTitle(fundingTitle)
+				.recentSort(recentSort)
+				.nearDeadlineSort(nearDeadline)
+				.eventStatus(eventStatus)
+				.goalTotal(goalTotal)
+				.totalRewardPrice(totalRewardPrice)
+				.joinPercent(joinPercent)
+				.mainImgUrl(mainImgUrl)
+				.fundingCategoryId(fundingCategoryId)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- Funding 객체에 메인 페이지와 상세 페이지에서 쓸 것들을 한 번에 모아놨다.
+
+- 위에서 다룬 것처럼 펀딩 메인 페이지에 사용될 것들만 따로 toSaveFunding이란 것을 만들었는데, 나머지는 상세 페이지에서 다룰 것이다.
+
+- Builder를 이용하여 sql에서 가공한 것들을 Funding 객체로 반환을 하고, 가공된 것들을 다시 FundingMainRespDto에 담아서 반환을 한다. 
+
+---
+
+</br></br>
 
 **Repository**
 
@@ -1954,12 +2046,283 @@ public class FundingMainRespDto {
 public interface FundingRepository {
 	public List<FundingCategory> getFundingCategory();
 	public List<Funding> saveFunding(Map<String, Object> eventStatusMap);
-	public int getTotalCount(Map<String, Object> totalMap);
 }
 
 ```
 
+</br>
+
+- 카테고리는 요청 데이터 없이 데이터베이스에서만 필요한 데이터를 들고와야 하기 때문에 매개변수가 없음.
+
+- 위에서 key와 value를 설정해줬는데, 이는 아래 sql문에서 사용될 것이다.
+
 ---
+
+</br></br>
+
+**Sql**
+
+- 전체
+
+```sql
+
+<select id="saveFunding" parameterType="hashMap" resultMap="FundingMap">
+
+	<if test="fundingSortingStatus == '전체'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS main_img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+
+		<if test="fundingSortingReward == '종료 임박 순'">
+		where
+		    DATEDIFF(fpt.end_date, NOW()) >= 0
+		</if>
+
+		group by
+		    page_id,
+	            funding_summary_name,
+	            page_title,
+	            recent_sort,
+	            near_deadline_sort,
+		    event_status,
+	            goal_total,
+	            main_img_url,
+	            funding_category_id
+
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id DESC
+		limit 0, #{index};
+		</if>
+	
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
+		</if>
+	</if>
+
+```
+
+</br>
+
+- 진행중
+
+```sql
+
+	<if test="fundingSortingStatus == '진행중'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS main_img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		where
+			DATEDIFF(fpt.end_date, NOW()) >= 0
+		group by
+		   	page_id,
+		    	funding_summary_name,
+		    	page_title,
+		    	recent_sort,
+		    	near_deadline_sort,
+			event_status,
+	            	goal_total,
+	            	main_img_url,
+			funding_category_id
+			
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id DESC
+		limit 0, #{index};
+		</if>	
+		
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    	DATEDIFF(fpt.end_date, NOW()),
+		    	page_id
+		limit 0, #{index};
+		</if>
+	</if>
+
+```
+
+</br>
+
+- 종료
+
+```sql
+
+	<if test="fundingSortingStatus == '종료'">
+		select 
+			fpt.funding_id AS page_id,
+			fpt.funding_summary_name,
+			fpt.funding_name AS page_title,
+			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+			CONCAT(
+			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+			) AS event_status,
+			fpt.goal_total,
+		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
+			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+			fpt.main_img_url AS main_img_url,
+			fpt.funding_category_id
+		from
+		   funding_page_tb fpt
+			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		where
+			DATEDIFF(fpt.end_date, NOW()) &lt; 0
+		group by
+		   	page_id,
+            		funding_summary_name,
+			page_title,
+            		recent_sort,
+            		near_deadline_sort,
+			event_status,
+			goal_total,
+			main_img_url,
+			funding_category_id
+			
+		<if test="fundingSortingReward == '최신 순'">
+		order by
+			recent_sort,
+			page_id DESC
+		limit 0, #{index};
+		</if>	
+		
+		<if test="fundingSortingReward == '참여 금액 순'">
+		order by
+			total_reward_price DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '참여율 순'">
+		order by
+			join_percent DESC,
+			page_id
+		limit 0, #{index};
+		</if>
+		
+		<if test="fundingSortingReward == '종료 임박 순'">
+		order by
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
+		limit 0, #{index};
+		</if>
+	</if>
+
+</select>
+
+```
+
+</br>
+
+- 3가지 다 형식이 똑같아서 "전체"만 다뤄보겠다.
+
+- join
+	- reward 테이블에는 해당 펀딩의 리워드와 그 금액들이 들어가있다.
+ 	- funder 테이블에는 펀딩한 사람들의 목록들이 있다.
+  	- 이를 토대로 해당 펀딩을 한 사람들의 총 금액과 목표 금액 대비 퍼센트를 구할 수 있다.
+ 
+- 조회
+	- recentSort가 위에서 말했던 최신 순인데 이는 오늘 날짜에서 등록 날짜를 빼준다. 그럼 숫자가 작을수록 최신 순이 된다.
+ 	- nearDeadlineSort는 종료 임박 순인데 이는 종료 날짜에서 오늘 날짜를 빼준다. 그럼 숫자가 작을수록 종료 임박순이 된다. 이 숫자를 토대로 디데이를 설정할 수 		있는데, 문제가 오늘 날짜일 때와 종료 날짜가 지났을 때 0과 -1~ 이렇게 떠버렸다. 그래서 조건으로 평상시에는 ~일 남음이라고 문자열을 합치고, 오늘 날짜에서 종료 	날짜를 뺐을 때 0이면(D-Day) 오늘 마감, 아니면(기간이 지났을 때) 종료로 설정을 해주었다.
+  	- funder_id가 null이면(펀딩을 한 사람이 없다.) null을 반환한다. 이는 0을 반환하는 것임. funder_id가 존재하면 그 유저가 펀딩한 리워드의 가격을 모두 합산함.
+  	- 위를 토대로 목표 금액 대비 퍼센트를 나타내기 위해 만들어줬다. 퍼센트를 구한 후, 소수점 제거를 위해 Round 함수를 썼다.
+  	- 나머지는 조회에서 보여준 대로 조건에 맞게 정렬을 걸어줬다.
+  	- 마지막은 페이지네이션을 걸어주기 위해 limit을 사용했는데 예를 들어 limit 0, 19면 0부터 19까지 총 20개만 출력이 된다. 그 다음 페이지가 늘어서 0부터 39, 0
+  	  부터 59 이런 식으로 나오게 된다.
+  	  
+---
+
+</br></br>
+
+**Database**
+
+- 펀딩 메인 페이지 테이블
+
+![펀딩 메인 페이지](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/78cb3dee-00d1-4ada-8dd4-91356545692a)
+
+</br>
+
+- 최신 순 정렬
+
+![최신 순](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/f19ec76e-63ca-4cbb-ad17-eebaf3f5b4e5)
+
+</br>
+
+- 리워드 테이블
+
+![리워드](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/b1e3542c-cf36-4e2b-8219-04c3b6fd0916)
+
+</br>
+
+- 펀딩한 사람 테이블
+
+![펀딩한 사람](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/11a6b9d0-35c2-448e-a999-debdbedd4072)
   
 </div>
 </details>
