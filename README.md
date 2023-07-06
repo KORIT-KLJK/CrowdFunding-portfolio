@@ -3891,25 +3891,413 @@ public interface FundingDetailRepository {
 ### **관리자 펀딩 및 기부 등록 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>기부 및 펀딩 등록 유효성 검사</summary>
+<summary>기부 및 펀딩 등록 유효성 검사 영상 및 코드 리뷰</summary>
 <div markdown="1">
+
+</br>
+
+**영상**
+
+</br>
 
 ![관리자 페이지 유효성 검사 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/d5d256ce-e970-40a9-9496-9aa57a43197f)
 
+</br></br>
+
+## FrontEnd
+
+**요청**
+
+```javascript
+
+    const giveRegisterPage = async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", giveInputParams.pageCategory);
+        formData.append("detailCategory", giveInputParams.detailCategory)
+        formData.append("title", giveInputParams.title)
+        formData.append("storyTitle", giveInputParams.storyTitle)
+        formData.append("story", giveInputParams.story)
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
+        })
+        formData.append("goalTotal", giveInputParams.goalTotal);
+        formData.append("endDate", giveInputParams.endDate);
+        formData.append("giveUsing", giveInputParams.giveUsing);
+        formData.append("donationExpense", giveInputParams.donationExpense);
+        formData.append("businessStartDate", giveInputParams.businessStartDate);
+        formData.append("businessEndDate", giveInputParams.businessEndDate);
+        formData.append("target", giveInputParams.target);
+        formData.append("targetCount", giveInputParams.targetCount);
+        formData.append("benefitEffect", giveInputParams.benefitEffect);
+        formData.append("companyName", giveInputParams.companyName)
+        formData.append("ceoName", giveInputParams.ceoName)
+        formData.append("companyAddress", giveInputParams.companyAddress)
+        formData.append("companyPhoneNumber", giveInputParams.companyPhoneNumber)
+
+        const option = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/admin/giving/registerpage", formData, option)
+            alert("기부 페이지 등록 성공");
+            navigate("/giving");
+        } catch (error) {
+            giveFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                giveUsing: "",
+                businessStartDate: "",
+                businessEndDate: "",
+                target: "",
+                benefitEffect: "",
+                companyName: "",
+                ceoName: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                ...error.response.data.errorData})
+        }
+    };
+
+```
+
+</br>
+
+- 요청을 보내고 에러가 있을 경우 오는 메세지를 담고 있다. 
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Dto**
+
+```java
+
+@Data
+public class GivingRegisterReqDto {
+	private String pageCategory;
+	private String detailCategory;
+	@NotBlank(message= "제목을 입력해주세요.")
+	private String title;
+	
+	@NotBlank(message= "스토리 제목을 입력해주세요.")
+	private String storyTitle;
+	
+	@NotBlank(message= "스토리 내용을 입력해주세요.")
+	private String story;
+	
+	@NotNull(message= "메인 이미지를 첨부해주세요.")
+	private MultipartFile mainImgUrl;
+	
+	@NotNull(message= "상세 이미지를 첨부해주세요.")
+	private MultipartFile subImgUrl;
+	
+	private int goalTotal;
+	
+	@NotBlank(message= "종료 날짜를 입력해주세요.")
+    	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+            	message = "종료 날짜를 형식에 맞게 작성해주세요.")
+	private String endDate;
+    
+	@NotEmpty(message= "기부금 사용 계획은 한 개 이상이어야 합니다.")
+	private List<
+	@NotBlank(message= "기부금 사용 내역을 입력해주세요.")
+	String> giveUsing;
+	
+	private List<Integer> donationExpense;
+	
+	@NotBlank(message= "사업 시작 날짜를 입력해주세요.")
+    	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+           	 message = "사업 시작 날짜를 형식에 맞게 작성해주세요.")
+	private String businessStartDate;
+    
+	@NotBlank(message= "사업 종료 날짜를 입력해주세요.")
+    	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+    	message = "사업 종료 날짜를 형식에 맞게 작성해주세요.")
+	private String businessEndDate;
+    
+    	@NotBlank(message= "대상을 입력해주세요.")
+	private String target;
+    
+	private int targetCount;
+    
+    	@NotBlank(message= "사업 효과를 입력해주세요.")
+	private String benefitEffect;
+    
+    	@NotBlank(message= "단체명을 입력해주세요.")
+	private String companyName;
+    
+    	@NotBlank(message= "대표명을 입력해주세요.")
+	private String ceoName;
+    
+    	@NotBlank(message= "사업자 주소를 입력해주세요.")
+	private String companyAddress;
+    
+    	@NotBlank(message= "고객센터 전화번호를 입력해주세요.")
+	private String companyPhoneNumber;
+}
+
+```
+
+</br>
+
+- Controller로 넘어오면서 유효성 검사를 하는 부분. 해당되는 부분에 에러메세지를 반환한다.
+
+---
+
 </div>
 </details>
 
 <details>
-<summary>기부 등록</summary>
+<summary>기부 등록 영상 및 코드 리뷰 - 파일 입출력 포함</summary>
 <div markdown="1">
+
+</br>
+
+**영상**
+
+</br>
 
 ![기부 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/311a9a48-11e9-44a9-8691-0def0355ba07)
 
+</br></br>
+
+## FrontEnd
+
+**기부 등록 html 코드**
+
+```html
+
+{giveInputParams.pageCategory === '기부' ? 
+            <>
+                <div css={mainTitleContainer}>
+                    <h1 css={mainTitle}>기부 페이지 등록</h1>
+                </div>
+                <div css={infoInputContainer}>
+                    <div css={subTitle}>
+                        기부 카테고리 설정
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 페이지 카테고리</div>
+                        <div css={inputContainer}>
+                        <select onChange={changeGivePageCategory} css={comboBox}>
+                            {mainCategoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                                ))}
+                        </select> 
+                        </div> 
+                    </div>
+                </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 상세 카테고리</div>
+                        <div css={inputContainer}>
+                            {giveInputParams.pageCategory === '기부' ? 
+                        <select onChange={changeDetailCategory} css={comboBox}>
+                            {giveSubCategoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                                ))}
+                                </select> :<select onChange={changeDetailCategory} css={comboBox}>
+                            {fundSubCateogoryList.map((item) => (
+                                <option value={item} key={item}>
+                                    {item}
+                                </option>
+                            ))}
+                            </select>}
+                        </div> 
+                    </div>
+                    <div css={subTitle}>
+                        기부 페이지 설정
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 제목</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeTitle} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.title}</div>
+                        </div> 
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 스토리 제목</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeStoryTitle} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.storyTitle}</div>  
+                        </div> 
+                    </div>
+                    <div css={storyInfoInput}>
+                        <div css={storyInfoTitle}>기부 스토리 내용</div>
+                        <div css={storyInputContainer}>
+                        <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10"></textarea>
+                        <div css={errorMsg}>{giveErrorMessages.story}</div> 
+                        </div> 
+                    </div>
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 메인 이미지</div>
+                        <div css={inputContainer}>
+                            <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>
+                            <div css={errorMsg}>{giveErrorMessages.mainImgUrl}</div>   
+                        </div> 
+                    </div>
+
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 스토리 이미지</div>
+                        <div css={inputContainer}>
+                            <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>
+                            <div css={errorMsg}>{giveErrorMessages.subImgUrl}</div>  
+                        </div> 
+                    </div>
+                
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 목표 금액</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeGoalTotal} css={input} type="text"/>원    
+                        </div> 
+                    </div>
+
+                    <div css={infoInput}>
+                        <div css={infoTitle}>기부 종료일</div>
+                        <div css={inputContainer}>
+                            <input onChange={changeEndDate} css={input} type="text"/>
+                            <div css={errorMsg}>{giveErrorMessages.endDate}</div>   
+                        </div> 
+                    </div>
+                    {showTable && giveInputParams.pageCategory === '기부' ?
+                    <div css={rewardInfoInputContainer}>
+                        <div css={rewardHeader}>
+                            <h1 css={rewardH1}>기부금 사용 계획</h1>
+                            <div css={btnContainer}>
+                                <button css={rewardBtn} onClick={addGiveUsingInputComponentHandle}>+</button>
+                            </div>
+                        </div>
+                        <table css={rewardTable}>
+                            <thead>
+                                <tr css={rewardTr}>
+                                    <th css={rewardNameThAndTd}>사용 내역</th>
+                                    <th css={rewardPriceThAndTd}>사용 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {giveTds.map(giveTd => (
+                                    <tr css={rewardTr} key={giveTd.id}>
+                                        <td css={rewardNameThAndTd}><input onChange={(e)=> handleGivingUsingChange(giveTd.id,e)} css={rewardTdInput} type="text"/></td>
+                                        <td css={rewardPriceThAndTd}><input onChange={(e)=> handleGivingUsingPriceChange(giveTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={giveTd.id} onClick={(e)=>removeGiveUsingInputComponentHandle(giveTd.id,e)}>-</button></td>    
+                                    </tr>
+                                ))}
+                                <div css={rewardMsg}>{giveErrorMessages.giveUsing}</div>
+                            </tbody>
+                        </table>
+                        <div css={saveBtnContainer}>
+                            <button onClick={madeGiveUsingList}>저장하기</button>
+                        </div>
+                    </div>
+                : ""}
+                <div css={subTitle}>
+                    사업대상 및 기대효과
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 시작일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBusinessStartDate} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.businessStartDate}</div>
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBusinessEndDate} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.businessEndDate}</div>
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>사업 대상</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTarget} css={input} type="text"/> 
+                        <div css={errorMsg}>{giveErrorMessages.target}</div>   
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>대상 수</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTargetCount} css={input} type="text"/>    
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>기대 효과</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeBenefitEffect} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.benefitEffect}</div> 
+                    </div> 
+                </div>
+                <div css={subTitle}>
+                    기부 신청인 등록
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>단체명</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyName} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.companyName}</div> 
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>대표자</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCeoName} css={input} type="text"/>
+                        <div css={errorMsg}>{giveErrorMessages.ceoName}</div>
+                    </div> 
+                </div> 
+                <div css={infoInput}>
+                    <div css={infoTitle}>주소</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyAddress} css={input} type="text"/>    
+                        <div css={errorMsg}>{giveErrorMessages.companyAddress}</div>
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>고객센터</div>
+                    <div css={inputContainer}>
+                        <input onChange={changePhoneNumber} css={input} type="text"/>    
+                        <div css={errorMsg}>{giveErrorMessages.companyPhoneNumber}</div>
+                    </div> 
+                </div>
+            <div css={submitBtnContainer}>
+                <button onClick={giveRegisterPage}>기부 페이지 등록하기</button>
+            </div>
+
+```
+
+</br>
+
+- 웹 페이지에서 input 창에 값을 써주고 그 값들을 onChange 속성으로 넘겨준다.
+
+---
+
+</br></br>
+
+**입력 받은 값 처리**
+
+```javascript
+
+
+
+```
+
 </div>
 </details>
 
 <details>
-<summary>펀딩 등록</summary>
+<summary>펀딩 등록 영상 및 코드 리뷰</summary>
 <div markdown="1">
 
 ![펀딩 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/69890336-542c-42f2-b6fd-43ee0dbd6f89)
