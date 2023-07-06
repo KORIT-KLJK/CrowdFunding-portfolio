@@ -2737,6 +2737,8 @@ public interface AuthRepository {
 
 - 결제창에서 총 6개를 선택했는데, 여기에도 6개가 잘 들어간 모습을 볼 수 있다.
 
+---
+
 </div>
 </details>
 
