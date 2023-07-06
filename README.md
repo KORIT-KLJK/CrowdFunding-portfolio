@@ -2378,6 +2378,8 @@ public interface FundingRepository {
 
 </br>
 
+## FrontEnd
+
 **요청**
 
 - 주요 내용
@@ -2446,6 +2448,295 @@ public interface FundingRepository {
 - 유저에 대한 정보를 들고온 이유는 결제할 때 유저의 정보가 필요해서 들고왔다.
 
 ---
+
+</br></br>
+
+**펀딩 상세 페이지 html 코드**
+
+```html
+
+        <div>
+            <div css={fundingDetailContainer}>
+                <div css={fundingDetailHeader}>
+                    <img css={fundingDetailImg} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
+                    <div css={fundingDetailHeaderRight}>
+                        <div css={fundingDetailNearDeadline}>{funding.deadline === "종료" ? "종료" : funding.deadline === "오늘 마감" ?  "오늘 마감" : `D-${funding.deadline}`}</div>
+                        <div css={fundingDetailFundingTitle}>{funding.fundingTitle}</div>
+                        <div css={fundingDetailJoinPercent}>{funding.joinPercent}%</div>
+                        <progress css={fundingDetailJoinPercentProgress} value={funding.joinPercent} max="100"/>
+                        <div css={fundingDetailTotal}>
+                            <div css={fundingDetailGoalTotal}>{new Intl.NumberFormat('en-US').format(funding.goalTotal)}원 목표</div>
+                            <div css={fundingDetailTotalRewardPrice}>{new Intl.NumberFormat('en-US').format(funding.totalRewardPrice)}원</div>
+                        </div>
+                        <div css={funderName}>{funding.fundingSummaryName}</div>
+                        <div css={fundingDetailRewardContainer}>
+                            <div css={SelectFundingDetail}>
+                                <button css={SelectRewardButton} onClick={selectRewardHandle}>
+                                    <div css={SelectRewardTxt}>리워드 선택하기</div>
+                                    <div css={SelectRewardArrow}>{selectRewardHidden ? "△" : "▽"}</div>
+                                </button>
+                                {selectRewardHidden ? (<ul css={SelectRewardList}>
+                                    {fundingDetailReward.data.data.rewardList.map(fundingReward => (
+                                        <li css={SelectRewardName} 
+                                            onClick={() => selectRewardNameHandle(fundingReward)}>{fundingReward.rewardName}</li>
+                                        ))}
+                                        </ul>) : ""}
+                                    {rewards.map(reward =>(
+                                            <div css={rewardsMain} key={reward.fundingReward.rewardId}>
+                                                <div css={rewardNameAndDelete}>
+                                                    <div css={rewardsName}>{reward.fundingReward.rewardName}</div>
+                                                    <button css={rewardsDeleteButton} onClick={() => deleteRewardHandle(reward)}>X</button>
+                                                </div>
+                                                <div css={rewardCountAndPriceContainer}>
+                                                    <div css={rewardButtonAndPrice}>
+                                                        <button css={minusButton}
+                                                                onClick={() => decreaseCount(reward)}>-</button>
+                                                        <input  css={rewardCount}
+                                                                type="number"
+                                                                value={reward.fundingReward.count || 1}
+                                                                onChange={(e) => countHandle(e, reward)} />
+                                                        <button css={plusButton}
+                                                                onClick={() => increaseCount(reward)}>+</button>
+                                                    </div>
+                                                    <div css={rewardsPrice}>{new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                </div>
+                                            </div>
+                                    ))}
+                                <div css={TotalReward}>
+                                    <div css={TotalRewardCount}>총 수량 {totalQuantity}개</div>
+                                        <div css={TotalRewardPriceContainer}>
+                                            <div css={TotalRewardPriceTxt}>총 금액</div>
+                                            <div css={TotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div css={joinFundingButtonContainer}>
+                            {funding.deadline === "종료" ?
+                            <button css={endFundingButton}>펀딩 종료하기</button> :
+                            <button css={joinFundingButton} onClick={joinFunding}>펀딩 참여하기</button>}
+                            {isOpen ?
+                                <div css={joinFundContainer}>
+                                    <div css={joinFundIdentifyContainer}>
+                                        <div css={joinFundIdentifyMain}>
+                                            <div css={joinFundHeader}>
+                                                <div css={joinFundTitle}>{funding.fundingTitle}</div>
+                                                <div css={joinFundNickname}>By UniSecond</div>
+                                            </div>
+                                            <div css={joinFundBorderBottom}>
+                                            {rewards.map(reward => (
+                                                <div css={joinFundRewardContainer} key={reward.fundingReward.rewardId}>
+                                                    <div css={joinFundRewardName}>{reward.fundingReward.rewardName}</div>
+                                                    <div css={joinFundCountAndPrice}>
+                                                        <div css={joinFundCount}>수량: {reward.fundingReward.count}개</div>
+                                                        <div css={joinFundPrice}>가격: {new Intl.NumberFormat('en-US').format(reward.fundingReward.rewardPrice)}원</div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            </div>
+                                            <div css={paymentTxtContainer}>
+                                                <div css={paymentTxt}>결제를 진행하시겠습니까?</div>
+                                            </div>
+                                            <div css={joinTotalRewardPriceContainer}>
+                                                <div css={joinTotalRewardPriceTxt}> 총 금액:</div>
+                                                <div css={joinTotalRewardPrice}>{new Intl.NumberFormat('en-US').format(totalPrice)}원</div>
+                                            </div>
+                                            <div css={joinIdentifyButtonContainer}>
+                                                <button css={joinIdentifyButton} onClick={joinSubmitHandle}>결제하기</button>
+                                                <button css={joinCancelButton} onClick={joinCancelButtonHandle}>취소</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            : ""}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div css={storyHeadLine}>
+                <div css={storyHeadLineContainer}>
+                    <div css={storyTxt}>스토리</div>
+                </div>
+            </div>
+            <div css={fundingStoryContainer}>
+                <div css={fundingStory}>
+                    <div css={fundingStoryTitle}>{funding.storyTitle}</div>
+                    <div css={fundingStoryContent}>{funding.storyContent}</div>
+                    <img css={fundingStoryImg} src={`http://localhost:8080/image/sub/${funding.subImgUrl}`} />
+                </div>
+                <div css={rewardGuide}>
+                    <div css={txtGuide}>리워드 안내</div>
+                    {fundingDetailReward.data.data.rewardList.map(reward => (
+                        <div css={rewardGuideList} key={reward.rewardId}>
+                            <div css={rewardGuidePriceAndJoin}>
+                                <div css={rewardGuidePrice}>{new Intl.NumberFormat('en-US').format(reward.rewardPrice)}원</div>
+                                <div css={rewardGuideJoin}>펀딩 참여</div>
+                            </div>
+                            <div css={rewardGuideInfo}>
+                                <div css={rewardGuideRewardName}>{reward.rewardName}</div>
+                                <div css={rewardGuideDetailContainer}>
+                                    <li css={rewardGuideDetailInfo}>현재 {reward.userCount}명 참여</li>
+                                    <li css={rewardGuideDetailInfo}>발송 예상일 {reward.endDate}</li>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div css={joinUserContainer}>
+                <div css={joinUserMain}>
+                    <div css={joinUserContent}>
+                        <div css={joinBreakdownTxt}>참여내역</div>
+                        <div css={joinBreakdownCount}>
+                            <div css={joinBreakdownTotalCount}>총 {fundingJoinBreakdown.data.data.breakdownList.length}명</div>
+                            <div css={joinBreakdownJoinTxt}>이 참여하였습니다.</div>
+                        </div>
+                        {fundingJoinBreakdown.data.data.breakdownList.map(breakdown => (
+                            <div>
+                                <div css={joinBreakdownUserContainer}>
+                                    <div css={joinBreakdownUser}>{breakdown.username}님</div>
+                                    <div css={joinBreakdownUserPrice}>{new Intl.NumberFormat('en-US').format(breakdown.totalRewardPrice)}</div>
+                                    <div css={joinBreakdownPriceTxt}>원 참여</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div css={businessInfoContainer}>
+                <div css={businessInfoMain} key={businessInfo.fundingId}>
+                    <div css={businessInfoPadding}>
+                        <div css={businessInfoTxt}>사업자 정보</div>
+                        <div css={businessInfoContent}>
+                            <div css={businessInfoDetailContent}>상호명: {businessInfo.companyName}</div>
+                            <div css={businessInfoDetailContent}>대표자: {businessInfo.ceoName}</div>
+                            <div css={businessInfoDetailContent}>사업자 소재지: {businessInfo.companyAddress}</div>
+                            <div css={businessInfoDetailContent}>고객센터: {businessInfo.companyPhoneNumber}</div>
+                            <div css={businessInfoDetailContent}>이메일: {businessInfo.ceoEmail}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div css={fundingDetailFooter}>
+                <Footer />
+            </div>
+        </div>
+
+```
+
+- 여기서 따로 처리해준 거라곤 날짜 관련해서 디데이 설정과 종료가 되면 펀딩 참여하기 버튼을 종료로 바꾼 것이고, 나머지는 서버에서 들고온 데이터를 넣어준 것.
+
+---
+
+</br></br>
+
+**응답 받은 데이터 가공**
+
+```javascript
+
+    const selectRewardNameHandle = (fundingReward) => {
+        const isDuplicate = rewards.some(reward => reward.fundingReward.rewardId === fundingReward.rewardId);
+        if (isDuplicate) {
+          alert("이미 등록된 상품입니다.");
+          setSelectRewardHidden(false);
+        } else {
+          setSelectRewardHidden(false);
+          setRewards([...rewards, { fundingReward: { ...fundingReward, count: 1 } }]);
+          setTotalQuantity(quantity => quantity + 1);
+          setTotalPrice(price => price + fundingReward.rewardPrice)
+        }
+    }
+
+    const deleteRewardHandle = (reward) => {
+        const deletedRewardCount = reward.fundingReward.count || 1;
+        const deletedRewardPrice = reward.fundingReward.rewardPrice;
+        console.log(deletedRewardPrice);
+        const newRewards = rewards.filter(r => r.fundingReward.rewardId !== reward.fundingReward.rewardId);
+        setRewards(newRewards);
+      
+        setTotalQuantity(quantity => quantity - deletedRewardCount);
+        setTotalPrice(price => price - deletedRewardPrice);
+
+        reward.fundingReward.count = 1;
+      }
+    
+    const decreaseCount = (reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        
+        if (rewardIndex !== -1) {
+          const count = newRewards[rewardIndex].fundingReward.count || 1;
+          if (count > 1) {
+            const rewardPrice = reward.fundingReward.rewardPrice;
+            const priceDecrease = rewardPrice / count;
+            newRewards[rewardIndex].fundingReward.count = count - 1;
+            newRewards[rewardIndex].fundingReward.rewardPrice -= priceDecrease;
+            setTotalQuantity(quantity => quantity - 1);
+            setTotalPrice(price => price - priceDecrease);
+          }
+        }
+        
+        setRewards(newRewards);
+      }
+
+
+    const countHandle = (e, reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+
+        if (rewardIndex !== -1) {
+            const count = parseInt(e.target.value, 10);
+            const prevCount = newRewards[rewardIndex].fundingReward.count || 1;
+
+            if (!isNaN(count) && count >= 1) {
+            const diffCount = count - prevCount;
+            newRewards[rewardIndex].fundingReward.count = count;
+
+            if (diffCount !== 0) {
+                const prevPrice = newRewards[rewardIndex].fundingReward.rewardPrice;
+                const newPrice = prevPrice * (count / prevCount);
+                newRewards[rewardIndex].fundingReward.rewardPrice = newPrice;
+            }
+
+            setRewards(newRewards);
+
+            const updatedTotalQuantity = newRewards.reduce((total, r) => total + (r.fundingReward.count || 1), 0);
+            const updatedTotalPrice = newRewards.reduce((total, r) => total + (r.fundingReward.rewardPrice), 0);
+            console.log(updatedTotalPrice);
+            setTotalQuantity(updatedTotalQuantity);
+            setTotalPrice(updatedTotalPrice);
+            }
+        }
+    };
+
+    const increaseCount = (reward) => {
+        const newRewards = [...rewards];
+        const rewardIndex = newRewards.findIndex(r => r.fundingReward.rewardId === reward.fundingReward.rewardId);
+        if (rewardIndex !== -1) {
+          newRewards[rewardIndex].fundingReward.count = (newRewards[rewardIndex].fundingReward.count || 1) + 1;
+          const count = newRewards[rewardIndex].fundingReward.count;
+          if (count >= 1) {
+            const rewardPrice = reward.fundingReward.rewardPrice;
+            const priceIncrease = rewardPrice / (newRewards[rewardIndex].fundingReward.count - 1);
+            newRewards[rewardIndex].fundingReward.rewardPrice += priceIncrease;
+            setTotalQuantity(quantity => quantity + 1);
+            setTotalPrice(price => price + priceIncrease);
+        }
+    }
+        setRewards(newRewards);
+    };
+
+```
+
+- 
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
 
 </div>
 </details>
