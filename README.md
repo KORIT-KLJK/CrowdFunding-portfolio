@@ -2634,6 +2634,11 @@ public interface FundingRepository {
 
 ```javascript
 
+    const [ selectRewardHidden, setSelectRewardHidden ] = useState(false);
+    const [ rewards, setRewards ] = useState([]);
+    const [ totalQuantity, setTotalQuantity ] = useState(0);
+    const [ totalPrice, setTotalPrice ] = useState(0);
+
     const selectRewardNameHandle = (fundingReward) => {
         const isDuplicate = rewards.some(reward => reward.fundingReward.rewardId === fundingReward.rewardId);
         if (isDuplicate) {
@@ -2728,7 +2733,25 @@ public interface FundingRepository {
 
 ```
 
-- 
+- selectRewardNameHandle
+	- 매개 변수로 받은 fundingReward에는 해당 펀딩의 리워드들이 들어가있다.
+ 	- rewards는 서버에서 들고온 리워드들을 담기 위해 새로운 배열 상태를 하나 만들어주었다. fundingReward로 해결하려니 오류가 많아 고민 끝에 새로운 배열 상태를 	만드는 걸로 결정했다.
+	- 그래서 이 둘을 비교하여 새로운 배열에 담겨있는 걸 또 담으려고 할 경우에 이미 등록된 상품이라고 처리를 하고, 중복이 되지 않다면 그걸 rewards에 새로 담고 		기본 수량을 1로 설정.
+ 	- 나머지는 총 수량을 다 더해줌으로써 표시를 해줄 수 있다. 예를 들어 리워드가 총 3개일 경우에 기본 수량 하나씩 다 더해줘서 총 수량이 1이 된다. 총 금액도 마		찬가지.
+
+- deleteRewardHandle
+	- 지금부터는 위에서 새로운 배열에 리워드들을 담았기 때문에 그것들을 가공할 것이다.
+	- deletedRewardCount 변수는 삭제된 리워드의 개수를 나타낸다. reward.fundingReward.count 값이 존재하면 해당 값을 사용하고, 그렇지 않으면 기본값인 1을 사용		한다.
+	- deletedRewardPrice 변수 역시 삭제된 리워드의 가격을 나타낸다.
+ 	- newRewards 변수는 rewards 배열에서 삭제된 리워드를 제외한 새로운 배열을 생성한다. filter 함수를 사용하여 reward.fundingReward.rewardId와 일치하지 않는 		리워드만을 남겨둔다.
+	- setRewards(newRewards)를 호출하여 rewards 상태 값을 새로운 배열로 업데이트한다. 이를 통해 삭제된 리워드가 제외된 새로운 리워드 목록을 반영하게 된다. 
+ 
+- decreaseCount
+	- newRewards 변수는 rewards 배열을 얕은 복사하여 새로운 배열을 생성한다. 이를 통해 기존 배열을 직접 수정하지 않고 업데이트할 수 있다. 
+
+- countHandle
+
+- increaseCount
 
 ---
 
