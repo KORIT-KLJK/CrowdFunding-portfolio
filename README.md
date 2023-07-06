@@ -2080,24 +2080,24 @@ public interface FundingRepository {
 
 	<if test="fundingSortingStatus == '전체'">
 		select 
-			fpt.funding_id AS page_id,
-			fpt.funding_summary_name,
-			fpt.funding_name AS page_title,
-			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
-			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
-			CONCAT(
-			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
-			) AS event_status,
-			fpt.goal_total,
+		    fpt.funding_id AS page_id,
+		    fpt.funding_summary_name,
+		    fpt.funding_name AS page_title,
+	      	    DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+		    DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+		    CONCAT(
+		    IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+		    ) AS event_status,
+	            fpt.goal_total,
 		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
-			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
-			fpt.main_img_url AS main_img_url,
-			fpt.funding_category_id
+		    IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+		    fpt.main_img_url AS main_img_url,
+		    fpt.funding_category_id
 		from
 		   funding_page_tb fpt
-			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
-			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
-			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		    left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
 
 		<if test="fundingSortingReward == '종료 임박 순'">
 		where
@@ -2117,22 +2117,22 @@ public interface FundingRepository {
 
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort,
-			page_id DESC
+		    recent_sort,
+		    page_id DESC
 		limit 0, #{index};
 		</if>
 	
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
-			total_reward_price DESC,
-			page_id
+		    total_reward_price DESC,
+		    page_id
 		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			join_percent DESC,
-			page_id
+		    join_percent DESC,
+		    page_id
 		limit 0, #{index};
 		</if>
 		
@@ -2154,62 +2154,62 @@ public interface FundingRepository {
 
 	<if test="fundingSortingStatus == '진행중'">
 		select 
-			fpt.funding_id AS page_id,
-			fpt.funding_summary_name,
-			fpt.funding_name AS page_title,
-			DATEDIFF(NOW(), fpt.register_date) as recent_sort,
-			DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
-			CONCAT(
-			IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
-			) AS event_status,
-			fpt.goal_total,
+	            fpt.funding_id AS page_id,
+		    fpt.funding_summary_name,
+		    fpt.funding_name AS page_title,
+		    DATEDIFF(NOW(), fpt.register_date) as recent_sort,
+		    DATEDIFF(fpt.end_date, NOW()) as near_deadline_sort,
+		    CONCAT(
+		    IF(NOW() &lt; fpt.end_date,  CONCAT(DATEDIFF(fpt.end_date, NOW()), '일 남음'), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+		    ) AS event_status,
+		    fpt.goal_total,
 		    IFNULL(sum(if(ft.funder_id is null, null, rt.reward_price)), 0) as total_reward_price,
-			IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
-			fpt.main_img_url AS main_img_url,
-			fpt.funding_category_id
+		    IFNULL(ROUND((sum(if(ft.funder_id is null, null, rt.reward_price)) / fpt.goal_total) * 100), 0) as join_percent,
+		    fpt.main_img_url AS main_img_url,
+		    fpt.funding_category_id
 		from
-		   funding_page_tb fpt
-			left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
-			left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
-			left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
+		    funding_page_tb fpt
+	            left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+	            left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+	   	    left outer join funding_category_tb fct on(fct.funding_category_id = fpt.funding_category_id)
 		where
-			DATEDIFF(fpt.end_date, NOW()) >= 0
+		    DATEDIFF(fpt.end_date, NOW()) >= 0
 		group by
-		   	page_id,
-		    	funding_summary_name,
-		    	page_title,
-		    	recent_sort,
-		    	near_deadline_sort,
-			event_status,
-	            	goal_total,
-	            	main_img_url,
-			funding_category_id
+		    page_id,
+		    funding_summary_name,
+		    page_title,
+		    recent_sort,
+		    near_deadline_sort,
+		    event_status,
+		    goal_total,
+		    main_img_url,
+		    funding_category_id
 			
 		<if test="fundingSortingReward == '최신 순'">
 		order by
-			recent_sort,
-			page_id DESC
+		    recent_sort,
+		    page_id DESC
 		limit 0, #{index};
 		</if>	
 		
 		<if test="fundingSortingReward == '참여 금액 순'">
 		order by
-			total_reward_price DESC,
-			page_id
+		    total_reward_price DESC,
+		    page_id
 		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '참여율 순'">
 		order by
-			join_percent DESC,
-			page_id
+		    join_percent DESC,
+		    page_id
 		limit 0, #{index};
 		</if>
 		
 		<if test="fundingSortingReward == '종료 임박 순'">
 		order by
-		    	DATEDIFF(fpt.end_date, NOW()),
-		    	page_id
+		    DATEDIFF(fpt.end_date, NOW()),
+		    page_id
 		limit 0, #{index};
 		</if>
 	</if>
@@ -2349,7 +2349,7 @@ public interface FundingRepository {
 ### **펀딩 상세 페이지 화면 구현 영상 및 코드 리뷰**
 
 <details>
-<summary>현재 진행 중인 펀딩</summary>
+<summary>현재 진행 중인 펀딩 영상</summary>
 <div markdown="1">
 
 ![상세페이지 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/03dbfdd9-aa06-49b6-ae18-cbc3eb8a917a)
@@ -2358,7 +2358,7 @@ public interface FundingRepository {
 </details>
 
 <details>
-<summary>펀딩 참여하기(결제)</summary>
+<summary>펀딩 참여하기(결제) 영상 및 코드 리뷰</summary>
 <div markdown="1">
 
 ![결제 처음 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/efa13972-cf36-46ce-8d24-88ef1951057a)
@@ -2377,11 +2377,141 @@ public interface FundingRepository {
 
 <br/><br/>
 
+--- 결제 시스템 ---
+
+구글에서 리액트 아임포트 검색 ->
+
+https://velog.io/@gunilna/%ED%8F%AC%ED%8A%B8%EC%9B%90-Front-end-%EC%97%B0%EB%8F%99%ED%95%98%EA%B8%B0
+
+</br> 
+
+포트원 검색 ->
+
+https://portone.io/korea/ko?utm_source=google&utm_medium=google_sa&utm_campaign=pf_conversion_2302_kr&utm_content=homepage&gclid=CjwKCAjwvdajBhBEEiwAeMh1U6u6y3g3vQLBloftPyxVmnOSARlJ2tDDjQz4Yon9REbYIoPVpeeAKBoCAvQQAvD_BwE 
+
+</br>
+
+-> 회원가입 및 로그인 -> 결제 연동 -> 내 식별 코드 -> 가맹점 식별 코드가 중요함! -> 결제 대행사 설정 -> 테스트, 카카오페이, 카카오페이
+
+</br>
+
+https://portone.gitbook.io/docs/tip/pg-2
+
+pg사는 이걸 참고하면 된다.
+
+</br>
+
+https://portone.gitbook.io/docs/sdk/javascript-sdk/payrq
+
+이걸 기준으로 내가 받고 싶은 데이터로 받으면 됨
+
+결제가 완료 되면
+
+https://admin.portone.io/payments
+
+여기서 확인 가능.
+
+테스트는 무료임
+
+</br></br>
+
+## FrontEnd
+
+**결제 서비스**
+
+```javascript
+
+    useEffect(() => {
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/v1/iamport.js"
+        document.head.appendChild(iamport);
+        return () => {
+            document.head.removeChild(iamport);
+        }
+    });
+
+    const joinSubmitHandle = () => {
+        if (!window.IMP) return;
+        /* 1. 가맹점 식별하기 */
+        const { IMP } = window;
+        IMP.init("imp26700005"); // 가맹점 식별코드
+
+        /* 2. 결제 데이터 정의하기 */
+        const data = {
+            pg: "kakaopay", // PG사 : https://portone.gitbook.io/docs/sdk/javascript-sdk/payrq#undefined-1 참고
+            pay_method: "kakaopay", // 결제수단
+            merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+            amount: totalPrice, // 결제금액
+            name: funding.fundingTitle, // 주문명
+            buyer_name: principalUser.data.data.name, // 구매자 이름
+            buyer_tel: principalUser.data.data.phoneNumber, // 구매자 전화번호
+            buyer_email: principalUser.data.data.email, // 구매자 이메일
+            buyer_addr: getAddress.data.data.address // 구매자 주소
+        };
+
+        const rewardIds = [];
+        const counts = [];
+        rewards.map(reward => (rewardIds.push(reward.fundingReward.rewardId), counts.push(reward.fundingReward.count)));
+
+        /* 4. 결제 창 호출하기 */
+        IMP.request_pay(data, (response) => {
+            const { success, error_msg } = response;
+
+            if (success) {
+                alert("결제 성공");
+                joinFund.mutate({
+                    userId: principalUser.data.data.userId,
+                    addressId: getAddress.data.data.addressId,
+                    rewardIds: rewardIds,
+                    counts: counts
+                });
+            } else {
+                alert(`결제 실패: ${error_msg}`);
+            }
+        });
+    };
+
+```
+
+- useEffect에서 아임포트 서비스를 사용할 수 있는 환경을 구축한다.
+
+- window.IMP 객체를 사용하여 결제 창을 연다. 객체가 없을 경우 결제 실패로 돌아가는데 이 서비스를 로드하기 위해 useEffect 코드를 만든 것이다.
+
+- 아래 코드에서 가공한 것들을 넣어서 요청을 보낸다.
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
+
+    const joinFund = useMutation(async (funder) => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.post("http://localhost:8080/auth/funding/payment", funder, option);
+    }, {
+        onSuccess: () => {
+            alert("펀딩에 성공하였습니다.");
+            setIsOpen(false);
+        }
+    });
+
+```
+
+- 결제하는 유저의 정보를 데이터베이스에 반영하기 위해 post 요청을 보낸다.
+
+---
+
 </div>
 </details>
 
 <details>
-<summary>종료된 펀딩</summary>
+<summary>종료된 펀딩 영상</summary>
 <div markdown="1">
 
 ![종료된 펀딩](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/238f395c-98bc-4262-99c6-e3ce59013b34)
@@ -2846,6 +2976,680 @@ public interface FundingRepository {
 ## BackEnd
 
 **Controller**
+
+- 펀딩 상세 페이지에 필요한 것들
+
+```java
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/fundingdetail")
+public class FundingDetailController {
+	
+	private final FundingDetailService fundingDetailService;
+
+	@GetMapping("/{pageId}")
+	public ResponseEntity<?> fundingDetail(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.fundingDetail(pageId));
+	}
+	
+	@GetMapping("/reward/{pageId}")
+	public ResponseEntity<?> fundingReward(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getReward(pageId));
+	}
+	
+	@GetMapping("/businessinfo/{pageId}")
+	public ResponseEntity<?> fundingBusinessInfo(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getBusinessInfo(pageId));
+	}
+	
+	@GetMapping("/breakdown/{pageId}")
+	public ResponseEntity<?> breakdown(@PathVariable int pageId) {
+		
+		return ResponseEntity.ok(fundingDetailService.getBreakdown(pageId));
+	}
+	
+	@GetMapping("/address")
+	public ResponseEntity<?> getAddress(@RequestParam int userId) {
+		return ResponseEntity.ok(fundingDetailService.getAddressId(userId));
+	}
+	
+}
+
+```
+
+</br>
+
+```java
+
+@RestController
+@RequiredArgsConstructor
+public class AccountController {
+
+	private final AccountService accountService;
+	
+	@GetMapping("/principal")
+	public ResponseEntity<?> principal() {
+		return ResponseEntity.ok().body(accountService.getPrincipal());
+	}
+	
+}
+
+```
+
+</br>
+
+- 펀딩 상세페이지에 필요한 데이터인 기본 정보들을 들고오려고 한다.
+
+- 결제를 위해 유저에 대한 정보를 들고오려고 한다.
+
+---
+
+</br></br>
+
+**Service**
+
+- 펀딩 상세 페이지에 쓸 정보
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class FundingDetailService {
+
+	private final FundingDetailRepository fundingDetailRepository;
+	
+	public FundingDetailRespDto fundingDetail(int pageId) {
+		return fundingDetailRepository.fundingDetail(pageId).getDetailFunding();
+	}
+	
+	public Map<String, Object> getReward(int pageId) {
+		List<RewardRespDto> rewardList = new ArrayList<>();
+		
+		fundingDetailRepository.getReward(pageId).forEach(reward -> {
+			rewardList.add(reward.getFundingReward());
+		});
+		
+		Map<String, Object> rewardMap = new HashMap<>();
+		rewardMap.put("rewardList", rewardList);
+		
+		return rewardMap;
+	}
+	
+	public BusinessInfoRespDto getBusinessInfo(int pageId) {
+		return fundingDetailRepository.getBusinessInfo(pageId).toBusinessInfo();
+	}
+	
+	public Map<String, Object> getBreakdown(int pageId) {
+		List<BreakdownRespDto> breakdownList = new ArrayList<>();
+		fundingDetailRepository.getBreakdown(pageId).forEach(breakdown -> {
+			breakdownList.add(breakdown.toBreakdown());
+		});
+		
+		Map<String, Object> breakdownMap = new HashMap<>();
+		breakdownMap.put("breakdownList", breakdownList);
+		
+		return breakdownMap;
+	}
+	
+	public Address getAddressId(int userId) {
+		return fundingDetailRepository.getAddressId(userId);
+	}
+	
+}
+
+```
+
+</br>
+
+- 로그인한 유저가 맞는지 확인
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class AccountService {
+
+	private final UserRepository signUpRepository;
+
+	public PrincipalRespDto getPrincipal() {
+		PrincipalUserDetails principalUserDetails = (PrincipalUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User userEntity = signUpRepository.findUserByEmail(principalUserDetails.getEmail());
+		StringBuilder roles = new StringBuilder();
+		principalUserDetails.getAuthorities().forEach(authority -> {
+			roles.append(authority.getAuthority() + ",");
+		});
+		roles.delete(roles.length() - 1, roles.length());
+		
+		return PrincipalRespDto.builder()
+				.userId(userEntity.getUserId())
+				.email(userEntity.getEmail())
+				.name(userEntity.getName())
+				.authorities(roles.toString())
+				.phoneNumber(userEntity.getPhoneNumber())
+				.build();
+	}
+	
+}
+
+```
+
+</br>
+
+- FundingDetailService에서는 여태 써왔던 방식대로 Map에다가 데이터를 받아서 반환을 한다.
+
+- 요청 받은 token에 대한 인증을 하기 위해 값을 넘겨준다.
+
+- 유저 정보에 대한 확인을 위한 검사 과정
+
+- db에 있는 email과 요청으로 받은 token을 열어서 그 email이 일치한지 알아본다.
+
+---
+
+</br></br>
+
+**Dto**
+
+- 펀딩 상세 페이지 상단에 들어가는 기본 정보
+
+```java
+
+@Builder
+@Data
+public class FundingDetailRespDto {
+	private int fundingId;
+	private String fundingSummaryName;
+	private String fundingTitle;
+	private String deadline;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private String storyTitle;
+	private String storyContent;
+	private String mainImgUrl;
+	private String subImgUrl;
+	private int joinPercent;
+}
+
+```
+
+</br>
+
+- 리워드 관련된 정보
+
+```java
+
+@Data
+@Builder
+public class RewardRespDto {
+	private int rewardId;
+	private String rewardName;
+	private int rewardPrice;
+	private int fundingId;
+	private LocalDate endDate;
+	private String userCount;
+}
+
+```
+
+</br>
+
+- 사업자 정보
+
+```java
+
+@Builder
+@Data
+public class BusinessInfoRespDto {
+	private int businessInfoId;
+	private String companyName;
+	private String ceoName;
+	private String companyAddress;
+	private String companyPhoneNumber;
+	private String ceoEmail;
+	private int fundingId;
+}
+
+```
+
+</br>
+
+- 참여내역
+
+```java
+
+@Data
+@Builder
+public class BreakdownRespDto {
+	private int fundingId;
+	private int userId;
+	private String username;
+	private int totalRewardPrice;
+}
+
+```
+
+</br>
+
+- 각기 필요한 정보를 반환할 객체들이다. 
+
+---
+
+</br></br>
+
+**Entity**
+
+- 펀딩 상세 페이지 상단에 들어가는 기본 정보
+
+```java
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Funding {
+	private int fundingId;
+	private int userId;
+	private String fundingTitle;
+	private LocalDate endDate;
+	private String fundingSummaryName;
+	private String username;
+	private int recentSort;
+	private String nearDeadline;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String mainImgUrl;
+	private String subImgUrl;
+	private int fundingCategoryId;
+	private String storyTitle;
+	private String storyContent;
+
+	public FundingDetailRespDto getDetailFunding() {
+		return FundingDetailRespDto.builder()
+				.fundingId(fundingId)
+				.fundingSummaryName(fundingSummaryName)
+				.fundingTitle(fundingTitle)
+				.deadline(nearDeadline)
+				.goalTotal(goalTotal)
+				.totalRewardPrice(totalRewardPrice)
+				.storyTitle(storyTitle)
+				.storyContent(storyContent)
+				.mainImgUrl(mainImgUrl)
+				.subImgUrl(subImgUrl)
+				.joinPercent(joinPercent)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 리워드 관련된 정보
+
+```java
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Reward {
+	private String pageCategory;
+	private int rewardId;
+	private String rewardName;
+	private int rewardPrice;
+	private int fundingId;
+	private LocalDate endDate;
+	private String userCount;
+	
+	public RewardRespDto getFundingReward() {
+		return RewardRespDto.builder()
+				.rewardId(rewardId)
+				.rewardName(rewardName)
+				.rewardPrice(rewardPrice)
+				.fundingId(fundingId)
+				.endDate(endDate)
+				.userCount(userCount)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 사업자 정보
+
+```java
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BusinessInfo {
+	private String pageCategory;
+	private int businessInfoId;
+	private String companyName;
+	private String ceoName;
+	private String companyAddress;
+	private String companyPhoneNumber;
+	private String ceoEmail;
+	private int fundingId;
+	
+	public BusinessInfoRespDto toBusinessInfo() {
+		return BusinessInfoRespDto.builder()
+				.businessInfoId(businessInfoId)
+				.companyName(companyName)
+				.ceoName(ceoName)
+				.companyAddress(companyAddress)
+				.companyPhoneNumber(companyPhoneNumber)
+				.ceoEmail(ceoEmail)
+				.fundingId(fundingId)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 참여내역
+
+```java
+
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Funding {
+	private int fundingId;
+	private int userId;
+	private String fundingTitle;
+	private LocalDate endDate;
+	private String fundingSummaryName;
+	private String username;
+	private int recentSort;
+	private String nearDeadline;
+	private String eventStatus;
+	private int goalTotal;
+	private int totalRewardPrice;
+	private int joinPercent;
+	private String mainImgUrl;
+	private String subImgUrl;
+	private int fundingCategoryId;
+	private String storyTitle;
+	private String storyContent;
+
+	public BreakdownRespDto toBreakdown() {
+		return BreakdownRespDto.builder()
+				.fundingId(fundingId)
+				.userId(userId)
+				.username(username)
+				.totalRewardPrice(totalRewardPrice)
+				.build();
+	}
+
+}
+
+```
+
+</br>
+
+- sql에서 받은 데이터들을 RespDto로 반환해주고 있다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface FundingDetailRepository {
+	public Funding fundingDetail(int pageId);
+	public List<Reward> getReward(int pageId);
+	public BusinessInfo getBusinessInfo(int pageId);
+	public List<Funding> getBreakdown(int pageId);
+	public Address getAddressId(int userId);
+}
+
+```
+
+</br>
+
+- pageId(내가 클릭한 펀딩)로 sql에서 특정 펀딩을 찾아 데이터를 들고올 것이다. 
+
+- userId는 위에서 로그인 확인이 끝난 유저의 번호다. 그 번호로 유저의 주소를 들고올 것임.
+
+---
+
+</br></br>
+
+**Sql**
+
+- 펀딩 상세 페이지 상단에 들어가는 기본 정보
+
+```sql
+
+	<resultMap type="com.webproject.crowdfunding.entity.Funding" id="FundingDetailMap">
+		<id property="fundingId" column="funding_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="fundingSummaryName" column="funding_summary_name"/>
+		<result property="fundingTitle" column="funding_title"/>
+		<result property="username" column="username"/>
+		<result property="nearDeadline" column="deadline"/>
+		<result property="goalTotal" column="goal_total"/>
+		<result property="totalRewardPrice" column="total_reward_price"/>
+		<result property="storyTitle" column="story_title"/>
+		<result property="storyContent" column="story_content"/>
+		<result property="mainImgUrl" column="main_img_url"/>
+		<result property="subImgUrl" column="sub_img_url"/>
+		<result property="joinPercent" column="join_percent"/>
+	</resultMap>
+
+	<select id="fundingDetail" resultMap="FundingDetailMap" parameterType="integer">
+		select
+		    fpt.funding_id,
+		    fpt.funding_summary_name,
+		    fpt.funding_name as funding_title,
+		    CONCAT(
+		    IF(NOW() &lt; fpt.end_date,  DATEDIFF(fpt.end_date, NOW()), IF(DATEDIFF(NOW(), fpt.end_date) = 0, '오늘 마감', '종료'))
+		    ) as deadline,
+		    fpt.goal_total,
+		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price,
+		    fpt.story_title,
+		    fpt.story_content,
+		    fpt.main_img_url as main_img_url,
+		    fpsit.img_url as sub_img_url,
+		    ROUND((sum(if(ft.funder_id is null, 0, rt.reward_price)) / fpt.goal_total) * 100) as join_percent
+		from
+		    funding_page_tb fpt
+		    left outer join reward_tb rt on (rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on (ft.reward_id = rt.reward_id)
+		    left outer join funding_page_sub_img_tb fpsit on (fpsit.funding_id = fpt.funding_id)
+		where
+		    fpt.funding_id = #{pageId};
+	</select>
+
+```
+
+</br>
+
+- 리워드 관련된 정보
+
+```sql
+
+	<resultMap type="com.webproject.crowdfunding.entity.Reward" id="RewardMap">
+		<id property="rewardId" column="reward_id"/>
+		<result property="fundingId" column="funding_id"/>
+		<result property="rewardName" column="reward_name"/>
+		<result property="rewardPrice" column="reward_price"/>
+		<result property="endDate" column="end_date"/>
+		<result property="userCount" column="user_count"/>
+	</resultMap>
+
+	<select id="getReward" parameterType="integer" resultMap="RewardMap">
+		select
+		    rt.reward_id,
+		    rt.funding_id,
+		    rt.reward_name,
+		    rt.reward_price,
+		    fpt.end_date,
+		    count(distinct ut.user_id) as user_count
+		from 
+	            reward_tb rt
+		    left outer join funding_page_tb fpt on(fpt.funding_id = rt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		    left outer join user_tb ut on(ut.user_id = ft.user_id)
+		where
+		    rt.funding_id = #{pageId}
+		group by
+		    reward_id;
+	</select>
+
+```
+
+</br>
+
+- 사업자 정보
+
+```sql
+
+	<resultMap type="com.webproject.crowdfunding.entity.BusinessInfo" id="BusinessInfoMap">
+		<id property="businessInfoId" column="business_info_id"/>
+		<result property="companyName" column="company_name"/>
+		<result property="ceoName" column="ceo_name"/>
+		<result property="companyAddress" column="company_address"/>
+		<result property="companyPhoneNumber" column="company_phone_number"/>
+		<result property="ceoEmail" column="ceo_email"/>
+		<result property="fundingId" column="funding_id"/>
+	</resultMap>
+
+	<select id="getBusinessInfo" parameterType="integer" resultMap="BusinessInfoMap">
+		select
+		    bt.business_info_id,
+		    bt.company_name,
+		    bt.ceo_name,
+		    bt.company_address,
+		    bt.company_phone_number,
+		    bt.ceo_email,
+		    bt.funding_id
+		from
+		    business_info_tb bt
+		where
+		    bt.funding_id = #{pageId};
+	</select>
+
+```
+
+</br>
+
+- 참여내역
+
+```sql
+
+	<select id="getBreakdown" parameterType="integer" resultMap="FundingDetailMap">
+		select
+		    fpt.funding_id,
+		    ut.user_id,
+		    ut.name as username,
+		    sum(if(ft.funder_id is null, 0, rt.reward_price)) as total_reward_price
+		from
+		    funding_page_tb fpt
+		    left outer join reward_tb rt on(rt.funding_id = fpt.funding_id)
+		    left outer join funder_tb ft on(ft.reward_id = rt.reward_id)
+		    left outer join user_tb ut on(ut.user_id = ft.user_id)
+		where
+		    fpt.funding_id = #{pageId}
+		    AND ut.user_id IS NOT NULL
+		    AND ut.name IS NOT NULL
+		group by
+		    funding_id,
+		    user_id,
+		    username
+	</select>
+
+```
+
+</br>
+
+- 주소 정보
+
+```sql
+
+	<resultMap type="com.webproject.crowdfunding.entity.Address" id="AddressMap">
+		<id property="addressId" column="address_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="zonecode" column="zonecode"/>
+		<result property="address" column="address"/>
+		<result property="buildingName" column="building_name"/>
+		<result property="bname" column="bname"/>
+		<result property="detailAddress" column="detail_address"/>
+		<result property="addressType" column="address_type"/>
+	</resultMap>
+
+	<select id="getAddressId" parameterType="integer" resultMap="AddressMap">
+		select
+			at.address_id,
+			at.user_id,
+			at.zonecode,
+			at.address,
+			at.building_name,
+			at.bname,
+			at.detail_address,
+			at.address_type
+		from
+			address_tb at
+		where
+			at.user_id = #{userId};
+	</select>
+
+```
+
+</br>
+
+- 형식은 펀딩 메인 페이지 코드 리뷰에서 한 것과 동일하다. 각 테이블에서 필요한 것들을 join하고, 필요에 맞게 이름을 바꿔주었다.
+
+- 이 정보들을 각 Entity에 맞게 값을 반환해주고 있다.
+
+---
+
+</br></br>
+
+**Database**
+
+- 펀딩 상세 페이지 상단 정보
+
+![펀딩 상세 페이지 상단](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/8b2fe954-9373-45f4-98d2-ec9644bcb9f4)
+
+</br>
+
+- 리워드 관련 정보
+
+![리워드 관련 정보](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/d3ce8b99-2f61-44bb-92c1-dcd74f51312d)
+
+</br>
+
+- 사업자 정보
+
+![사업자 정보](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/ea82184e-8e52-46f3-8687-eda044f1a220)
+
+</br>
+
+- 참여내역
+
+![참여내역](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/14e2158a-69f9-4d5e-a7fc-3721324bd0ff)
+
+</br>
+
+- 주소 정보
+
+![주소 정보](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/4dbc05f2-c7a1-4cc0-9624-fb0344e4800c)
 
 </div>
 </details>
