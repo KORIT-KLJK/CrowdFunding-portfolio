@@ -2358,7 +2358,7 @@ public interface FundingRepository {
 </details>
 
 <details>
-<summary>펀딩 참여하기(결제) 영상 및 코드 리뷰</summary>
+<summary>펀딩 참여하기(결제) 영상 및 코드 리뷰, HTTP 보안 설정</summary>
 <div markdown="1">
 
 ![결제 처음 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/efa13972-cf36-46ce-8d24-88ef1951057a)
@@ -2473,6 +2473,8 @@ https://admin.portone.io/payments
 
 ```
 
+</br>
+
 - useEffect에서 아임포트 서비스를 사용할 수 있는 환경을 구축한다.
 
 - window.IMP 객체를 사용하여 결제 창을 연다. 객체가 없을 경우 결제 실패로 돌아가는데 이 서비스를 로드하기 위해 useEffect 코드를 만든 것이다.
@@ -2503,9 +2505,237 @@ https://admin.portone.io/payments
 
 ```
 
+</br>
+
 - 결제하는 유저의 정보를 데이터베이스에 반영하기 위해 post 요청을 보낸다.
 
 ---
+
+</br></br>
+
+## BackEnd
+
+**WebMvcConfig**
+
+```java
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer{
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**") // 3000포트에서 들어오는 모든 요청들 
+				.allowedMethods("*")
+				.allowedOrigins("*");
+	}
+
+```
+
+</br>
+
+- 원래는 Controller에 @CrossOrigin이라는 어노테이션을 달아줘야 한다. 매 번 어노테이션을 달기엔 번거롭기에 이런 설정법이 있다.
+
+- 이 설정을 해주는 이유를 간략히 얘기하자면, 웹 애플리케이션에서 기본적으로 보안상의 이유로 요청을 차단을 한다. 그래서 요청을 허용하기 위해 Cross-Origin 설정을 필수로 해줘야 한다.
+
+---
+
+</br></br>
+
+**SecurityConfig**
+
+```java
+
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private final JwtTokenProvider jwtTokenProvider;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+	private final OAuth2Service oAuth2Service;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	// HTTP 보안 설정을 구성
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors();	// Cross-Origin Resource Sharing (CORS)를 활성화.
+		http.csrf().disable();		// CSRF(Cross-Site Request Forgery) 보호 기능을 비활성화.
+		http.httpBasic().disable();	// HTTP 기본 인증을 비활성화.
+		http.formLogin().disable();	// form 기반의 로그인에 대해 비활성화.
+
+		// 세션을 생성하지 않고 상태를 유지하지 않는 세션 관리 정책을 설정.
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		// 요청에 대한 허용 설정
+		http.authorizeRequests()
+			.antMatchers("/image/**", "/funding/**", "/giving/**", "/main/**", "/page/**")	 // 특정 URL 패턴에 대한 접근 권한을 설정
+			.permitAll()		// 위 URL 요청은 모두 허용
+			.antMatchers("/auth/funding/**", "/auth/giving/**", "/admin/**")
+			.authenticated()	// 위 URL 요청은 모두 인증이 필요
+			.and()
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)	// JWT 인증을 처리하는 				필터
+			.exceptionHandling()
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)		//  인증 진입 지점 설정
+
+```
+
+</br>
+
+- jwt 인증 관련해서 로그인에 코드를 풀어놨다.
+
+- 간략하게 보자면, 서버에 요청을 따라 들어올 때 요청 주소가 인증이 필요한지 안 필요한지 확인을 하고, 인증이 필요한 부분은 로그인 정보를 통해 인증을 한다. 인증이 필요 없는 URL은 인증 절차 없이 요청이 그대로 들어온다. 그래서 인증 절차가 필요없는 요청에 관한 건 로그인을 하지 않은 사람들도 모두 볼 수 있는 것들로 설정을 했고, 인증이 필요한 부분은 아무나 사용할 수 없도록 결제와 관리자 페이지에서 들어오는 요청에 설정을 해줬다.
+
+---
+
+</br></br>
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+	
+	private final AuthService authService;
+
+	@PostMapping("/funding/payment")
+	public ResponseEntity<?> toPaymentInfo(@RequestBody FunderReqDto funderReqDto) {
+		return ResponseEntity.ok(authService.saveFunder(funderReqDto));
+	}
+}
+
+```
+
+</br>
+
+- 요청으로 받은 데이터를 넘기고 응답을 하고 있다.
+
+---
+
+</br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class FunderReqDto {
+	private int userId;
+	private int addressId;
+	private List<Integer> rewardIds;
+	private List<Integer> counts;
+	
+	public List<Funder> toFunderEntity() {
+	    List<Funder> funders = new ArrayList<>();
+	    for (int i = 0; i < counts.size(); i++) {
+	        int rewardId = rewardIds.get(i);
+	        int count = counts.get(i);
+	        	for (int j = 0; j < count; j++) {
+		            Funder funder = Funder.builder()
+		                    .userId(userId)
+		                    .addressId(addressId)
+		                    .rewardId(rewardId)
+		                    .build();
+		            funders.add(funder);
+	        	}
+	    	}
+	    return funders;
+	}
+}
+
+```
+
+</br>
+
+- 리워드의 개수가 List로 들어오기 때문에 개수에 맞춰 for문을 돌려준 후 하나씩 값을 넣어준 후, 새로운 List에 추가를 하고 반환을 하고 있다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+	
+	private final AuthRepository authRepository;
+	
+	public int saveFunder(FunderReqDto funderReqDto) {
+		List<Funder> funderEntity = funderReqDto.toFunderEntity();
+		return authRepository.toSaveFunder(funderEntity);
+	}
+ }
+
+```
+
+</br>
+
+- 서버로 데이터를 보내기 위해 Repository로 넘겨주고 있다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface AuthRepository {
+	public int toSaveFunder(List<Funder> funder);
+}
+
+```
+
+</br>
+
+- sql문을 작성하기 위해 Funder 객체를 넣어준다.
+
+---
+
+</br></br>
+
+**Sql**
+
+```sql
+
+<insert id="toSaveFunder"
+	parameterType="com.webproject.crowdfunding.entity.Funder"
+	keyProperty="funderId"
+	useGeneratedKeys="true">
+	insert into funder_tb
+	values
+	<foreach collection="list" item="funder" separator=",">
+		(0, #{funder.userId}, NOW(), #{funder.addressId}, #{funder.rewardId})
+	</foreach>
+</insert>
+
+```
+
+</br>
+
+- foreach를 돌려 리스트를 하나씩 꺼내서 insert한다.
+
+- 이제 결제한 사람들의 정보가 데이터베이스에 들어가게 된다.
+
+---
+
+</br></br>
+
+**Database**
+
+![Funder](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/d2b3687f-47c0-4f99-8520-141bc0ad6646)
+
+</br>
+
+- 결제창에서 총 6개를 선택했는데, 여기에도 6개가 잘 들어간 모습을 볼 수 있다.
 
 </div>
 </details>
@@ -3643,7 +3873,7 @@ public interface FundingDetailRepository {
 
 - 참여내역
 
-![참여내역](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/14e2158a-69f9-4d5e-a7fc-3721324bd0ff)
+![참여내역2](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/5653092f-0cb8-463d-a71b-d7455bf3cdbc)
 
 </br>
 
