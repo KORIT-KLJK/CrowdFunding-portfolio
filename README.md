@@ -1943,17 +1943,27 @@ public class FundingMainRespDto {
 </br>
 
 - 펀딩 메인 페이지에 사용할 것들이다. 순서대로
-	- pageId는 상세 페이지 이동을 위해 넣어줌.
-	- fundingSummaryName은 기업체에서 사용하는 닉네임을 뜻함.
- 	- pageTitle은 펀딩 제목.
-  	- recentSort는 최신 순부터 숫자로 표시했다.
-  	- nearDeadlineSort는 종료 임박 순을 숫자로 표시했다.
-  	- eventStatus는 종료까지 남은 일 수를 표시해준다.
-  	- goalTotal은 목표 금액.
-  	- totalRewardPrice는 펀딩한 사람들의 총 금액이다.
-  	- joinPercent는 목표 금액 대비 참여한 금액 수의 총 퍼센트이다.
-  	- mainImgUrl은 펀딩에 들어갈 이미지다.
-  	- fundingCategoryId는 카테고리 테이블에 있는 categoryId.
+  	- pageId는 상세 페이지 이동을 위해 넣어줌.
+
+  	- fundingSummaryName은 기업체에서 사용하는 닉네임을 뜻함.
+
+  	- pageTitle은 펀딩 제목.
+  	
+   	- recentSort는 최신 순부터 숫자로 표시했다.
+  	
+   	- nearDeadlineSort는 종료 임박 순을 숫자로 표시했다.
+  	
+   	- eventStatus는 종료까지 남은 일 수를 표시해준다.
+  	
+   	- goalTotal은 목표 금액.
+  	
+   	- totalRewardPrice는 펀딩한 사람들의 총 금액이다.
+  	
+   	- joinPercent는 목표 금액 대비 참여한 금액 수의 총 퍼센트이다.
+  	
+   	- mainImgUrl은 펀딩에 들어갈 이미지다.
+  	
+   	- fundingCategoryId는 카테고리 테이블에 있는 categoryId.
 
 ---
 
@@ -2284,16 +2294,23 @@ public interface FundingRepository {
 
 - join
 	- reward 테이블에는 해당 펀딩의 리워드와 그 금액들이 들어가있다.
- 	- funder 테이블에는 펀딩한 사람들의 목록들이 있다.
-  	- 이를 토대로 해당 펀딩을 한 사람들의 총 금액과 목표 금액 대비 퍼센트를 구할 수 있다.
+   
+  	- funder 테이블에는 펀딩한 사람들의 목록들이 있다.
+  	
+   	- 이를 토대로 해당 펀딩을 한 사람들의 총 금액과 목표 금액 대비 퍼센트를 구할 수 있다.
  
 - 조회
 	- recentSort가 위에서 말했던 최신 순인데 이는 오늘 날짜에서 등록 날짜를 빼준다. 그럼 숫자가 작을수록 최신 순이 된다.
- 	- nearDeadlineSort는 종료 임박 순인데 이는 종료 날짜에서 오늘 날짜를 빼준다. 그럼 숫자가 작을수록 종료 임박순이 된다. 이 숫자를 토대로 디데이를 설정할 수 		있는데, 문제가 오늘 날짜일 때와 종료 날짜가 지났을 때 0과 -1~ 이렇게 떠버렸다. 그래서 조건으로 평상시에는 ~일 남음이라고 문자열을 합치고, 오늘 날짜에서 종료 	날짜를 뺐을 때 0이면(D-Day) 오늘 마감, 아니면(기간이 지났을 때) 종료로 설정을 해주었다.
-  	- funder_id가 null이면(펀딩을 한 사람이 없다.) null을 반환한다. 이는 0을 반환하는 것임. funder_id가 존재하면 그 유저가 펀딩한 리워드의 가격을 모두 합산함.
-  	- 위를 토대로 목표 금액 대비 퍼센트를 나타내기 위해 만들어줬다. 퍼센트를 구한 후, 소수점 제거를 위해 Round 함수를 썼다.
-  	- 나머지는 조회에서 보여준 대로 조건에 맞게 정렬을 걸어줬다.
-  	- 마지막은 페이지네이션을 걸어주기 위해 limit을 사용했는데 예를 들어 limit 0, 19면 0부터 19까지 총 20개만 출력이 된다. 그 다음 페이지가 늘어서 0부터 39, 0
+
+  	- nearDeadlineSort는 종료 임박 순인데 이는 종료 날짜에서 오늘 날짜를 빼준다. 그럼 숫자가 작을수록 종료 임박순이 된다. 이 숫자를 토대로 디데이를 설정할 수 		있는데, 문제가 오늘 날짜일 때와 종료 날짜가 지났을 때 0과 -1~ 이렇게 떠버렸다. 그래서 조건으로 평상시에는 ~일 남음이라고 문자열을 합치고, 오늘 날짜에서 종료 	날짜를 뺐을 때 0이면(D-Day) 오늘 마감, 아니면(기간이 지났을 때) 종료로 설정을 해주었다.
+  	
+   	- funder_id가 null이면(펀딩을 한 사람이 없다.) null을 반환한다. 이는 0을 반환하는 것임. funder_id가 존재하면 그 유저가 펀딩한 리워드의 가격을 모두 합산함.
+  	
+   	- 위를 토대로 목표 금액 대비 퍼센트를 나타내기 위해 만들어줬다. 퍼센트를 구한 후, 소수점 제거를 위해 Round 함수를 썼다.
+  	
+   	- 나머지는 조회에서 보여준 대로 조건에 맞게 정렬을 걸어줬다.
+  	
+   	- 마지막은 페이지네이션을 걸어주기 위해 limit을 사용했는데 예를 들어 limit 0, 19면 0부터 19까지 총 20개만 출력이 된다. 그 다음 페이지가 늘어서 0부터 39, 0
   	  부터 59 이런 식으로 나오게 된다.
   	  
 ---
@@ -2735,23 +2752,92 @@ public interface FundingRepository {
 
 - selectRewardNameHandle
 	- 매개 변수로 받은 fundingReward에는 해당 펀딩의 리워드들이 들어가있다.
- 	- rewards는 서버에서 들고온 리워드들을 담기 위해 새로운 배열 상태를 하나 만들어주었다. fundingReward로 해결하려니 오류가 많아 고민 끝에 새로운 배열 상태를 	만드는 걸로 결정했다.
-	- 그래서 이 둘을 비교하여 새로운 배열에 담겨있는 걸 또 담으려고 할 경우에 이미 등록된 상품이라고 처리를 하고, 중복이 되지 않다면 그걸 rewards에 새로 담고 		기본 수량을 1로 설정.
+
+  	- rewards는 서버에서 들고온 리워드들을 담기 위해 새로운 배열 상태를 하나 만들어주었다. fundingReward로 해결하려니 오류가 많아 고민 끝에 새로운 배열 상태를 	만드는 걸로 결정했다.
+
+  	- 그래서 이 둘을 비교하여 새로운 배열에 담겨있는 걸 또 담으려고 할 경우에 이미 등록된 상품이라고 처리를 하고, 중복이 되지 않다면 그걸 rewards에 새로 담고 		기본 수량을 1로 설정.
+   
  	- 나머지는 총 수량을 다 더해줌으로써 표시를 해줄 수 있다. 예를 들어 리워드가 총 3개일 경우에 기본 수량 하나씩 다 더해줘서 총 수량이 1이 된다. 총 금액도 마		찬가지.
 
 - deleteRewardHandle
 	- 지금부터는 위에서 새로운 배열에 리워드들을 담았기 때문에 그것들을 가공할 것이다.
+   
 	- deletedRewardCount 변수는 삭제된 리워드의 개수를 나타낸다. reward.fundingReward.count 값이 존재하면 해당 값을 사용하고, 그렇지 않으면 기본값인 1을 사용		한다.
+   
 	- deletedRewardPrice 변수 역시 삭제된 리워드의 가격을 나타낸다.
+   
  	- newRewards 변수는 rewards 배열에서 삭제된 리워드를 제외한 새로운 배열을 생성한다. filter 함수를 사용하여 reward.fundingReward.rewardId와 일치하지 않는 		리워드만을 남겨둔다.
+    
 	- setRewards(newRewards)를 호출하여 rewards 상태 값을 새로운 배열로 업데이트한다. 이를 통해 삭제된 리워드가 제외된 새로운 리워드 목록을 반영하게 된다. 
  
 - decreaseCount
-	- newRewards 변수는 rewards 배열을 얕은 복사하여 새로운 배열을 생성한다. 이를 통해 기존 배열을 직접 수정하지 않고 업데이트할 수 있다. 
+	- newRewards 변수는 rewards 배열을 얕은 복사하여 새로운 배열을 생성한다. 이를 통해 기존 배열을 직접 수정하지 않고 업데이트할 수 있다.
+
+  	- rewardIndex 변수는 newRewards 배열에서 reward.fundingReward.rewardId와 일치하는 보상의 index를 찾는다. findIndex 메서드를 사용하여 리워드를 찾을 수 없는 	경우 -1을 반환한다.
+
+	- rewardIndex가 -1이 아닌 경우, 즉 리워드를 찾은 경우에만 아래의 코드 실행한다.
+
+	- count 변수는 리워드의 개수를 나타낸다. 만약 newRewards[rewardIndex].fundingReward.count 값이 존재하지 않으면 기본값인 1을 사용한다.
+
+	- count가 1보다 큰 경우, 즉 개수를 감소시킬 수 있는 경우에만 아래의 코드를 실행한다.
+
+	- rewardPrice 변수는 리워드의 가격을 나타낸다. reward.fundingReward.rewardPrice 값을 사용한다.
+
+	- priceDecrease 변수는 각 개수 감소에 따라 감소되어야 할 가격을 계산한다. 즉, 보상의 가격을 현재 개수로 나눈 값이다.
+
+	- newRewards[rewardIndex].fundingReward.count 값을 1 감소시킨다.
+
+	- newRewards[rewardIndex].fundingReward.rewardPrice에서 priceDecrease를 뺀 값을 할당하여 리워드의 가격을 업데이트한다.
+
+	- setTotalQuantity(quantity => quantity - 1)를 호출하여 totalQuantity 상태 값을 1 감소시킨다.
+
+	- setTotalPrice(price => price - priceDecrease)를 호출하여 totalPrice 상태 값을 priceDecrease만큼 감소시킨다.
+
+	- setRewards(newRewards)를 호출하여 rewards 상태 값을 업데이트한다.
+
+	- 이를 통해 decreaseCount 함수는 리워드의 개수를 1 감소시키고, 개수에 따라 가격을 조정하여 rewards, totalQuantity, totalPrice 값을 업데이트한다.
 
 - countHandle
+	- count 변수는 정수로 변환하여 할당한다.
+
+	- prevCount 변수는 이전에 저장된 리워드의 개수를 나타낸다.
+
+	- diffCount 변수는 변경된 개수와 이전 개수의 차이를 나타낸다.
+
+	- newRewards[rewardIndex].fundingReward.count 값을 변경된 개수로 업데이트한다.
+
+	- newPrice 변수는 이전 가격에 변경된 개수의 비율을 곱한 값을 나타낸다.
+
+	- newRewards[rewardIndex].fundingReward.rewardPrice 값을 newPrice로 업데이트하여 보상의 가격을 조정한다.
+
+	- setRewards(newRewards)를 호출하여 rewards 상태 값을 업데이트한다.
+
+	- newRewards 배열이 돌면서 보상의 개수를 합산하여 updatedTotalQuantity를 계산한다.
+
+	- newRewards 배열이 돌면서 보상의 가격을 합산하여 updatedTotalPrice를 계산한다.
+
+	- setTotalQuantity(updatedTotalQuantity)를 호출하여 totalQuantity 상태 값을 업데이트한다.
+
+	- setTotalPrice(updatedTotalPrice)를 호출하여 totalPrice 상태 값을 업데이트한다.
+
+	- 이를 통해 countHandle 함수는 리워드의 개수를 처리하고, 개수와 가격의 변화에 따라 rewards, totalQuantity, totalPrice 값을 업데이트한다.
 
 - increaseCount
+	- newRewards[rewardIndex].fundingReward.count 값을 1 증가시킨다.
+
+	- rewardPrice 변수는 리워드의 가격을 나타낸다.
+
+	- priceIncrease 변수는 각 개수 증가에 따라 증가되어야 할 가격을 계산한다. 즉, 리워드의 가격을 개수에서 1을 뺀 값으로 나눈 것이다.
+
+	- newRewards[rewardIndex].fundingReward.rewardPrice에 priceIncrease를 더하여 리워드의 가격을 업데이트한다.
+
+	- setTotalQuantity(quantity => quantity + 1)를 호출하여 totalQuantity 상태 값을 1 증가시킨다.
+
+	- setTotalPrice(price => price + priceIncrease)를 호출하여 totalPrice 상태 값을 priceIncrease만큼 증가시킨다.
+
+	- setRewards(newRewards)를 호출하여 rewards 상태 값을 업데이트한다.
+
+	- 이를 통해 increaseCount 함수는 보상의 개수를 1 증가시키고, 개수에 따라 가격을 조정하여 rewards, totalQuantity, totalPrice 값을 업데이트한다.
 
 ---
 
