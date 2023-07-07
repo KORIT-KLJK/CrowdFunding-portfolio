@@ -4289,9 +4289,179 @@ public class GivingRegisterReqDto {
 
 ```javascript
 
+    const [giveTds, setGiveTds] = useState([{id: 1}]);
+    const giveId = useRef(2);
+    const [giveUsingMap, setGiveUsingMap] = useState(new Map());
+    const [giveUsingPriceMap, setGiveUsingPriceMap] = useState(new Map());
+    const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
+    const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
 
+    const handleGivingUsingChange = (id, e) => {
+        const newInputValues = new Map(giveUsingMap);
+        newInputValues.set(id, e.target.value);
+        setGiveUsingMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingIsBlank(false);
+        }else {
+            setGiveUsingIsBlank(true);
+        }
+    };
+
+    const handleGivingUsingPriceChange = (id, e) => {
+        const newInputValues = new Map(giveUsingPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setGiveUsingPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingPriceIsBlank(false);
+        }else {
+            setGiveUsingPriceIsBlank(true);
+        }
+      };
+
+    const madeGiveUsingList = () => {
+        const giveUsingList = Array.from(giveUsingMap.values())
+        const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
+
+        if(!giveUsingIsBlank && !givesingPriceIsBlank) {
+            alert("기부금 사용 계획은 비워져있으면 안 됩니다.");
+        }else{
+            setGiveInputParams({...giveInputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
+            setShowTable(false);
+        }
+    };
+
+    const addGiveUsingInputComponentHandle = () => {
+        setGiveTds([...giveTds, {id: giveId.current}]);
+        giveId.current += 1;
+    }
+
+    const removeGiveUsingInputComponentHandle = (id,e) => {
+        setGiveTds([...giveTds.filter(giveTd => giveTd.id !== parseInt(e.target.value))]);
+        const newGiveUsing = new Map(giveUsingMap);
+        const newGiveUsingPrice = new Map(giveUsingPriceMap);
+        newGiveUsing.delete(id);
+        newGiveUsingPrice.delete(id);
+        setGiveUsingMap(newGiveUsing);
+        setGiveUsingPriceMap(newGiveUsingPrice);
+    }
+
+    const changeGivePageCategory = (e) => {
+        const givePageCategory = e.target.value;
+        let giveDetailCategory = giveSubCategoryList.detailCategory;
+      
+        if (givePageCategory === "기부") {
+            giveDetailCategory = "아동";
+            setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+        }else if(givePageCategory === "펀딩") {
+            giveDetailCategory = "음식";
+            setFundingInputParams({...fundingInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+        } 
+        setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory,});
+    };
+
+    const changeDetailCategory = (e) => {
+        setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
+    }
+
+    const changeTitle = (e) => {
+        setGiveInputParams({...giveInputParams, title:e.target.value})
+    }
+
+    const changeStoryTitle = (e) => {
+        setGiveInputParams({...giveInputParams, storyTitle:e.target.value})
+    }
+
+    const changeStory = (e) => {
+        setGiveInputParams({...giveInputParams, story:e.target.value})
+    }
+
+    const changeMainImgUrl = (e) => {
+        const newImgFiles = [];
+
+        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setMainImgFiles([newImgFiles[newImgFiles.length - 1]]);
+    }
+
+    const changeSubImgUrl = (e) => {
+        const newImgFiles = [];
+
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setSubImgFiles([newImgFiles[newImgFiles.length - 1]]);
+    }
+
+    const changeGoalTotal = (e) => {
+        const parsedGoalTotal = parseInt(e.target.value, 10);
+
+        setGiveInputParams({...giveInputParams, goalTotal: parsedGoalTotal})
+    }
+
+    const changeEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, endDate:e.target.value})
+    }
+
+    const changeBusinessStartDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessStartDate:e.target.value})
+    }
+
+    const changeBusinessEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessEndDate:e.target.value})
+    }
+
+    const changeTarget = (e) => {
+        setGiveInputParams({...giveInputParams, target:e.target.value})
+    }
+
+    const changeTargetCount = (e) => {
+        setGiveInputParams({...giveInputParams, targetCount:e.target.value})
+    }
+
+    const changeBenefitEffect = (e) => {
+        setGiveInputParams({...giveInputParams, benefitEffect:e.target.value})
+    }
+
+    const changeCompanyName = (e) => {
+        setGiveInputParams({...giveInputParams, companyName:e.target.value})
+    }
+
+    const changeCeoName = (e) => {
+        setGiveInputParams({...giveInputParams, ceoName:e.target.value})
+    }
+    const changeCompanyAddress = (e) => {
+        setGiveInputParams({...giveInputParams, companyAddress:e.target.value})
+    }
+
+    const changePhoneNumber = (e) => {
+        setGiveInputParams({...giveInputParams, companyPhoneNumber:e.target.value})
+    }
+
+    const changeEmail = (e) => {
+        setGiveInputParams({...giveInputParams, email:e.target.value})
+    }
 
 ```
+
+</br>
+
+-
+
+---
 
 </div>
 </details>
