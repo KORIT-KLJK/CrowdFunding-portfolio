@@ -3908,6 +3908,8 @@ public interface FundingDetailRepository {
 
 **요청**
 
+- 기부
+
 ```javascript
 
     const giveRegisterPage = async () => {
@@ -3971,6 +3973,66 @@ public interface FundingDetailRepository {
 
 </br>
 
+- 펀딩
+
+```javascript
+
+    const fundingRegisterPage = async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", fundingInputParams.pageCategory);
+        formData.append("detailCategory", fundingInputParams.detailCategory)
+        formData.append("title", fundingInputParams.title)
+        formData.append("storyTitle", fundingInputParams.storyTitle)
+        formData.append("story", fundingInputParams.story)
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
+        })
+        formData.append("goalTotal", fundingInputParams.goalTotal);
+        formData.append("endDate", fundingInputParams.endDate);
+        formData.append("rewardName", fundingInputParams.rewardName)
+        formData.append("rewardPrice", fundingInputParams.rewardPrice)
+        formData.append("companyName", fundingInputParams.companyName)
+        formData.append("ceoName", fundingInputParams.ceoName)
+        formData.append("nickname", fundingInputParams.nickname)
+        formData.append("companyAddress", fundingInputParams.companyAddress)
+        formData.append("companyPhoneNumber", fundingInputParams.companyPhoneNumber)
+        formData.append("email", fundingInputParams.email)
+        const option = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/admin/funding/registerpage", formData, option);
+            alert("펀딩 페이지 등록 성공");
+            navigate("/funding");
+        } catch (error) {
+            setFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                rewardName: "",
+                companyName: "",
+                ceoName: "",
+                nickname: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                email:""
+                , ...error.response.data.errorData})
+        }
+    };
+
+```
+
+</br>
+
 - 요청을 보내고 에러가 있을 경우 오는 메세지를 담고 있다. 
 
 ---
@@ -3980,6 +4042,8 @@ public interface FundingDetailRepository {
 ## BackEnd
 
 **Dto**
+
+- 기부
 
 ```java
 
@@ -4051,6 +4115,64 @@ public class GivingRegisterReqDto {
 
 </br>
 
+- 펀딩 
+
+```java
+
+@Data
+public class FundingRegisterPageReqDto {
+	private String pageCategory;
+	private String detailCategory;
+	@NotBlank(message= "제목을 입력해주세요.")
+	private String title;
+	
+	@NotBlank(message= "스토리 제목을 입력해주세요.")
+	private String storyTitle;
+	
+	@NotBlank(message= "스토리 내용을 입력해주세요.")
+	private String story;
+	
+	@NotNull(message= "메인 이미지를 첨부해주세요.")
+	private MultipartFile mainImgUrl;
+	
+	@NotNull(message= "상세 이미지를 첨부해주세요.")
+	private MultipartFile subImgUrl;
+	
+	private int goalTotal;
+	
+	@NotBlank(message= "종료 날짜를 입력해주세요.")
+    	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+            	message = "종료 날짜를 형식에 맞게 작성해주세요.")
+	private String endDate;
+    
+    	@NotEmpty(message= "리워드는 한 개 이상이어야 합니다.")
+    	private List<
+    	@NotBlank(message= "리워드를 입력해주세요.")
+    	String> rewardName;
+    
+	private List<Integer> rewardPrice;
+    
+    	@NotBlank(message= "상호명을 입력해주세요.")
+	private String companyName;
+    
+    	@NotBlank(message= "대표명을 입력해주세요.")
+	private String ceoName;
+    
+	@NotBlank(message= "닉네임을 입력해주세요.")
+	private String nickname;
+    
+    	@NotBlank(message= "사업자 주소를 입력해주세요.")
+	private String companyAddress;
+    
+    	@NotBlank(message= "고객센터 전화번호를 입력해주세요.")
+	private String companyPhoneNumber;
+    
+    	@NotBlank(message= "이메일을 입력해주세요.")
+    	@Email
+	private String email;
+
+```
+
 - Controller로 넘어오면서 유효성 검사를 하는 부분. 해당되는 부분에 에러메세지를 반환한다.
 
 ---
@@ -4059,22 +4181,32 @@ public class GivingRegisterReqDto {
 </details>
 
 <details>
-<summary>기부 등록 영상 및 코드 리뷰 - 파일 입출력 포함</summary>
+<summary>기부 등록 영상</summary>
 <div markdown="1">
-
-</br>
-
-**영상**
-
-</br>
 
 ![기부 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/311a9a48-11e9-44a9-8691-0def0355ba07)
 
-</br></br>
+</div>
+</details>
+
+<details>
+<summary>펀딩 등록 영상</summary>
+<div markdown="1">
+
+![펀딩 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/69890336-542c-42f2-b6fd-43ee0dbd6f89)
+
+</div>
+</details>
+
+<details>
+<summary>펀딩 & 기부 등록 코드 리뷰 - 파일 입출력 포함</summary>
+<div markdown="1">
 
 ## FrontEnd
 
-**기부 등록 html 코드**
+**기부 & 펀딩 등록 html 코드**
+
+- 기부
 
 ```html
 
@@ -4279,6 +4411,188 @@ public class GivingRegisterReqDto {
 
 </br>
 
+- 펀딩
+
+```html
+        </> :          
+        <>
+            <div css={mainTitleContainer}>
+                <h1 css={mainTitle}>펀딩 페이지 등록</h1>
+            </div>
+            <div css={infoInputContainer}>
+                <div css={subTitle}>
+                    펀딩 카테고리 설정
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 페이지 카테고리</div>
+                    <div css={inputContainer}>
+                    <select onChange={changeFundingPageCategory} css={comboBox}>
+                        {mainCategoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select> 
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 상세 카테고리</div>
+                    <div css={inputContainer}>
+                    {fundingInputParams.pageCategory === '펀딩' ? 
+                    <select onChange={changeDetailCategory} css={comboBox}>
+                        {fundSubCateogoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select> :<select onChange={changeDetailCategory} css={comboBox}>
+                        {giveSubCategoryList.map((item) => (
+                            <option value={item} key={item}>
+                                {item}
+                            </option>
+                            ))}
+                            </select>}
+                    </div> 
+                </div>
+                <div css={subTitle}>
+                    펀딩 페이지 설정
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 제목</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeTitle} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.title}</div>  
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 스토리 제목</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeStoryTitle} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.storyTitle}</div>
+                    </div> 
+                </div>
+                <div css={storyInfoInput}>
+                    <div css={storyInfoTitle}>펀딩 스토리 내용</div>
+                    <div css={storyInputContainer}>
+                    <textarea onChange={changeStory} css={storyTextArea} name="" id="" cols="30" rows="10"></textarea>
+                    <div css={errorMsg}>{fundErrorMessages.story}</div> 
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 메인 이미지</div>
+                    <div css={inputContainer}>
+                    <input css={input} type="file" onChange={changeMainImgUrl} accept={".jpg, .png"}/>
+                    <div css={errorMsg}>{fundErrorMessages.mainImgUrl}</div>    
+                    </div> 
+                </div>
+
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 스토리 이미지</div>
+                    <div css={inputContainer}>
+                    <input css={input} type="file" onChange={changeSubImgUrl} accept={".jpg, .png"}/>
+                    <div css={errorMsg}>{fundErrorMessages.subImgUrl}</div>
+                    </div> 
+                </div>
+            
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 목표 금액</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeGoalTotal} css={input} type="text" placeholder='숫자만 입력해주세요'/>원 
+                    </div> 
+                </div>
+
+                <div css={infoInput}>
+                    <div css={infoTitle}>펀딩 종료일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeEndDate} css={input} type="text" placeholder='예) 2000-05-10'/>
+                        <div css={errorMsg}>{fundErrorMessages.endDate}</div>
+                    </div> 
+                </div>
+                {showTable && fundingInputParams.pageCategory === '펀딩' ? 
+                    <div css={rewardInfoInputContainer}>
+                        <div css={rewardHeader}>
+                            <h1 css={rewardH1}>리워드 추가</h1>
+                            <div css={btnContainer}>
+                                <button css={rewardBtn} onClick={addRewardInputComponentHandle}>+</button>
+                            </div>
+                        </div>
+                        <table css={rewardTable}>
+                            <thead>
+                                <tr css={rewardTr}>
+                                    <th css={rewardNameThAndTd}>리워드</th>
+                                    <th css={rewardPriceThAndTd}>금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rewardTds.map(rewardTd => (
+                                    <tr css={rewardTr} key={rewardTd.id}>
+                                        <td css={rewardNameThAndTd}><input onChange={(e)=> handleRewardNameChange(rewardTd.id,e)} css={rewardTdInput} type="text"/></td>
+                                        <td css={rewardPriceThAndTd}><input onChange={(e)=> handleRewardPriceChange(rewardTd.id,e)} css={rewardTdInput} type="number" placeholder='(원)'/><button css={rewardBtn} value={rewardTd.id} onClick={(e)=>removeRewardInputComponentHandle(rewardTd.id,e)}>-</button></td>    
+                                    </tr>
+                                ))}
+                                <div css={rewardMsg}>{fundErrorMessages.rewardName}</div>
+                            </tbody>
+                        </table>
+                        <div css={saveBtnContainer}>
+                            <button onClick={madeRewardList}>저장하기</button>
+                        </div>
+                    </div>
+                : ""}
+                <div css={subTitle}>
+                    펀딩 신청인 등록
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>상호명</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyName} css={input} type="text"/>    
+                        <div css={errorMsg}>{fundErrorMessages.companyName}</div>
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>대표자</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCeoName} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.ceoName}</div> 
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>닉네임</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeNickname} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.nickname}</div>  
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>주소</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeCompanyAddress} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.companyAddress}</div>
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>고객센터</div>
+                    <div css={inputContainer}>
+                        <input onChange={changePhoneNumber} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.companyPhoneNumber}</div>
+                    </div> 
+                </div>
+                <div css={infoInput}>
+                    <div css={infoTitle}>이메일</div>
+                    <div css={inputContainer}>
+                        <input onChange={changeEmail} css={input} type="text"/>
+                        <div css={errorMsg}>{fundErrorMessages.email}</div>  
+                    </div> 
+                </div>
+            </div>
+            <div css={submitBtnContainer}>
+                <button onClick={fundingRegisterPage}>펀딩 페이지 등록하기</button>
+            </div>
+        </>}
+
+```
+
+</br>
+
 - 웹 페이지에서 input 창에 값을 써주고 그 값들을 onChange 속성으로 넘겨준다.
 
 ---
@@ -4289,12 +4603,227 @@ public class GivingRegisterReqDto {
 
 ```javascript
 
-    const [giveTds, setGiveTds] = useState([{id: 1}]);
+    const [ mainImgFiles, setMainImgFiles ] = useState([]);
+    const [ subImgFiles, setSubImgFiles ] = useState([]);
+    const fileId = useRef(1);
+    const navigate = useNavigate();
+    const [giveInputParams, setGiveInputParams] = useState({ 
+        pageCategory: "기부",
+        detailCategory : "아동",
+        title: "",
+        storyTitle: "",
+        story: "",
+        imgUrl: "",
+        goalTotal: 0,
+        endDate: "",
+        giveUsing: [],
+        donationExpense: [],
+        businessStartDate: "",
+        businessEndDate: "",
+        target: "",
+        targetCount: 0,
+        benefitEffect: "",
+        companyName: "",
+        ceoName: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+    });
+
+    const [fundingInputParams, setFundingInputParams] = useState({ 
+        pageCategory: "펀딩",
+        detailCategory : "음식",
+        title: "",
+        storyTitle: "",
+        story: "",
+        imgUrl: "",
+        goalTotal: 0,
+        endDate: "",
+        rewardName: [],
+        rewardPrice: [],
+        companyName: "",
+        ceoName: "",
+        nickname: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
+    });
+
+    const [ giveErrorMessages, giveFundErrorMessages ] = useState({
+        title: "",
+        storyTitle: "",
+        story: "",
+        mainImgUrl: "",
+        subImgUrl: "",
+        goalTotal: "",
+        endDate: "",
+        giveUsing: "",
+        businessStartDate: "",
+        businessEndDate: "",
+        target: "",
+        benefitEffect: "",
+        companyName: "",
+        ceoName: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+    });
+
+    const [ fundErrorMessages, setFundErrorMessages ] = useState({
+        title: "",
+        storyTitle: "",
+        story: "",
+        mainImgUrl: "",
+        subImgUrl: "",
+        goalTotal: "",
+        endDate: "",
+        rewardName: "",
+        companyName: "",
+        ceoName: "",
+        nickname: "",
+        companyAddress: "",
+        companyPhoneNumber: "",
+        email:""
+    });
+    
+    const [giveTds, setGiveTds] = useState([
+        {
+            id: 1
+        }
+    ]);
+    
+    const [rewardTds, setRewardTds] = useState([
+        {
+            id: 1
+        }
+    ]);
     const giveId = useRef(2);
+    const rewardId = useRef(2);
+    const [showTable, setShowTable] = useState(true);
+    const mainCategoryList = ["기부", "펀딩"];
+    const giveSubCategoryList = ["아동","노인","장애인","다문화","환경"];
+    const fundSubCateogoryList = ["음식", "도서", "의류", "액세서리&화장품", "꽃&과일", "생활용품"];
+
     const [giveUsingMap, setGiveUsingMap] = useState(new Map());
     const [giveUsingPriceMap, setGiveUsingPriceMap] = useState(new Map());
+
+    const [rewardNameMap, setRewardNameMap] = useState(new Map());
+    const [rewardPriceMap, setRewardPriceMap] = useState(new Map());
+
+    const [rewardNameIsBlank, setRewarNameIsBlank] = useState(false);
+    const [rewardPriceIsBlank, setRewarPriceIsBlank] = useState(false);
+
     const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
     const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
+
+    const giveRegisterPage = async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", giveInputParams.pageCategory);
+        formData.append("detailCategory", giveInputParams.detailCategory)
+        formData.append("title", giveInputParams.title)
+        formData.append("storyTitle", giveInputParams.storyTitle)
+        formData.append("story", giveInputParams.story)
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
+        })
+        formData.append("goalTotal", giveInputParams.goalTotal);
+        formData.append("endDate", giveInputParams.endDate);
+        formData.append("giveUsing", giveInputParams.giveUsing);
+        formData.append("donationExpense", giveInputParams.donationExpense);
+        formData.append("businessStartDate", giveInputParams.businessStartDate);
+        formData.append("businessEndDate", giveInputParams.businessEndDate);
+        formData.append("target", giveInputParams.target);
+        formData.append("targetCount", giveInputParams.targetCount);
+        formData.append("benefitEffect", giveInputParams.benefitEffect);
+        formData.append("companyName", giveInputParams.companyName)
+        formData.append("ceoName", giveInputParams.ceoName)
+        formData.append("companyAddress", giveInputParams.companyAddress)
+        formData.append("companyPhoneNumber", giveInputParams.companyPhoneNumber)
+
+        const option = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/admin/giving/registerpage", formData, option)
+            alert("기부 페이지 등록 성공");
+            navigate("/giving");
+        } catch (error) {
+            giveFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                giveUsing: "",
+                businessStartDate: "",
+                businessEndDate: "",
+                target: "",
+                benefitEffect: "",
+                companyName: "",
+                ceoName: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                ...error.response.data.errorData})
+        }
+    };
+
+    const fundingRegisterPage = async () => {
+        const formData = new FormData();
+        formData.append("pageCategory", fundingInputParams.pageCategory);
+        formData.append("detailCategory", fundingInputParams.detailCategory)
+        formData.append("title", fundingInputParams.title)
+        formData.append("storyTitle", fundingInputParams.storyTitle)
+        formData.append("story", fundingInputParams.story)
+        mainImgFiles.forEach(imgFile => {
+            formData.append("mainImgUrl", imgFile.file);
+        })
+        subImgFiles.forEach(imgFile => {
+            formData.append("subImgUrl", imgFile.file);
+        })
+        formData.append("goalTotal", fundingInputParams.goalTotal);
+        formData.append("endDate", fundingInputParams.endDate);
+        formData.append("rewardName", fundingInputParams.rewardName)
+        formData.append("rewardPrice", fundingInputParams.rewardPrice)
+        formData.append("companyName", fundingInputParams.companyName)
+        formData.append("ceoName", fundingInputParams.ceoName)
+        formData.append("nickname", fundingInputParams.nickname)
+        formData.append("companyAddress", fundingInputParams.companyAddress)
+        formData.append("companyPhoneNumber", fundingInputParams.companyPhoneNumber)
+        formData.append("email", fundingInputParams.email)
+        const option = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/admin/funding/registerpage", formData, option);
+            alert("펀딩 페이지 등록 성공");
+            navigate("/funding");
+        } catch (error) {
+            setFundErrorMessages({
+                title: "",
+                storyTitle: "",
+                story: "",
+                mainImgUrl: "",
+                subImgUrl: "",
+                endDate: "",
+                rewardName: "",
+                companyName: "",
+                ceoName: "",
+                nickname: "",
+                companyAddress: "",
+                companyPhoneNumber: "",
+                email:""
+                , ...error.response.data.errorData})
+        }
+    };
+
+    console.log(fundErrorMessages);
 
     const handleGivingUsingChange = (id, e) => {
         const newInputValues = new Map(giveUsingMap);
@@ -4307,6 +4836,17 @@ public class GivingRegisterReqDto {
         }
     };
 
+    const handleRewardNameChange = (id, e) => {
+        const newInputValues = new Map(rewardNameMap);
+        newInputValues.set(id, e.target.value);
+        setRewardNameMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarNameIsBlank(false);
+        }else {
+            setRewarNameIsBlank(true);
+        }
+    };
+
     const handleGivingUsingPriceChange = (id, e) => {
         const newInputValues = new Map(giveUsingPriceMap);
         newInputValues.set(id, parseInt(e.target.value));
@@ -4315,6 +4855,17 @@ public class GivingRegisterReqDto {
             setGiveUsingPriceIsBlank(false);
         }else {
             setGiveUsingPriceIsBlank(true);
+        }
+      };
+
+    const handleRewardPriceChange = (id, e) => {
+        const newInputValues = new Map(rewardPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setRewardPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarPriceIsBlank(false);
+        }else {
+            setRewarPriceIsBlank(true);
         }
       };
 
@@ -4330,9 +4881,22 @@ public class GivingRegisterReqDto {
         }
     };
 
-    const addGiveUsingInputComponentHandle = () => {
-        setGiveTds([...giveTds, {id: giveId.current}]);
-        giveId.current += 1;
+    const madeRewardList = () => {
+        const nameList = Array.from(rewardNameMap.values())
+        const priceList = Array.from(rewardPriceMap.values())
+
+        if(!rewardNameIsBlank && !rewardPriceIsBlank) {
+            alert("reward는 비워져있으면 안 됩니다.");
+        }else{
+            setFundingInputParams({...fundingInputParams, rewardName: nameList, rewardPrice: priceList})
+            setShowTable(false);
+        }
+    };
+
+    const addRewardInputComponentHandle = () => {
+        setFundingInputParams({...fundingInputParams, showRewardTable: true});
+        setRewardTds([...rewardTds, {id: rewardId.current}]);
+        rewardId.current += 1;
     }
 
     const removeGiveUsingInputComponentHandle = (id,e) => {
@@ -4345,7 +4909,17 @@ public class GivingRegisterReqDto {
         setGiveUsingPriceMap(newGiveUsingPrice);
     }
 
-    const changeGivePageCategory = (e) => {
+    const removeRewardInputComponentHandle = (id,e) => {
+        setRewardTds([...rewardTds.filter(rewardTd => rewardTd.id !== parseInt(e.target.value))]);
+        const newRewardName = new Map(rewardNameMap);
+        const newRewardPrice = new Map(rewardPriceMap);
+        newRewardName.delete(id);
+        newRewardPrice.delete(id);
+        setRewardNameMap(newRewardName);
+        setRewardPriceMap(newRewardPrice);
+    }
+
+      const changeGivePageCategory = (e) => {
         const givePageCategory = e.target.value;
         let giveDetailCategory = giveSubCategoryList.detailCategory;
       
@@ -4355,24 +4929,42 @@ public class GivingRegisterReqDto {
         }else if(givePageCategory === "펀딩") {
             giveDetailCategory = "음식";
             setFundingInputParams({...fundingInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
-        } 
+        }
+      
         setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory,});
-    };
+      };
+
+    const changeFundingPageCategory = (e) => {
+        const fundingPageCategory = e.target.value;
+        let fundingDetailCategory = fundSubCateogoryList.detailCategory;
+    
+        if (fundingPageCategory === "펀딩") {
+            fundingDetailCategory = "음식";
+            setFundingInputParams({...fundingInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+        }else if(fundingPageCategory === "기부") {
+            fundingDetailCategory = "아동"
+            setGiveInputParams({...giveInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+        }
+    }
 
     const changeDetailCategory = (e) => {
         setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
+        setFundingInputParams({...fundingInputParams, detailCategory:e.target.value})
     }
 
     const changeTitle = (e) => {
         setGiveInputParams({...giveInputParams, title:e.target.value})
+        setFundingInputParams({...fundingInputParams, title:e.target.value})
     }
 
     const changeStoryTitle = (e) => {
         setGiveInputParams({...giveInputParams, storyTitle:e.target.value})
+        setFundingInputParams({...fundingInputParams, storyTitle:e.target.value})
     }
 
     const changeStory = (e) => {
         setGiveInputParams({...giveInputParams, story:e.target.value})
+        setFundingInputParams({...fundingInputParams, story:e.target.value})
     }
 
     const changeMainImgUrl = (e) => {
@@ -4394,6 +4986,7 @@ public class GivingRegisterReqDto {
     const changeSubImgUrl = (e) => {
         const newImgFiles = [];
 
+        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
         for(const file of e.target.files) {
             const fileData = {
                 id: fileId.current,
@@ -4406,14 +4999,17 @@ public class GivingRegisterReqDto {
         setSubImgFiles([newImgFiles[newImgFiles.length - 1]]);
     }
 
+
     const changeGoalTotal = (e) => {
         const parsedGoalTotal = parseInt(e.target.value, 10);
 
         setGiveInputParams({...giveInputParams, goalTotal: parsedGoalTotal})
+        setFundingInputParams({...fundingInputParams, goalTotal: parsedGoalTotal})
     }
 
     const changeEndDate = (e) => {
         setGiveInputParams({...giveInputParams, endDate:e.target.value})
+        setFundingInputParams({...fundingInputParams, endDate:e.target.value})
     }
 
     const changeBusinessStartDate = (e) => {
@@ -4438,21 +5034,36 @@ public class GivingRegisterReqDto {
 
     const changeCompanyName = (e) => {
         setGiveInputParams({...giveInputParams, companyName:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyName:e.target.value})
     }
 
     const changeCeoName = (e) => {
         setGiveInputParams({...giveInputParams, ceoName:e.target.value})
+        setFundingInputParams({...fundingInputParams, ceoName:e.target.value})
     }
+
+    const changeNickname = (e) => {
+        setFundingInputParams({...fundingInputParams, nickname:e.target.value})
+    }
+
     const changeCompanyAddress = (e) => {
         setGiveInputParams({...giveInputParams, companyAddress:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyAddress:e.target.value})
     }
 
     const changePhoneNumber = (e) => {
         setGiveInputParams({...giveInputParams, companyPhoneNumber:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyPhoneNumber:e.target.value})
     }
 
     const changeEmail = (e) => {
         setGiveInputParams({...giveInputParams, email:e.target.value})
+        setFundingInputParams({...fundingInputParams, email:e.target.value})
+    }
+
+    const addGiveUsingInputComponentHandle = () => {
+        setGiveTds([...giveTds, {id: giveId.current}]);
+        giveId.current += 1;
     }
 
 ```
@@ -4466,16 +5077,7 @@ public class GivingRegisterReqDto {
 </div>
 </details>
 
-<details>
-<summary>펀딩 등록 영상 및 코드 리뷰</summary>
-<div markdown="1">
-
-![펀딩 등록 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/69890336-542c-42f2-b6fd-43ee0dbd6f89)
-
-</div>
-</details>
-
-<br/>
+</br>
 
 ### **관리자 펀딩 및 기부 수정 화면 구현 영상 및 코드 리뷰**
 
