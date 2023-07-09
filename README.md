@@ -5135,6 +5135,8 @@ public class FundingRegisterController {
 
 ```
 
+</br>
+
 - 요청에 대한 인증이 끝나고 데이터를 Service로 넘긴다.
 
 ---
@@ -5562,6 +5564,8 @@ public interface FundingRegisterPageRepository {
 
 ```
 
+</br>
+
 - Entity를 insert 하기 위해 둘 다 똑같이 보내고 있다. 성공 건수로 int 값을 반환.
 
 --- 
@@ -5727,6 +5731,8 @@ public interface FundingRegisterPageRepository {
 	</insert>
 
 ```
+
+</br>
 
 - 기부는 순서대로 사업자 정보, 기부 관련 정보, 사업대상효과 및 기대효과, 기부금 사용 계획, 상세 페이지에 쓸 서브 이미지로 insert를 하고 있다.
 
