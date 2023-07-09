@@ -5294,7 +5294,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
 
 - 업로드할 파일 경로를 설정을 하는데, 우리는 upload 폴더 안에 파일을 업로드를 할 것이다.
 
-- 외부에서 이미지 경로에 직접적으 접근을 못하도록 file:/// ~~ 라는 실제 경로를 /image/**로 바꿔줬다. 그레서 데이터를 받아온 html에 image를 받을 때
+- 외부에서 이미지 경로에 직접적으 접근을 못하도록 file:/// ~~ 라는 실제 경로를 /image/**로 바꿔줬다. 그래서 데이터를 받아온 html에 image를 받을 때
 
 ```html
 
@@ -5782,19 +5782,19 @@ public interface FundingRegisterPageRepository {
 
 </br>
 
-- 펀딩 리워드 록
+- 펀딩 리워드 등록
 
 ![펀딩 리워드 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/a647d428-f1e6-4b43-9533-e7e89844abbe)
 
 </br>
 
-- 펀딩 사업자 정록
+- 펀딩 사업자 정보 등록
 
 ![펀딩 사업자 정보 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/e3311a73-6ba8-4670-ad38-177f8e057941)
 
 </br>
 
-- 펀딩 상세 이록
+- 펀딩 상세 이미지 등록
 
 ![펀딩 상세 이미지 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/733d00df-c950-4a92-8545-8e510a3d88f6)
 
@@ -5825,6 +5825,382 @@ public interface FundingRegisterPageRepository {
 <div markdown="1">
   
 ![펀딩 수정 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/5c1ae2c5-038e-49be-8fbc-611f014ca421)
+
+</div>
+</details>
+
+<details>
+<summary>기부 & 펀딩 수정 코뷰</summary>
+<div markdown="1">
+  
+## FrontEnd
+
+- 기부
+
+```html
+
+        {role ?
+                <div css={adminContainer}>
+                    <button css={givingModifyButton} onClick={adminModifyHandleSubmit}>기부 수정</button>
+                    {modifyOpen ?
+                        <div css={givingModifyContainer}>
+                            <div css={givingIdentifyContainer}>
+                                <div css={givingIdentifyMain}>
+                                    <div css={givingModifyTitle}>기부 수정</div>
+                                    <div css={modifyGivingHeader}>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>제목 수정</div>
+                                            <input css={modifyValue} defaultValue={givingDetail.data.data.pageTitle} onChange={modifyHandle} name="givingName"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>종료일 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="endDate"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>목표 금액 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="goalTotal"/>
+                                        </div>
+                                    </div>
+                                    <div css={modifyIdentifyButtonContainer}>
+                                        <button css={modifyIdentifyButton} onClick={modifyIdentifyHandleSubmit}>확인</button>
+                                        <button css={modifyCancelButton} onClick={modifyCancelHandleSubmit}>취소</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    : ""}
+			: ""}
+
+```
+
+</br>
+
+- 펀딩
+
+```html
+
+            {role ?
+                <div css={adminContainer}>
+                    <button css={fundingModifyButton} onClick={adminModifyHandleSubmit}>펀딩 수정</button>
+                    {modifyOpen ?
+                        <div css={joinFundContainer}>
+                            <div css={joinFundIdentifyContainer}>
+                                <div css={joinFundIdentifyMain}>
+                                    <div css={FundingModifyTitle}>펀딩 수정</div>
+                                    <div css={joinFundHeader}>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>제목 수정</div>
+                                            <input css={modifyValue} defaultValue={funding.fundingTitle} onChange={modifyHandle} name="fundingName"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>종료일 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="endDate"/>
+                                        </div>
+                                        <div css={modifyContainer}>
+                                            <div css={modifyTitleTxt}>목표 금액 수정</div>
+                                            <input css={modifyValue} onChange={modifyHandle} name="goalTotal"/>
+                                        </div>
+                                    </div>
+                                    <div css={joinIdentifyButtonContainer}>
+                                        <button css={joinIdentifyButton} onClick={modifyIdentifyHandleSubmit}>확인</button>
+                                        <button css={joinCancelButton} onClick={modifyCancelHandleSubmit}>취소</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    : ""}
+			: ""}
+
+```
+
+</br>
+
+- role은 위 상세페이지 코드에서 유저 정보를 들고올 때 데이터가 ROLE_ADMIN이면 role이 true가 되고, 나머지는 false가 된다. 그래서 상단에 관리자 계정만 보이게끔 기부 & 펀딩에 수정과 삭제를 넣었다.
+
+- 이제 role이 true면 위와 같은 내용을 입력 받아서 처리를 할 수 있다. 
+
+---
+
+</br></br>
+
+**입력 받은 값 처리**
+
+- 기부
+
+```javascript
+
+    const modifyHandle = (e) => {
+        const {name, value} = e.target
+        setModify({...modify, [name]: value})
+    }
+
+```
+
+</br>
+
+```javascript
+
+    const modifyHandle = (e) => {
+        const {name, value} = e.target
+        setModify({...modify, [name]: value})
+    }
+
+```
+
+</br>
+
+- 별 행동 없이 입력 받은 값을 상태 업데이트해준다.
+
+---
+
+</br></br>
+
+**요청**
+
+- 기부
+
+```javascript
+
+    const modifyInfo = useMutation(async () => {
+        const data = {
+            ...modify
+        }
+
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.put("http://localhost:8080/admin/giving/modify", data, option)
+    }, {
+        enabled: refresh,
+
+        onSuccess: () => {
+            alert("기부 내용이 성공적으로 수정 되었습니다.");
+            setRefresh(false);
+            setModifyOpen(false);
+        }
+    })
+
+```
+
+</br>
+
+- 펀딩
+
+```javascript
+
+    const modifyInfo = useMutation(async () => {
+        const data = {
+            ...modify
+        }
+
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.put("http://localhost:8080/admin/funding/modify", data, option)
+    }, {
+        enabled: refresh,
+
+        onSuccess: () => {
+            alert("펀딩 내용이 성공적으로 수정 되었습니다.");
+            setRefresh(false)
+            setModifyOpen(false);
+        }
+    })
+
+```
+
+</br>
+
+- 업데이트된 상태값들을 데이터베이스에 넣기 위해 요청을 보내고 있다.
+
+- 수정이기 때문에 put 요청 사용.
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/admin")
+@RequiredArgsConstructor
+public class AdminController {
+	
+	private final AdminService adminService;
+
+	@PutMapping("/giving/modify")
+	public ResponseEntity<?> givingModifyInfo(@RequestBody GivingModifyReqDto givingModifyReqDto) {
+		return ResponseEntity.ok(adminService.givingModify(givingModifyReqDto));
+	}
+
+	@PutMapping("/funding/modify")
+	public ResponseEntity<?> toFundingModify(@RequestBody FundingModifyReqDto fundingModifyReqDto) {
+		return ResponseEntity.ok(adminService.fundingModify(fundingModifyReqDto));
+	}
+
+}
+
+```
+
+</br>
+
+- 요청으로 받은 값들을 Service로 보내고 반환하고 있다.
+
+- put 요청이 왔기 때문에 PutMapping 사용.
+
+---
+
+</br></br>
+
+**Dto**
+
+- 기부
+
+```java
+
+@Data
+public class GivingModifyReqDto {
+	private int givingPageId;
+	private String givingName;
+	private LocalDate endDate;
+	private int goalTotal;
+	
+	public Giving givingModifyToEntity() {
+		return Giving.builder()
+				.pageId(givingPageId)
+				.pageTitle(givingName)
+				.endDate(endDate)
+				.goalTotal(goalTotal)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 펀딩
+
+```java
+
+@Data
+public class FundingModifyReqDto {
+	private int fundingId;
+	private String fundingName;
+	private LocalDate endDate;
+	private int goalTotal;
+	
+	public Funding fundingToEntity() {
+		return Funding.builder()
+				.fundingId(fundingId)
+				.fundingTitle(fundingName)
+				.endDate(endDate)
+				.goalTotal(goalTotal)
+				.build();
+	}
+}
+
+```
+
+</br>
+
+- 요청으로 받은 값을 Entity로 처리하고 있다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+	private final AdminRepository adminRepository;
+	
+	public int fundingModify(FundingModifyReqDto fundingModifyReqDto) {
+		Funding fundingToEntity = fundingModifyReqDto.fundingToEntity();
+		return adminRepository.saveFundingModify(fundingToEntity);
+	}
+	
+	public int givingModify(GivingModifyReqDto givingModifyReqDto) {
+		Giving givingEntity = givingModifyReqDto.givingModifyToEntity();
+		return adminRepository.saveGivingModify(givingEntity);
+	}
+
+```
+
+</br>
+
+- Entity로 전환한 값들을 Repository로 넘기고 반환하고 있다. 수정도 성공 건수로 응답이 오기 때문에 int로 받는다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface AdminRepository {
+	public int saveFundingModify(Funding funding);
+	public int saveGivingModify(Giving giving);
+}
+
+```
+
+</br>
+
+- sql에서 update를 하기 위해 Entity를 보내고 있다. 마찬가지로 성공건수로 응답이 오기 때문에 int로 받고 있다.
+
+---
+
+</br></br>
+
+**Sql**
+
+```sql
+
+	<update id="saveGivingModify">
+		update
+			giving_page_tb
+		set
+			giving_name = #{pageTitle},
+			end_date = #{endDate},
+			goal_total = #{goalTotal}
+		where
+			giving_page_id = #{pageId};
+	</update>
+
+	<update id="saveFundingModify">
+		update
+			funding_page_tb
+		set
+			funding_name = #{fundingTitle},
+			end_date = #{endDate},
+			goal_total = #{goalTotal}
+		where
+			funding_id = #{fundingId}
+	</update>
+
+```
+
+</br>
+
+- update문을 사용하여 수정할 데이터들을 넣어서 수정해주고 있다. 이제 성공적으로 데이터가 들어가면 수정이 된 것임.
+
+---
 
 </div>
 </details>
