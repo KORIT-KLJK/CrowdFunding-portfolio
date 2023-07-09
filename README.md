@@ -5261,9 +5261,46 @@ file:
 
 </br>
 
+- 경로 접근 설정
+
+```java
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer{
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		WebMvcConfigurer.super.addResourceHandlers(registry);
+		registry.addResourceHandler("/image/**")
+				.addResourceLocations("file:///" + filePath)
+				.resourceChain(true)
+				.addResolver(new PathResourceResolver() {
+					@Override
+					protected Resource getResource(String resourcePath, Resource location) throws IOException {
+						resourcePath = URLDecoder.decode(resourcePath, StandardCharsets.UTF_8);
+						return super.getResource(resourcePath, location);
+					}
+				});
+	}
+}
+
+```
+
+</br>
+
 - 업로드할 수 있는 파일의 크기를 최대 100MB로 설정을 한다. 이 값을 초과할 경우 요청이 거부가 된다.
 
 - 업로드할 파일 경로를 설정을 하는데, 우리는 upload 폴더 안에 파일을 업로드를 할 것이다.
+
+- 외부에서 이미지 경로에 직접적으 접근을 못하도록 file:/// ~~ 라는 실제 경로를 /image/**로 바꿔줬다. 그레서 데이터를 받아온 html에 image를 받을 때
+
+```html
+
+<img css={img} src={`http://localhost:8080/image/main/${funding.mainImgUrl}`} />
+
+```
+
+이런 식으로 해준 것이다. funding.mainImgUrl의 값으로는 아래에서 설정해준 tempFileName이 들어가있다.
 
 ---
 
