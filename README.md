@@ -5701,6 +5701,66 @@ public interface FundingRegisterPageRepository {
 
 **Database**
 
+- 기부 정보 등록
+
+![기부 정보 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/c093f6a7-0350-4cdf-844f-347bb4d1062b)
+
+</br>
+
+- 기부 사업자 등록
+
+![기부 사업자 정보 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/d205d248-d256-48c5-9c07-048c8131aea8)
+
+</br>
+
+- 기부 사업 계획 등록
+
+![기부 사업 계획 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/453dd35f-eca7-4b45-911c-9bc9d38416fc)
+
+</br>
+
+- 기부 상세 이미지 등록
+
+![기부 상세 이미지 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/353d3926-723f-4f2f-8165-98c172a7d65e)
+
+</br>
+
+- 기부금 사용 계획 등록
+
+![기부금 사용 계획 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/f4d8ca92-0023-49f7-9d1a-703202ee726e)
+
+</br>
+
+---
+
+- 펀딩 정보 등록
+
+![펀딩 정보 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/fdb1d0fb-cab4-49d4-aaa0-60dd79896593)
+
+</br>
+
+- 펀딩 리워드 록
+
+![펀딩 리워드 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/a647d428-f1e6-4b43-9533-e7e89844abbe)
+
+</br>
+
+- 펀딩 사업자 정록
+
+![펀딩 사업자 정보 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/e3311a73-6ba8-4670-ad38-177f8e057941)
+
+</br>
+
+- 펀딩 상세 이록
+
+![펀딩 상세 이미지 등록](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/733d00df-c950-4a92-8545-8e510a3d88f6)
+
+</br>
+
+- 이렇게 데이터베이스에 데이터가 잘 들어간 모습을 확인할 수 있다.
+
+---
+
 </div>
 </details>
 
