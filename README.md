@@ -6202,6 +6202,26 @@ public interface AdminRepository {
 
 ---
 
+</br></br>
+
+**Database**
+
+- 기부
+
+![기부 수정](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/3a6a0808-3967-4894-9855-02b08aa53c91)
+
+</br>
+
+- 펀딩
+
+![펀딩 수정](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/ba2b09ec-af50-49a7-9288-19a273c9c4e7)
+
+</br>
+
+- 이렇게 수정된 데이터들을 확인할 수 있다.
+
+---
+
 </div>
 </details>
 
