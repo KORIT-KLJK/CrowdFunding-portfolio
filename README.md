@@ -5091,15 +5091,615 @@ public class FundingRegisterPageReqDto {
 
 **Controller**
 
+- 기부
+
 ```java
+
+@RestController
+@RequiredArgsConstructor
+public class GiveRegisterController {
+
+	private final GiveRegsterPageService giveRegsterPageService;
+	
+	@ValidAspect
+	@PostMapping("/admin/giving/registerpage")
+	public ResponseEntity<?> registerPage(@Valid GivingRegisterReqDto givingRegisterReqDto, BindingResult bindingResult) {
+		giveRegsterPageService.giveRegisterPage(givingRegisterReqDto);
+		return ResponseEntity.ok().body(true);
+	}
+	
+}
 
 ```
 
 </br>
 
-- 
+- 펀딩
+
+```java
+
+@RestController
+@RequiredArgsConstructor
+public class FundingRegisterController {
+
+	private final FundingRegisterPageService fundingRegisterPageService;
+
+	@ValidAspect
+	@PostMapping("/admin/funding/registerpage")
+	public ResponseEntity<?> registerPage(@Valid FundingRegisterPageReqDto registerPageReqDto, BindingResult bindingResult) {
+		fundingRegisterPageService.registerPage(registerPageReqDto);
+		return ResponseEntity.ok().body(true);
+	}
+
+}
+
+```
+
+- 요청에 대한 인증이 끝나고 데이터를 Service로 넘긴다.
 
 ---
+
+</br></br>
+
+**Service**
+
+- 기부
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class GiveRegsterPageService {
+	
+	private final GiveRegisterPageRepository giveRegisterPageRepository;
+	private Center centerEntity;
+	private GiveRegisterPage giveRegisterPageEntity;
+	
+	@Value("${file.path}")
+	private String filePath;
+	
+	public int giveRegisterPage (GivingRegisterReqDto givingRegisterReqDto) {
+		centerEntity = givingRegisterReqDto.toCenterEntity();
+		giveRegisterPageRepository.toSaveCenter(centerEntity);
+		
+		giveRegisterPageEntity = givingRegisterReqDto.toGiveRegisterEntity(filePath);
+		giveRegisterPageEntity.setCenterId(centerEntity.getCenterId());
+		giveRegisterPageRepository.toSaveGiveRegisterPage(giveRegisterPageEntity);
+		
+		TargetBenefit targetBenefitEntity = givingRegisterReqDto.toTargetBenefitEntity();
+		targetBenefitEntity.setGivingPageId(giveRegisterPageEntity.getGivingPageId());
+		giveRegisterPageRepository.toSaveTarget(targetBenefitEntity);
+		
+		List<DonationUsePlan> donationEntity = givingRegisterReqDto.toDonationUsePlanEntity();
+		donationEntity.forEach(donation -> {
+			giveRegisterPageRepository.toSaveDonation(
+			DonationUsePlan.builder()
+			.pageCategory(donation.getPageCategory())
+			.giveUsing(donation.getGiveUsing())
+			.donationExpense(donation.getDonationExpense())
+			.givingPageId(giveRegisterPageEntity.getGivingPageId())
+			.build());
+		});
+		
+		GivingSubImg givingSubImgEntity = givingRegisterReqDto.togivingSubImgEntity(filePath);
+		givingSubImgEntity.setGivingPageId(giveRegisterPageEntity.getGivingPageId());
+		return giveRegisterPageRepository.toSaveGivingSubImg(givingSubImgEntity);
+	}
+
+}
+
+```
+
+</br>
+
+- 펀딩
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class FundingRegisterPageService {
+
+	private final FundingRegisterPageRepository registerPageRepository;
+	private FundingRegisterPage fundingRegisterEntity;
+	
+	@Value("${file.path}")
+	private String filePath;
+	
+	
+	public int registerPage(FundingRegisterPageReqDto registerPageReqDto) {
+		fundingRegisterEntity = registerPageReqDto.toRegisterEntity(filePath);
+		registerPageRepository.toSaveRegisterPage(fundingRegisterEntity);
+		
+		BusinessInfo businessInfoEntity = registerPageReqDto.toBusinessEntity();
+		businessInfoEntity.setFundingId(fundingRegisterEntity.getFundingId());
+		registerPageRepository.toSaveBusinessInfo(businessInfoEntity);
+		
+		List<Reward> rewardEntity = registerPageReqDto.toRewardEntity();
+		rewardEntity.forEach(reward -> {
+			registerPageRepository.toSaveReward(
+					Reward.builder()
+					.pageCategory(reward.getPageCategory())
+					.rewardName(reward.getRewardName())
+					.rewardPrice(reward.getRewardPrice())
+					.fundingId(fundingRegisterEntity.getFundingId())
+					.build());
+		});
+		
+		FundingSubImg fundingSubImgEntity = registerPageReqDto.toFundingSubImgEntity(filePath);
+		fundingSubImgEntity.setFundingId(fundingRegisterEntity.getFundingId());
+		return registerPageRepository.toSaveFundingSubImg(fundingSubImgEntity);
+	}
+}
+
+```
+
+</br>
+
+- Dto에서 Entity로 바꾸는 값을 받아 Repository로 데이터를 보낸다.
+
+---
+
+</br></br>
+
+**파일 경로 설정**
+
+- application.yml
+
+```html
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+file:
+  path: C:\aws_project\workspace\CrowdFunding-portfolio\Backend\crowdfunding\upload\
+
+```
+
+</br>
+
+- 업로드할 수 있는 파일의 크기를 최대 100MB로 설정을 한다. 이 값을 초과할 경우 요청이 거부가 된다.
+
+- 업로드할 파일 경로를 설정을 하는데, 우리는 upload 폴더 안에 파일을 업로드를 할 것이다.
+
+---
+
+</br></br>
+
+**Dto**
+
+- 기부
+
+```java
+
+	public GiveRegisterPage toGiveRegisterEntity(String filePath) {
+		MultipartFile file = mainImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "main/" + tempFileName);	// 경로/post/UUID.jpg
+	
+		File f = new File(filePath + "main");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return GiveRegisterPage.builder()
+				.pageCategory(pageCategory)
+				.detailCategory(detailCategory)
+				.title(title)
+				.storyTitle(storyTitle)
+				.story(story)
+				.goalTotal(goalTotal)
+				.mainImgUrl(tempFileName)
+				.endDate(endDate)
+				.build();
+	}
+	
+	public GivingSubImg togivingSubImgEntity(String filePath) {
+		MultipartFile file = subImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "sub/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "sub");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return GivingSubImg.builder()
+				.subImgUrl(tempFileName)
+				.pageCategory(pageCategory)
+				.build();
+	}
+	
+	public Center toCenterEntity() {
+		return Center.builder()
+				.pageCategory(pageCategory)
+				.centerName(companyName)
+				.centerAddress(companyAddress)
+				.centerPhoneNumber(companyPhoneNumber)
+				.centerCeo(ceoName)
+				.build();
+	}
+	
+	public TargetBenefit toTargetBenefitEntity() {
+		return TargetBenefit.builder()
+				.pageCategory(pageCategory)
+				.target(target)
+				.targetCount(targetCount)
+				.benefitEffect(benefitEffect)
+				.businessStartDate(businessStartDate)
+				.businessEndDate(businessEndDate)
+				.build();
+	}
+	
+	public List<DonationUsePlan> toDonationUsePlanEntity() {
+	    List<DonationUsePlan> donationUsePlans = new ArrayList<>();
+	    int size = Math.min(giveUsing.size(), donationExpense.size());
+	    for (int i = 0; i < size; i++) {
+	        String give = giveUsing.get(i);
+	        int donation = donationExpense.get(i);
+	        DonationUsePlan donationPlan = DonationUsePlan.builder()
+	        		.pageCategory(pageCategory)
+	        		.giveUsing(give)
+	        		.donationExpense(donation)
+	        		.build();
+	        donationUsePlans.add(donationPlan);
+	    }
+	    return donationUsePlans;
+	}
+
+```
+
+</br>
+
+- 펀딩
+
+```java
+
+	public FundingRegisterPage toRegisterEntity(String filePath) {
+		MultipartFile file = mainImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "main/" + tempFileName);	// 경로/post/UUID.jpg
+		System.out.println("filePath: " + filePath);
+		File f = new File(filePath + "main");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return FundingRegisterPage.builder()
+				.pageCategory(pageCategory)
+				.detailCategory(detailCategory)
+				.title(title)
+				.storyTitle(storyTitle)
+				.story(story)
+				.goalTotal(goalTotal)
+				.mainImgUrl(tempFileName)
+				.endDate(endDate)
+				.nickname(nickname)
+				.build();
+	}
+	
+	public BusinessInfo toBusinessEntity() {
+		return BusinessInfo.builder()
+				.pageCategory(pageCategory)
+				.companyName(companyName)
+				.ceoName(ceoName)
+				.companyAddress(companyAddress)
+				.companyPhoneNumber(companyPhoneNumber)
+				.ceoEmail(email)
+				.build();
+	}
+	
+
+	public List<Reward> toRewardEntity() {
+	    List<Reward> rewards = new ArrayList<>();
+	    int size = Math.min(rewardName.size(), rewardPrice.size()); // 두 리스트 중 작은 크기를 선택
+
+	    for (int i = 0; i < size; i++) {
+	        String name = rewardName.get(i);
+	        int price = rewardPrice.get(i);
+	        Reward reward = Reward.builder()
+	            .pageCategory(pageCategory)
+	            .rewardName(name)
+	            .rewardPrice(price)
+	            .build();
+	        rewards.add(reward);
+	    }
+
+	    return rewards;
+	}
+	
+	public FundingSubImg toFundingSubImgEntity(String filePath) {
+		MultipartFile file = subImgUrl;
+		if(file == null) {
+			return null;
+		}
+		String originFileName = file.getOriginalFilename();
+		String extension = originFileName.substring(originFileName.lastIndexOf("."));
+		String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
+		Path uploadPath = Paths.get(filePath + "sub/" + tempFileName);	// 경로/post/UUID.jpg
+		File f = new File(filePath + "sub");
+		if(!f.exists()) {
+			f.mkdirs();
+		}
+		
+		try {
+			Files.write(uploadPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return FundingSubImg.builder()
+				.subImgUrl(tempFileName)
+				.pageCategory(pageCategory)
+				.build();
+	}
+	
+
+```
+
+</br>
+
+- 파일이 없는 경우 null을 반환한다.
+
+- 업로드된 파일의 원본 파일 이름과 확장자를 추출한다. 확장자는 파일 이름에서 마지막 . 이후의 문자열로 추출된다.
+
+- 임시 파일 이름을 생성하기 위해 UUID를 사용한다. UUID는 랜덤한 키값을 생성하는데 사용되며, 이것이 파일 이름에 포함된다. 문자열만 사용할 것이기에 UUID 안에 포함되어있는 "-"를 제거해준다.
+
+- uploadPath는 업로드된 파일을 저장할 경로를 나타낸다. filePath 변수와 위에서 만들어준 임시 파일 이름을 결합하여 만들어준다.
+
+- 파일을 저장할 디렉토리가 존재하지 않을 경우, 해당 디렉토리를 생성한다.
+
+- Files.write(uploadPath, file.getBytes())는 실제로 파일을 저장하는 부분. uploadPath에 업로드된 파일의 byte를 사용한다.
+
+- 데이터베이스에는 파일 이름만 존재하면 되기 때문에 tempFileName만 보내는 것.
+
+- 나머지는 똑같이 Builder를 사용하여 값을 Entity에 넣어주고 있다.
+
+---
+
+</br></br>
+
+**Repository**
+
+- 기부
+
+```java
+
+@Mapper
+public interface GiveRegisterPageRepository {
+	public int toSaveCenter(Center center);
+	public int toSaveGiveRegisterPage(GiveRegisterPage giveRegisterPage);
+	public int toSaveDonation(DonationUsePlan donationUsePlan);
+	public int toSaveTarget(TargetBenefit targetBenefit);
+	public int toSaveGivingSubImg(GivingSubImg givingSubImg);
+}
+
+```
+
+</br>
+
+- 펀딩
+
+```java
+
+@Mapper
+public interface FundingRegisterPageRepository {
+	public int toSaveRegisterPage(FundingRegisterPage registerPage);
+	public int registerPostsImgs(List<PostsImg> postsImgs);
+	public int toSaveBusinessInfo(BusinessInfo businessInfo);
+	public int toSaveReward(Reward reward);
+	public int toSaveFundingSubImg(FundingSubImg fundingSubImg);
+}
+
+```
+
+- Entity를 insert 하기 위해 둘 다 똑같이 보내고 있다. 성공 건수로 int 값을 반환.
+
+--- 
+
+**Sql**
+
+- 기부
+
+```sql
+
+	<insert id="toSaveCenter"
+		parameterType="com.webproject.crowdfunding.entity.Center"
+		useGeneratedKeys="true"
+		keyProperty="centerId">
+		<if test="pageCategory == '기부'">
+			insert into center_tb
+			values
+			(0, #{centerName}, #{centerAddress}, #{centerPhoneNumber}, #{centerCeo})
+		</if>
+	</insert>
+	
+	<insert id="toSaveGiveRegisterPage"
+		parameterType="com.webproject.crowdfunding.entity.GiveRegisterPage"
+		useGeneratedKeys="true"
+		keyProperty="givingPageId">
+				
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '아동'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 1)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '노인'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 2)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '장애인'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 3)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '다문화'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 4)
+	</if>
+	<if test="pageCategory == '기부' &amp;&amp; detailCategory == '환경'">
+			insert into giving_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{centerId}, #{mainImgUrl}, 5)
+	</if>
+	</insert>
+	  
+	<insert id="toSaveTarget"
+		parameterType="com.webproject.crowdfunding.entity.TargetBenefit"
+		useGeneratedKeys="true"
+		keyProperty="tbId">
+		<if test="pageCategory == '기부'">
+			insert into target_benefit_tb
+			values
+			(0, #{target}, #{targetCount}, #{benefitEffect}, #{businessStartDate}, #{businessEndDate}, #{givingPageId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveDonation"
+		parameterType="com.webproject.crowdfunding.entity.DonationUsePlan"
+		useGeneratedKeys="true"
+		keyProperty="dupId">
+		<if test="pageCategory == '기부'">
+			insert into donation_use_plan_tb
+			values
+			(0, #{giveUsing}, #{donationExpense}, #{givingPageId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveGivingSubImg"
+		parameterType="com.webproject.crowdfunding.entity.GivingSubImg"
+		useGeneratedKeys="true"
+		keyProperty="gpsiId">
+		<if test="pageCategory == '기부'">
+			insert into giving_page_sub_img_tb
+			values
+			(0, #{givingPageId}, #{subImgUrl})
+		</if>	
+	</insert>
+
+```
+
+</br>
+
+- 펀딩
+
+```sql
+
+	<insert id="toSaveRegisterPage"
+		parameterType="com.webproject.crowdfunding.entity.FundingRegisterPage"
+		useGeneratedKeys="true"
+		keyProperty="fundingId">
+				
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '음식'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 1, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '도서'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 2, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '의류'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 3, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '액세서리&amp;화장품'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 4, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '꽃&amp;과일'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 5, #{nickname})
+	</if>
+	<if test="pageCategory == '펀딩' &amp;&amp; detailCategory == '생활용품'">
+			insert into funding_page_tb
+			values
+			(0, #{title}, NOW(), #{endDate},  #{goalTotal}, #{storyTitle}, #{story}, #{mainImgUrl}, 6, #{nickname})
+	</if>
+	</insert>
+	
+	<insert id="toSaveBusinessInfo"
+		parameterType="com.webproject.crowdfunding.entity.BusinessInfo"
+		useGeneratedKeys="true"
+		keyProperty="businessInfoId">
+		<if test="pageCategory == '펀딩'">
+			insert into business_info_tb
+			values
+			(0, #{companyName}, #{ceoName}, #{companyAddress}, #{companyPhoneNumber}, #{ceoEmail}, #{fundingId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveReward"
+		parameterType="com.webproject.crowdfunding.entity.Reward"
+		useGeneratedKeys="true"
+		keyProperty="rewardId">
+		<if test="pageCategory == '펀딩'">
+			insert into reward_tb
+			values
+			(0, #{rewardName}, #{rewardPrice}, #{fundingId})
+		</if>
+	</insert>
+	
+	<insert id="toSaveFundingSubImg"
+		parameterType="com.webproject.crowdfunding.entity.FundingSubImg"
+		useGeneratedKeys="true"
+		keyProperty="fpsiId">
+		<if test="pageCategory == '펀딩'">
+			insert into funding_page_sub_img_tb
+			values
+			(0, #{fundingId}, #{subImgUrl})
+		</if>
+	</insert>
+
+```
+
+- 기부는 순서대로 사업자 정보, 기부 관련 정보, 사업대상효과 및 기대효과, 기부금 사용 계획, 상세 페이지에 쓸 서브 이미지로 insert를 하고 있다.
+
+- 펀딩은 순서대로 펀딩 관련 정보, 사업자 정보, 리워드 정보, 상세 페이지에 쓸 서브 이미지로 insert를 하고 있다.
+
+---
+
+</br></br>
+
+**Database**
 
 </div>
 </details>
