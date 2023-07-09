@@ -5830,7 +5830,7 @@ public interface FundingRegisterPageRepository {
 </details>
 
 <details>
-<summary>기부 & 펀딩 수정 코뷰</summary>
+<summary>기부 & 펀딩 수정 코드 리뷰</summary>
 <div markdown="1">
   
 ## FrontEnd
