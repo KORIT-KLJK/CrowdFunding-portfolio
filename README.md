@@ -5915,7 +5915,7 @@ public interface FundingRegisterPageRepository {
 
 </br>
 
-- role은 위 상세페이지 코드에서 유저 정보를 들고올 때 데이터가 ROLE_ADMIN이면 role이 true가 되고, 나머지는 false가 된다. 그래서 상단에 관리자 계정만 보이게끔 기부 & 펀딩에 수정과 삭제를 넣었다.
+- role은 위 상세페이지 코드에서 유저 정보를 들고올 때 데이터가 ROLE_ADMIN이면 role이 true가 되고, 나머지는 false가 된다. 그래서 웹 상세페이지 상단에 관리자 계정만 보이게끔 기부 & 펀딩에 수정과 삭제를 넣었다.
 
 - 이제 role이 true면 위와 같은 내용을 입력 받아서 처리를 할 수 있다. 
 
