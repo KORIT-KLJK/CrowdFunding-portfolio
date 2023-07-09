@@ -4684,17 +4684,9 @@ public class FundingRegisterPageReqDto {
         email:""
     });
     
-    const [giveTds, setGiveTds] = useState([
-        {
-            id: 1
-        }
-    ]);
+    const [giveTds, setGiveTds] = useState([{id: 1}]);
     
-    const [rewardTds, setRewardTds] = useState([
-        {
-            id: 1
-        }
-    ]);
+    const [rewardTds, setRewardTds] = useState([{id: 1}]);
     const giveId = useRef(2);
     const rewardId = useRef(2);
     const [showTable, setShowTable] = useState(true);
@@ -4713,6 +4705,266 @@ public class FundingRegisterPageReqDto {
 
     const [giveUsingIsBlank, setGiveUsingIsBlank] = useState(false);
     const [givesingPriceIsBlank, setGiveUsingPriceIsBlank] = useState(false);
+
+    const handleGivingUsingChange = (id, e) => {
+        const newInputValues = new Map(giveUsingMap);
+        newInputValues.set(id, e.target.value);
+        setGiveUsingMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingIsBlank(false);
+        }else {
+            setGiveUsingIsBlank(true);
+        }
+    };
+
+    const handleRewardNameChange = (id, e) => {
+        const newInputValues = new Map(rewardNameMap);
+        newInputValues.set(id, e.target.value);
+        setRewardNameMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarNameIsBlank(false);
+        }else {
+            setRewarNameIsBlank(true);
+        }
+    };
+
+    const handleGivingUsingPriceChange = (id, e) => {
+        const newInputValues = new Map(giveUsingPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setGiveUsingPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setGiveUsingPriceIsBlank(false);
+        }else {
+            setGiveUsingPriceIsBlank(true);
+        }
+      };
+
+    const handleRewardPriceChange = (id, e) => {
+        const newInputValues = new Map(rewardPriceMap);
+        newInputValues.set(id, parseInt(e.target.value));
+        setRewardPriceMap(newInputValues);
+        if(e.target.value === "") {
+            setRewarPriceIsBlank(false);
+        }else {
+            setRewarPriceIsBlank(true);
+        }
+      };
+
+    const madeGiveUsingList = () => {
+        const giveUsingList = Array.from(giveUsingMap.values())
+        const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
+
+        if(!giveUsingIsBlank && !givesingPriceIsBlank) {
+            alert("기부금 사용 계획은 비워져있으면 안 됩니다.");
+        }else{
+            setGiveInputParams({...giveInputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
+            setShowTable(false);
+        }
+    };
+
+    const madeRewardList = () => {
+        const nameList = Array.from(rewardNameMap.values())
+        const priceList = Array.from(rewardPriceMap.values())
+
+        if(!rewardNameIsBlank && !rewardPriceIsBlank) {
+            alert("reward는 비워져있으면 안 됩니다.");
+        }else{
+            setFundingInputParams({...fundingInputParams, rewardName: nameList, rewardPrice: priceList})
+            setShowTable(false);
+        }
+    };
+
+    const addGiveUsingInputComponentHandle = () => {
+        setGiveTds([...giveTds, {id: giveId.current}]);
+        giveId.current += 1;
+    }
+
+    const addRewardInputComponentHandle = () => {
+        setFundingInputParams({...fundingInputParams, showRewardTable: true});
+        setRewardTds([...rewardTds, {id: rewardId.current}]);
+        rewardId.current += 1;
+    }
+
+    const removeGiveUsingInputComponentHandle = (id,e) => {
+        setGiveTds([...giveTds.filter(giveTd => giveTd.id !== parseInt(e.target.value))]);
+        const newGiveUsing = new Map(giveUsingMap);
+        const newGiveUsingPrice = new Map(giveUsingPriceMap);
+        newGiveUsing.delete(id);
+        newGiveUsingPrice.delete(id);
+        setGiveUsingMap(newGiveUsing);
+        setGiveUsingPriceMap(newGiveUsingPrice);
+    }
+
+    const removeRewardInputComponentHandle = (id,e) => {
+        setRewardTds([...rewardTds.filter(rewardTd => rewardTd.id !== parseInt(e.target.value))]);
+        const newRewardName = new Map(rewardNameMap);
+        const newRewardPrice = new Map(rewardPriceMap);
+        newRewardName.delete(id);
+        newRewardPrice.delete(id);
+        setRewardNameMap(newRewardName);
+        setRewardPriceMap(newRewardPrice);
+    }
+
+      const changeGivePageCategory = (e) => {
+        const givePageCategory = e.target.value;
+        let giveDetailCategory = giveSubCategoryList.detailCategory;
+      
+        if (givePageCategory === "기부") {
+            giveDetailCategory = "아동";
+            setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+        }else if(givePageCategory === "펀딩") {
+            giveDetailCategory = "음식";
+            setFundingInputParams({...fundingInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
+        }
+      
+        setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory,});
+      };
+
+    const changeFundingPageCategory = (e) => {
+        const fundingPageCategory = e.target.value;
+        let fundingDetailCategory = fundSubCateogoryList.detailCategory;
+    
+        if (fundingPageCategory === "펀딩") {
+            fundingDetailCategory = "음식";
+            setFundingInputParams({...fundingInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+        }else if(fundingPageCategory === "기부") {
+            fundingDetailCategory = "아동"
+            setGiveInputParams({...giveInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
+        }
+    }
+
+    const changeDetailCategory = (e) => {
+        setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
+        setFundingInputParams({...fundingInputParams, detailCategory:e.target.value})
+    }
+
+    const changeTitle = (e) => {
+        setGiveInputParams({...giveInputParams, title:e.target.value})
+        setFundingInputParams({...fundingInputParams, title:e.target.value})
+    }
+
+    const changeStoryTitle = (e) => {
+        setGiveInputParams({...giveInputParams, storyTitle:e.target.value})
+        setFundingInputParams({...fundingInputParams, storyTitle:e.target.value})
+    }
+
+    const changeStory = (e) => {
+        setGiveInputParams({...giveInputParams, story:e.target.value})
+        setFundingInputParams({...fundingInputParams, story:e.target.value})
+    }
+
+    const changeMainImgUrl = (e) => {
+        const newImgFiles = [];
+
+        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setMainImgFiles([newImgFiles[newImgFiles.length - 1]]);
+    }
+
+    const changeSubImgUrl = (e) => {
+        const newImgFiles = [];
+
+        for(const file of e.target.files) {
+            const fileData = {
+                id: fileId.current,
+                file
+            }
+            fileId.current += 1;
+            newImgFiles.push(fileData)      
+        }
+
+        setSubImgFiles([newImgFiles[newImgFiles.length - 1]]);
+    }
+
+
+    const changeGoalTotal = (e) => {
+        const parsedGoalTotal = parseInt(e.target.value, 10);
+
+        setGiveInputParams({...giveInputParams, goalTotal: parsedGoalTotal})
+        setFundingInputParams({...fundingInputParams, goalTotal: parsedGoalTotal})
+    }
+
+    const changeEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, endDate:e.target.value})
+        setFundingInputParams({...fundingInputParams, endDate:e.target.value})
+    }
+
+    const changeBusinessStartDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessStartDate:e.target.value})
+    }
+
+    const changeBusinessEndDate = (e) => {
+        setGiveInputParams({...giveInputParams, businessEndDate:e.target.value})
+    }
+
+    const changeTarget = (e) => {
+        setGiveInputParams({...giveInputParams, target:e.target.value})
+    }
+
+    const changeTargetCount = (e) => {
+        setGiveInputParams({...giveInputParams, targetCount:e.target.value})
+    }
+
+    const changeBenefitEffect = (e) => {
+        setGiveInputParams({...giveInputParams, benefitEffect:e.target.value})
+    }
+
+    const changeCompanyName = (e) => {
+        setGiveInputParams({...giveInputParams, companyName:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyName:e.target.value})
+    }
+
+    const changeCeoName = (e) => {
+        setGiveInputParams({...giveInputParams, ceoName:e.target.value})
+        setFundingInputParams({...fundingInputParams, ceoName:e.target.value})
+    }
+
+    const changeNickname = (e) => {
+        setFundingInputParams({...fundingInputParams, nickname:e.target.value})
+    }
+
+    const changeCompanyAddress = (e) => {
+        setGiveInputParams({...giveInputParams, companyAddress:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyAddress:e.target.value})
+    }
+
+    const changePhoneNumber = (e) => {
+        setGiveInputParams({...giveInputParams, companyPhoneNumber:e.target.value})
+        setFundingInputParams({...fundingInputParams, companyPhoneNumber:e.target.value})
+    }
+
+    const changeEmail = (e) => {
+        setGiveInputParams({...giveInputParams, email:e.target.value})
+        setFundingInputParams({...fundingInputParams, email:e.target.value})
+    }
+
+```
+
+</br>
+
+- 카테고리를 변경할 때 마다 상태값이 바뀌게 펀딩이면 펀딩과 관련된 것들, 기부면 기부와 관련된 것들로 만들어줬다.
+
+- 기부금 사용금액 추가와 리워드 추가하는 부분에서 Map으로 받아 리스트를 id로 추가와 제거를 할 수 있고, value로 값을 받을 수 있게 만들었다.
+
+- 나머지는 input 창에 받은 값을 상태 업데이트를 해주고 있다.
+
+- 이미지 파일을 새로운 배열에 받아주고, 이미지 상태값에 배열의 마지막 값만 업데이트 하도록 했다.
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
 
     const giveRegisterPage = async () => {
         const formData = new FormData();
@@ -4823,254 +5075,29 @@ public class FundingRegisterPageReqDto {
         }
     };
 
-    console.log(fundErrorMessages);
+```
 
-    const handleGivingUsingChange = (id, e) => {
-        const newInputValues = new Map(giveUsingMap);
-        newInputValues.set(id, e.target.value);
-        setGiveUsingMap(newInputValues);
-        if(e.target.value === "") {
-            setGiveUsingIsBlank(false);
-        }else {
-            setGiveUsingIsBlank(true);
-        }
-    };
+</br>
 
-    const handleRewardNameChange = (id, e) => {
-        const newInputValues = new Map(rewardNameMap);
-        newInputValues.set(id, e.target.value);
-        setRewardNameMap(newInputValues);
-        if(e.target.value === "") {
-            setRewarNameIsBlank(false);
-        }else {
-            setRewarNameIsBlank(true);
-        }
-    };
+- 지금껏 json으로 요청을 보내왔지만 이미지가 들어간 값들을 요청을 보내려면 formdata로 받아서 보내야 한다. 그래서 FormData를 생성하고 값을 받아준 후 Content-Type에 form-data를 넣어주게 했다.
 
-    const handleGivingUsingPriceChange = (id, e) => {
-        const newInputValues = new Map(giveUsingPriceMap);
-        newInputValues.set(id, parseInt(e.target.value));
-        setGiveUsingPriceMap(newInputValues);
-        if(e.target.value === "") {
-            setGiveUsingPriceIsBlank(false);
-        }else {
-            setGiveUsingPriceIsBlank(true);
-        }
-      };
+- 관리자만 등록이 가능하기 때문에 서버로 요청이 들어가면서 토큰으로 인증 단계를 거치게 된다.
 
-    const handleRewardPriceChange = (id, e) => {
-        const newInputValues = new Map(rewardPriceMap);
-        newInputValues.set(id, parseInt(e.target.value));
-        setRewardPriceMap(newInputValues);
-        if(e.target.value === "") {
-            setRewarPriceIsBlank(false);
-        }else {
-            setRewarPriceIsBlank(true);
-        }
-      };
+---
 
-    const madeGiveUsingList = () => {
-        const giveUsingList = Array.from(giveUsingMap.values())
-        const giveUsingPriceList = Array.from(giveUsingPriceMap.values())
+</br></br>
 
-        if(!giveUsingIsBlank && !givesingPriceIsBlank) {
-            alert("기부금 사용 계획은 비워져있으면 안 됩니다.");
-        }else{
-            setGiveInputParams({...giveInputParams, giveUsing: giveUsingList, donationExpense: giveUsingPriceList})
-            setShowTable(false);
-        }
-    };
+## BackEnd
 
-    const madeRewardList = () => {
-        const nameList = Array.from(rewardNameMap.values())
-        const priceList = Array.from(rewardPriceMap.values())
+**Controller**
 
-        if(!rewardNameIsBlank && !rewardPriceIsBlank) {
-            alert("reward는 비워져있으면 안 됩니다.");
-        }else{
-            setFundingInputParams({...fundingInputParams, rewardName: nameList, rewardPrice: priceList})
-            setShowTable(false);
-        }
-    };
-
-    const addRewardInputComponentHandle = () => {
-        setFundingInputParams({...fundingInputParams, showRewardTable: true});
-        setRewardTds([...rewardTds, {id: rewardId.current}]);
-        rewardId.current += 1;
-    }
-
-    const removeGiveUsingInputComponentHandle = (id,e) => {
-        setGiveTds([...giveTds.filter(giveTd => giveTd.id !== parseInt(e.target.value))]);
-        const newGiveUsing = new Map(giveUsingMap);
-        const newGiveUsingPrice = new Map(giveUsingPriceMap);
-        newGiveUsing.delete(id);
-        newGiveUsingPrice.delete(id);
-        setGiveUsingMap(newGiveUsing);
-        setGiveUsingPriceMap(newGiveUsingPrice);
-    }
-
-    const removeRewardInputComponentHandle = (id,e) => {
-        setRewardTds([...rewardTds.filter(rewardTd => rewardTd.id !== parseInt(e.target.value))]);
-        const newRewardName = new Map(rewardNameMap);
-        const newRewardPrice = new Map(rewardPriceMap);
-        newRewardName.delete(id);
-        newRewardPrice.delete(id);
-        setRewardNameMap(newRewardName);
-        setRewardPriceMap(newRewardPrice);
-    }
-
-      const changeGivePageCategory = (e) => {
-        const givePageCategory = e.target.value;
-        let giveDetailCategory = giveSubCategoryList.detailCategory;
-      
-        if (givePageCategory === "기부") {
-            giveDetailCategory = "아동";
-            setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
-        }else if(givePageCategory === "펀딩") {
-            giveDetailCategory = "음식";
-            setFundingInputParams({...fundingInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory})
-        }
-      
-        setGiveInputParams({...giveInputParams, pageCategory: givePageCategory, detailCategory: giveDetailCategory,});
-      };
-
-    const changeFundingPageCategory = (e) => {
-        const fundingPageCategory = e.target.value;
-        let fundingDetailCategory = fundSubCateogoryList.detailCategory;
-    
-        if (fundingPageCategory === "펀딩") {
-            fundingDetailCategory = "음식";
-            setFundingInputParams({...fundingInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
-        }else if(fundingPageCategory === "기부") {
-            fundingDetailCategory = "아동"
-            setGiveInputParams({...giveInputParams, pageCategory: fundingPageCategory, detailCategory: fundingDetailCategory})
-        }
-    }
-
-    const changeDetailCategory = (e) => {
-        setGiveInputParams({...giveInputParams, detailCategory:e.target.value})
-        setFundingInputParams({...fundingInputParams, detailCategory:e.target.value})
-    }
-
-    const changeTitle = (e) => {
-        setGiveInputParams({...giveInputParams, title:e.target.value})
-        setFundingInputParams({...fundingInputParams, title:e.target.value})
-    }
-
-    const changeStoryTitle = (e) => {
-        setGiveInputParams({...giveInputParams, storyTitle:e.target.value})
-        setFundingInputParams({...fundingInputParams, storyTitle:e.target.value})
-    }
-
-    const changeStory = (e) => {
-        setGiveInputParams({...giveInputParams, story:e.target.value})
-        setFundingInputParams({...fundingInputParams, story:e.target.value})
-    }
-
-    const changeMainImgUrl = (e) => {
-        const newImgFiles = [];
-
-        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
-        for(const file of e.target.files) {
-            const fileData = {
-                id: fileId.current,
-                file
-            }
-            fileId.current += 1;
-            newImgFiles.push(fileData)      
-        }
-
-        setMainImgFiles([newImgFiles[newImgFiles.length - 1]]);
-    }
-
-    const changeSubImgUrl = (e) => {
-        const newImgFiles = [];
-
-        // 자바에서 쓰던 foreach에서 : 대신에 of를 쓴 것
-        for(const file of e.target.files) {
-            const fileData = {
-                id: fileId.current,
-                file
-            }
-            fileId.current += 1;
-            newImgFiles.push(fileData)      
-        }
-
-        setSubImgFiles([newImgFiles[newImgFiles.length - 1]]);
-    }
-
-
-    const changeGoalTotal = (e) => {
-        const parsedGoalTotal = parseInt(e.target.value, 10);
-
-        setGiveInputParams({...giveInputParams, goalTotal: parsedGoalTotal})
-        setFundingInputParams({...fundingInputParams, goalTotal: parsedGoalTotal})
-    }
-
-    const changeEndDate = (e) => {
-        setGiveInputParams({...giveInputParams, endDate:e.target.value})
-        setFundingInputParams({...fundingInputParams, endDate:e.target.value})
-    }
-
-    const changeBusinessStartDate = (e) => {
-        setGiveInputParams({...giveInputParams, businessStartDate:e.target.value})
-    }
-
-    const changeBusinessEndDate = (e) => {
-        setGiveInputParams({...giveInputParams, businessEndDate:e.target.value})
-    }
-
-    const changeTarget = (e) => {
-        setGiveInputParams({...giveInputParams, target:e.target.value})
-    }
-
-    const changeTargetCount = (e) => {
-        setGiveInputParams({...giveInputParams, targetCount:e.target.value})
-    }
-
-    const changeBenefitEffect = (e) => {
-        setGiveInputParams({...giveInputParams, benefitEffect:e.target.value})
-    }
-
-    const changeCompanyName = (e) => {
-        setGiveInputParams({...giveInputParams, companyName:e.target.value})
-        setFundingInputParams({...fundingInputParams, companyName:e.target.value})
-    }
-
-    const changeCeoName = (e) => {
-        setGiveInputParams({...giveInputParams, ceoName:e.target.value})
-        setFundingInputParams({...fundingInputParams, ceoName:e.target.value})
-    }
-
-    const changeNickname = (e) => {
-        setFundingInputParams({...fundingInputParams, nickname:e.target.value})
-    }
-
-    const changeCompanyAddress = (e) => {
-        setGiveInputParams({...giveInputParams, companyAddress:e.target.value})
-        setFundingInputParams({...fundingInputParams, companyAddress:e.target.value})
-    }
-
-    const changePhoneNumber = (e) => {
-        setGiveInputParams({...giveInputParams, companyPhoneNumber:e.target.value})
-        setFundingInputParams({...fundingInputParams, companyPhoneNumber:e.target.value})
-    }
-
-    const changeEmail = (e) => {
-        setGiveInputParams({...giveInputParams, email:e.target.value})
-        setFundingInputParams({...fundingInputParams, email:e.target.value})
-    }
-
-    const addGiveUsingInputComponentHandle = () => {
-        setGiveTds([...giveTds, {id: giveId.current}]);
-        giveId.current += 1;
-    }
+```java
 
 ```
 
 </br>
 
--
+- 
 
 ---
 
