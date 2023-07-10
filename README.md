@@ -2421,6 +2421,8 @@ https://admin.portone.io/payments
 
 ```javascript
 
+    const [ authenticated, setAuthenticated ] = useRecoilState(authenticatedState);
+
     useEffect(() => {
         const iamport = document.createElement("script");
         iamport.src = "https://cdn.iamport.kr/v1/iamport.js"
@@ -2429,6 +2431,25 @@ https://admin.portone.io/payments
             document.head.removeChild(iamport);
         }
     });
+
+    useEffect(() => {
+        if (accessToken) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+    }, []);
+
+    const joinFunding = () => {
+        if (!authenticated) {
+            alert("로그인 후 이용 가능합니다.")
+            navigate('/login');
+        } else if (rewards.length === 0) {
+            alert("리워드 수량과 옵션을 확인해주세요.");
+        } else {
+            setIsOpen(true);
+        }
+    }
 
     const joinSubmitHandle = () => {
         if (!window.IMP) return;
@@ -2476,6 +2497,8 @@ https://admin.portone.io/payments
 </br>
 
 - useEffect에서 아임포트 서비스를 사용할 수 있는 환경을 구축한다.
+
+- 펀딩 참여하기 버튼을 클릭했을 때 로그인이 된 유저 즉, 인증이 된 유저에 한해서만 가능하도록 설정을 했다. 인증이 되지 않았으면 버튼을 클릭했을 때 로그인 화면으로 보내게 하고, 수량과 옵션을 선택하지 않고 클릭을 하면 alert창을 띄우게 했다. authenticated는 위 로그인 코드 리뷰에 app.js 코드가 있는데 거기에 authenticated에 관한 코드가 작성되어 있어서 참고하면 된다. 이 웹페이지가 한 번 렌더링이 될 때 토큰으로 authenticated를 true나 false 상태로 업데이트할 수 있다.
 
 - window.IMP 객체를 사용하여 결제 창을 연다. 객체가 없을 경우 결제 실패로 돌아가는데 이 서비스를 로드하기 위해 useEffect 코드를 만든 것이다.
 
@@ -6243,6 +6266,390 @@ public interface AdminRepository {
 <div markdown="1">
   
 ![펀딩 삭제 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/b0d12753-abce-45a6-9fa3-caca513d43f4)
+
+</div>
+</details>
+
+<details>
+<summary>기부 & 펀딩 삭제 코드 리뷰</summary>
+<div markdown="1">
+
+## FrontEnd
+
+**관리자 삭제 html 코드**
+
+- 기부
+
+```html
+        {role ?
+		<button css={givingDeleteButton} onClick={adminDeleteHandleSubmit}>기부 삭제</button>
+		{deleteOpen ?
+		    <div css={givingDeleteContainer}>
+			<div css={givingIdentifyContainer}>
+			    <div css={givingIdentifyMain}>
+				<div css={givingDeleteTitle}>기부 삭제</div>
+				<div css={givingDeleteMessage}>기부를 정말 삭제 하시겠습니까?</div>
+				<div css={givingDeleteButtonContainer}>
+				    <button css={deleteIdentifyButton} onClick={deleteIdentifyHandleSubmit}>확인</button>
+				    <button css={deleteCancelButton} onClick={deleteCancelHandleSubmit}>취소</button>
+				</div>
+			    </div>
+			</div>
+		    </div>
+		: ""}
+	: ""}
+
+```
+
+</br>
+
+- 펀딩
+
+```html
+        {role ?
+		<button css={fundingDeleteButton} onClick={adminDeleteHandleSubmit}>펀딩 삭제</button>
+		{deleteOpen ?
+		    <div css={joinFundContainer}>
+			<div css={joinFundIdentifyContainer}>
+			    <div css={joinFundIdentifyMain}>
+				<div css={FundingModifyTitle}>펀딩 삭제</div>
+				<div css={fundingDeleteMessage}>펀딩을 정말 삭제 하시겠습니까?</div>
+				<div css={joinIdentifyButtonContainer}>
+				    <button css={joinIdentifyButton} onClick={deleteIdentifyHandleSubmit}>확인</button>
+				    <button css={joinCancelButton} onClick={deleteCancelHandleSubmit}>취소</button>
+				</div>
+			    </div>
+			</div>
+		    </div>
+		: ""}
+	: ""}
+
+```
+
+</br>
+
+- 수정은 수정할 내용을 입력 받아서 업데이트해준 상태값을 요청으로 보냈지만 삭제는 따로 값을 처리해주지 않고 버튼을 누르는 순간 바로 삭제 요청이 날라가도록 만들었다. 
+
+---
+
+</br></br>
+
+**요청**
+
+- 기부
+
+```javascript
+
+    const deleteFunding = useMutation(async () => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+        return await axios.delete(`http://localhost:8080/admin/giving/delete/${pageId}`, option)
+    }, {
+        onSuccess: () => {
+            alert("기부 내용이 성공적으로 삭제 되었습니다.")
+            navigate("/giving")
+        }
+    })
+
+```
+
+</br>
+
+- 펀딩
+
+```javascript
+
+    const deleteIdentifyHandleSubmit = () => {
+        const rewardIds = [];
+        fundingDetailReward.data.data.rewardList.map(reward => 
+            rewardIds.push(reward.rewardId)
+        )
+
+        deleteFunding.mutate({
+            rewardIds: rewardIds,
+            fundingId: pageId
+        });
+    }
+
+    const deleteFunding = useMutation(async (deleteInfo) => {
+        const option = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            data: deleteInfo
+        }
+        return await axios.delete("http://localhost:8080/admin/funding/delete", option)
+    }, {
+        onSuccess: () => {
+            alert("펀딩 내용이 성공적으로 삭제 되었습니다.")
+            navigate("/funding")
+        }
+    })
+
+```
+
+</br>
+
+- 기부는 pageId(선택한 기부 페이지)만 필요하기 때문에 url에 pageId를 넣어서 보냈고, 펀딩은 rewardId가 필요하기 때문에 List로 받아서 요청 데이터에 넣어줬다.
+
+- 관리자가 삭제하기 때문에 서버에서 token을 검사해야 한다. 그래서 요청 헤더에 넣어서 보냈다.
+
+- 삭제 요청이기 때문에 delete 요청
+
+- 삭제가 성공적으로 되면 메세지와 함께 기부와 펀딩 메인 페이지로 이동
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/admin")
+@RequiredArgsConstructor
+public class AdminController {
+	
+	private final AdminService adminService;
+
+	@DeleteMapping("/funding/delete")
+		public ResponseEntity<?> toFundingDelete(@RequestBody FundingDeleteReqDto fundingDeleteReqDto) {
+		return ResponseEntity.ok(adminService.fundingDelete(fundingDeleteReqDto));
+	}
+	
+	@DeleteMapping("/giving/delete/{pageId}")
+	public ResponseEntity<?> givingDeleteInfo(@PathVariable int pageId) {
+		return ResponseEntity.ok(adminService.givingDelete(pageId));
+	}
+	
+}
+
+```
+
+</br>
+
+- delete 요청이 와서 DeleteMapping사용
+
+- 요청이 성공적으로 오면 Service로 넘기고 성공 건수 반환.
+
+---
+
+</br></br>
+
+**Dto**
+
+```java
+
+@Data
+public class FundingDeleteReqDto {
+	private int fundingId;
+	private List<Integer> rewardIds;
+	
+	public Funding deleteFundingIdToEntity() {
+		return Funding.builder().fundingId(fundingId).build();
+	}
+	
+	public List<Reward> deleteRewardIdToEntity() {
+			List<Reward> rewards = new ArrayList<>();
+			for(int i = 0; i < rewardIds.size(); i++) {
+				int rewardId = rewardIds.get(i);
+				Reward reward = Reward.builder()
+				.rewardId(rewardId)
+				.build();
+				rewards.add(reward);
+			}
+		return rewards;
+	}
+}
+
+```
+
+</br>
+
+- fundingId와 rewardId를 삭제할 때 sql문을 따로 작성해야 해서 나눠주었다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+	private final AdminRepository adminRepository;
+	
+	public int fundingDelete(FundingDeleteReqDto fundingDeleteReqDto) {
+		Funding fundingEntity = fundingDeleteReqDto.deleteFundingIdToEntity();
+		List<Reward> rewards = fundingDeleteReqDto.deleteRewardIdToEntity();
+		adminRepository.saveDeleteRewardId(rewards);
+		return adminRepository.saveDeleteFundingId(fundingEntity);
+	}
+	
+	public int givingDelete(int pageId) {
+		adminRepository.saveDeleteGivingDonationUsePlan(pageId);
+		adminRepository.saveDeleteGivingTargetBenefit(pageId);
+		return adminRepository.saveGivingDelete(pageId);
+	}
+	
+	
+}
+
+```
+
+</br>
+
+- 펀딩은 Dto에서 처리해준 Id를, 기부는 다른 작업 없이 그대로 Id를 Repository로 넘기고 성공 건수를 반환하고 있다.  
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface AdminRepository {
+	public int saveDeleteFundingId(Funding funding);
+	public int saveDeleteRewardId(List<Reward> reward);
+	public int saveGivingDelete(int pageId);
+	public int saveDeleteGivingDonationUsePlan(int pageId);
+	public int saveDeleteGivingTargetBenefit(int pageId);
+}
+
+```
+
+</br>
+
+- 펀딩은 삭제를 할 시에 펀딩 메인 정보들, 리워드, 펀딩한 사람들을 삭제할 것이다.
+
+- 기부는 삭제를 할 시에 기부 메인 정보들, 기부금 사용 계획, 사업대상효과 및 기대효과, 기부한 사람들을 삭제할 것이다.
+
+---
+
+</br></br>
+
+**Sql**
+
+- 펀딩
+
+```sql
+
+	<delete id="saveDeleteFundingId" parameterType="com.webproject.crowdfunding.entity.Funding">
+		delete
+		from
+			funding_page_tb
+		where
+			funding_id = #{fundingId};
+	</delete>
+	
+	<delete id="saveDeleteRewardId" parameterType="com.webproject.crowdfunding.entity.Reward">
+		  delete
+		  from
+		 	reward_tb
+		  where
+		  	reward_id in
+	  <foreach collection="list" item="reward" open="(" separator="," close=")">
+	    	#{reward.rewardId}
+	  </foreach>
+	</delete>
+
+```
+
+</br>
+
+- 기부
+
+```sql
+
+	<delete id="saveGivingDelete">
+		delete
+		from
+			giving_page_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
+	<delete id="saveDeleteGivingDonationUsePlan">
+		delete
+		from
+			donation_use_plan_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+	
+	<delete id="saveDeleteGivingTargetBenefit">
+		delete
+		from
+			target_benefit_tb
+		where
+			giving_page_id = #{pageId}
+	</delete>
+
+
+```
+
+</br>
+
+- 펀딩 각 테이블에 해당되는 Id를 삭제하고 있다. rewardId는 List로 들고왔기 때문에 foreach를 돌려 rewardId를 하나씩 꺼내 삭제를 하고 있다.
+
+- 기부도 각 테이블에 해당되는 Id를 삭제하고 있다.
+
+- 펀딩한 사람과 기부한 사람들 등 나머지는 해당 funding_id, reward_id, giving_page_id로 가장 중요한 메인 정보들이 사라지기 전에 지워야 할 것들을 trigger에 작성을 해놨다. 그 부분은 아래 Database 사진에 설명이 되어있다.
+
+---
+
+</br></br>
+
+**Database**
+
+- 기부 삭제
+
+![기부 삭제](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/a442bd49-ede2-432a-8853-8361d68d9041)
+
+</br>
+
+- 펀딩 삭제
+  
+![펀딩 삭제](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/81849142-6c56-486d-bdfb-db807122eb9d)
+
+</br>
+
+---
+
+- 기부한 사람 삭제
+
+![기부한 사람 삭제 trigger](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/c4eb8713-b080-4782-bd0b-20604ac90cb0)
+
+</br>
+
+- 리워드, 사업자 정보 삭제
+
+![리워드, 사업자 정보 삭제 trigger](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/8ff949a8-1c43-434a-a135-432492bc020e)
+
+</br>
+
+- 펀딩한 사람 삭제
+
+![펀딩한 사람 삭제 trigger](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/254613fd-f3cb-44d9-ac9a-a8352ac2f0b4)
+
+</br>
+
+- old는 현재 테이블을 뜻한다. 기부 삭제 trigger는 giver_tb에 있는 giving_page_id와 현재 테이블인 giving_page_tb에 있는 giving_page_id와 일치하는 것을 삭제한다는 것을 의미한다. 이는 BEFORE DELETE 안에 작성이 되어있기 때문에 giving_page_tb에 있는 id가 삭제되기 전에 giver_tb에 있는 id를 삭제한다는 의미다.
+
+- 나머지도 마찬가지로 똑같은 형식으로 작성하였다.
+
+---
 
 </div>
 </details>
