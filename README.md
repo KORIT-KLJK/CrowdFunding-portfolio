@@ -6656,7 +6656,7 @@ public interface AdminRepository {
 
 <br/>
 
-### **OAuth2 회원가입 및 로그인 화면 구현 영상 및 코드 리뷰**
+### **OAuth2 회원가입 및 로그인 화면 구현 영상**
 
 <details>
 <summary>OAuth2 회원가입 및 로그인</summary>
@@ -6669,7 +6669,7 @@ public interface AdminRepository {
 
 <br/>
 
-### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상 및 코드 리뷰**
+### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상**
 
 <details>
 <summary>OAuth2 계정 통합</summary>
@@ -6681,4 +6681,684 @@ public interface AdminRepository {
 </div>
 </details>
 
-<br/>
+</br>
+
+### OAuth2 회원가입, 로그인, 계정 통합 코드 리뷰
+
+<details>
+<summary>OAuth2 회원가입 및 로그인 코드 리뷰</summary>
+<div markdown="1">
+
+</br>
+  
+코드 리뷰하기에 앞서 구글, 네이버, 카카오 디벨로퍼 설정을 해줘야 한다. 예시로 구글 디벨로퍼 설정 방법을 아래에 작성을 해보겠다.
+
+</br>
+
+구글창에 구글 클라우드 플랫폼 검색 -> 두 번째 거 들어가기 -> 프로젝트 검색 -> 새프로젝트 -> 만들기 -> 방금 만들어진 프로젝트 선택 -> API 및 서비스 -> oauth 동의화면 -> 외부 -> 만들기 -> 앱 정보, 개발자 연락처 정보 입력 -> 저장 후 계속 -> 범위 추가(scope 설정) ->
+
+(.../auth/userinfo.email	기본 Google 계정의 이메일 주소 확인	
+
+ .../auth/userinfo.profile	개인정보(공개로 설정한 개인정보 포함) 보기)
+
+두 개 선택 -> 저장 후 계속 -> 사용자 인증 정보 -> 사용자 인증 정보 만들기 -> OAuth 클라이언트 ID 만들기 -> 웹 애플리케이션 -> 이름 설정 -> 승인된 리디렉션 URI에 http://localhost:8080 -> 만들기 (클라이언트 보안 비밀번호는 보안 key이기 때문에 유출이 되면 안 됨) -> 서버를 만들 때 넣어줘야 할 Dependency
+
+OAuth2 Client SECURITYSpring Boot integration for Spring Security's OAuth2/OpenID Connect client features.
+
+</br>
+
+여기까지 하면 구글 서버로 들어가기 위한 설정은 끝났다. 이제 코드 작성을 해보겠다.
+
+## FrontEnd
+
+**html 코드**
+
+```html
+
+    <div css={signupAndOtherLogin}>
+	<div css={signupNaviBtn} onClick={signupNavi}>회원가입</div>
+	<div css={providerLoginContainer}>다른 계정으로 로그인</div>
+    </div>
+	<div css={providerButtonContainer}>
+	    <button css={google} onClick={googleAuthLoginClickHandle}><FcGoogle /></button>
+	    <button css={naver} onClick={naverAuthLoginClickHandle}><SiNaver /></button>
+	    <button css={kakao} onClick={kakaoAuthLoginClickHandle}><SiKakao /></button>
+	</div>
+
+```
+
+</br>
+
+- 구글, 네이버, 카카오 아이콘을 받아서, 클릭시 해당 계정으로 넘어감.
+
+---
+
+</br></br>
+
+**로그인**
+
+```javascript
+
+    const googleAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    }
+
+    const naverAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    }
+
+    const kakaoAuthLoginClickHandle = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    }
+
+```
+
+</br>
+
+- http://localhost:8080/oauth2/authorization/google 이 주소는 구글 서버 주소임. naver면 젤 끝에 naver. kakao면 kakao
+
+---
+
+</br></br>
+
+## BackEnd
+
+**application.yml**
+
+```html
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 360072367742-ej55vbhnd46b5gavi86k4n4bqaeki8hs.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+          kakao:
+            client-id: 78fef42274ba4dd840ab1be7626ef03f
+            client-secret: Nc9PTT0EZZrBBac1KUacD1hgvEDSrh6S
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - account_email
+          naver:
+            client-id: A0GjFzJY3Z6ALBlxgYpS
+            client-secret: RoEJ5AdEP7
+            redirect-uri:  http://localhost:8080/login/oauth2/code/naver
+            authorization-grant-type: authorization_code
+            scope:
+              - name
+              - email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+          naver:
+            authorization-uri: https://nid.naver.com/oauth2.0/authorize
+            token-uri: https://nid.naver.com/oauth2.0/token
+            user-info-uri: https://openapi.naver.com/v1/nid/me
+            user-name-attribute: response
+
+```
+
+</br>
+
+- client-id와 secret은 위에서 설명한 디벨로퍼를 만들고나면 나와있다. 거기에 있는 걸 붙여넣으면 된다.
+
+- scope는 마찬가지로 위에서 설명한 scope 2개가 포함된다.
+
+- 구글 서버에서 받은 토큰 안에는 provider가 포함되어있기 때문에 kakao와 naver처럼 따로 설정해줄 필요가 없다.
+
+---
+
+</br></br>
+
+**SecurityConfig(웹 보안 설정)**
+
+```java
+
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private final JwtTokenProvider jwtTokenProvider;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+	private final OAuth2Service oAuth2Service;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors();
+		http.csrf().disable();
+		http.httpBasic().disable();
+		http.formLogin().disable();
+		
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		http.authorizeRequests()
+			.antMatchers("/image/**", "/funding/**", "/giving/**", "/main/**", "/page/**")
+			.permitAll()
+			.antMatchers("/auth/funding/**", "/auth/giving/**", "/admin/**")
+			.authenticated()
+			.and()
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling()
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.and()
+			.oauth2Login()
+			.loginPage("http://localhost:3000/auth/login")
+			.successHandler(oAuth2SuccessHandler)
+			.userInfoEndpoint()
+			.userService(oAuth2Service);	
+			
+		
+	}
+}
+
+```
+
+</br>
+
+- OAuth2 로그인 요청이 서버로 들어오면 가장 먼저 여기로 들어온다. 여기 중에서도 oauth2Login()으로 들어오게 되는데 이는 OAuth2 로그인 설정을 구성하는 단계다.
+
+- loginPage("http://localhost:3000/auth/login")로 로그인 페이지 URL 설정한다. 우리는 http://localhost:3000/auth/login로 쓰고 있기 때문에 이렇게 설정을 해준 것이다.
+
+- 그 다음 successHandler는 OAuth2 로그인이 성공적으로 됐을 때 실행이 되기 때문에 이 부분은 마지막에 실행이 된다. 그래서 다음으로는 userService로 가게 된다.
+
+---
+
+</br></br>
+
+**OAuth2Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User>{
+
+	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+		OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+		
+		String registrationId = userRequest.getClientRegistration().getRegistrationId();
+		
+		OAuth2Attribute oAuth2Attribute = OAuth2Attribute.of(registrationId, oAuth2User.getAttributes());
+		
+		Map<String, Object> attributes = oAuth2Attribute.convertToMap();
+		
+		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), attributes, "email");
+	}
+}
+
+```
+
+</br>
+
+- oAuth2UserService와 oAuth2User는 OAuth2 인증을 통해 유저 정보를 가져오는 과정을 처리하는 부분이다. 즉, 구글에서 발급 받은 토큰을 열어서 유저 정보를 가져오는 것이다.
+
+- registrationId는 google, naver, kakao 중 어떤 것인지 찾는 것이다.
+
+- oAuth2Attribute는 여러가지 정보들이 있는데 그 중 provider(google, naver, kakao)와 이름, 이메일을 들고오기 위해서 만들었다. 자세한 건 아래 코드에서 다룰 것이다.
+
+- oAuth2Attribute 안에 convertToMap을 호출하면 바로 위에서 얘기한 3가지 정보를 들고올 수 있다.
+
+- return하는 생성자 안에는 사용자의 권한, 속성, 고유 식별자를 들고 오는데, 식별자에 email이 들어간 이유는 말 그대로 고유한 식별자여야 하기 때문에 닉네임을 사용할 경우 중복이 될 수 있다. 그래서 email을 사용했다.
+
+- 여기까지 성공하면 로그인을 위해 마지막으로 SuccessHandler로 가게 된다.
+
+---
+
+</br></br>
+
+**OAuth2Attribute**
+
+```java
+
+@ToString
+@Builder(access = AccessLevel.PRIVATE)	// 생성자 자체가 private이 됨
+@Getter
+public class OAuth2Attribute {
+	// attribute 정보를 아래 3개로 통일을 시킴
+    private Map<String, Object> attributes;
+    private String email;
+    private String name;
+    private String provider;
+
+    public static OAuth2Attribute of(String provider, Map<String, Object> attributes) {
+        switch (provider) {
+            case "google":
+                return ofGoogle(provider, attributes);
+            case "kakao":
+                return ofKakao(provider, attributes);
+            case "naver":
+                return ofNaver(provider, attributes);
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    // google, kakao, naver를 나눈 이유는 세 개 다 attribute의 구조가 다르다
+    // google은 attribute 안에 내용이 다 들어 있음.
+    private static OAuth2Attribute ofGoogle(String provider, Map<String, Object> attributes) {
+        return OAuth2Attribute.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .provider((String) provider)
+                .attributes(attributes)
+                .build();
+    }
+
+    // map 안에 map이 있음
+    private static OAuth2Attribute ofKakao(String provider, Map<String, Object> attributes) {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        return OAuth2Attribute.builder()
+                .name((String) kakaoProfile.get("nickname"))
+                .email((String) kakaoAccount.get("email"))
+                .provider((String) provider)
+                .attributes(kakaoAccount)
+                .build();
+    }
+
+    private static OAuth2Attribute ofNaver(String provider, Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return OAuth2Attribute.builder()
+                .name((String) response.get("name"))
+                .email((String) response.get("email"))
+                .provider((String) provider)
+                .attributes(response)
+                .build();
+    }
+
+    public Map<String, Object> convertToMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("email", email);
+        map.put("provider", provider);
+
+        return map;
+    }
+}
+
+```
+
+</br>
+
+- of 메서드에는 위 서비스에서 매개변수로 전달 받은 provider와 유저 정보가 들어오게 된다. switch문으로 provider 해당되는 값을 찾아 그 메서드로 return을 한다. 지금은 구글로 진행하고 있기 때문에 ofGoogle로 가보겠다.
+
+- 위 코드에서 달아준 주석처럼 google은 attribute 안에 내용이 다 들어 있다. 매개변수로 전달 받은 유저 정보들을 열어서 닉네임, 이메일, provider를 가지고 Builder를 통해 이 객체에 있는 변수에다 값을 넣어준다.
+
+- Builder를 통해 변수에 값을 넣어주었기 때문에 마지막 convertToMap 함수에서 map으로 key와 value로 사용이 가능하다. 그래서 Service에서 convertToMap을 호출했을 때 이 3가지 정보가 들어가게 된 것이다.
+
+---
+
+</br></br>
+
+**SuccessHandler**
+
+```java
+
+@Component
+@RequiredArgsConstructor
+public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
+	private final UserRepository userRepository;
+	private final JwtTokenProvider jwtTokenProvider;	
+	
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
+		OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+		String email = oAuth2User.getAttribute("email");
+		String provider = oAuth2User.getAttribute("provider");
+		User userEntity = userRepository.findUserByEmail(email);
+		
+		if(userEntity == null) {
+			String registerToken = jwtTokenProvider.generateToken(authentication).getAccessToken().toString();
+			String name = oAuth2User.getAttribute("name");
+			response
+			.sendRedirect(
+					"http://localhost:3000/auth/oauth2/signup"
+							+ "?registerToken=" + registerToken
+							+ "&email=" + email
+							+ "&name=" + URLEncoder.encode(name, "UTF-8")
+							+ "&provider=" + provider
+			);
+		}else {
+			if(StringUtils.hasText(userEntity.getProvider())) {
+				if(!userEntity.getProvider().contains(provider)) {
+					response.sendRedirect(
+							"http://localhost:3000/auth/oauth2/merge"
+					 			 	+ "?provider=" + provider
+									+ "&email=" + email);
+					return;
+				}
+				
+				response.sendRedirect("http://localhost:3000/auth/oauth2/login"
+				 			 	+ "?accessToken=" + jwtTokenProvider.generateToken(authentication).getAccessToken());
+				
+			}else {
+				response.sendRedirect(
+						"http://localhost:3000/auth/oauth2/merge"
+				 			 	+ "?provider=" + provider
+								+ "&email=" + email);
+			}
+		}
+		
+	}
+}
+
+```
+
+</br>
+
+- 이메일을 통해 데이터베이스에서 해당 유저 정보를 조회한다.
+
+- 유저가 처음으로 로그인하는 경우 회원 가입 페이지로 리다이렉트를 하고, 인증 토큰과 함께 필요한 정보들을 전달한다. 여기서 리다이렉트란, 서버가 클라이언트에게 특정 URL로 이동하도록 요청하는 것을 말한다.
+
+- 이미 가입한 사용자인 경우 provider 정보를 확인하여 이미 연동된 provider인지를 판단한다. 이미 연동된 provider라면 로그인 페이지로 리다이렉트하고, 새로운 인증 토큰을 발급한다. 아직 연동되지 않은 provider라면 provider 연동 페이지로 리다이렉트한다.
+
+---
+
+</br>
+
+**OAuth2 로그인 리다이렉트**
+
+```javascript
+
+const OAuth2Login = () => {
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const accessToken = searchParams.get("accessToken");
+
+    if(!!accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+        window.location.replace("/");
+    }
+
+    return (
+        <>
+        
+        </>
+    );
+};
+
+```
+
+</br>
+
+- 서버에서 보낸 리다이렉트 URL에서 토큰을 가져온다. 그 토큰이 존재한다면 loalStorage에 토큰을 넣어주고, 메인 화면으로 보낸다. 여기까지 OAuth2 로그인 성공.
+
+---
+
+</div>
+</details>
+
+<details>
+<summary>OAuth2 회원가입</summary>
+<div markdown="1">
+  
+</br>
+
+형식은 일반 회원가입이랑 완전 똑같으나 다른 점은 리다이렉트로 받은 URL을 열어 임시 토큰, 이메일, 이름, provider를 들고온다.
+
+</br>
+
+```javascript
+
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    const registerToken = searchParams.get("registerToken");
+    const email = searchParams.get("email");
+    const name = searchParams.get("name");
+    const provider = searchParams.get("provider");
+
+```
+
+</br>
+
+```html
+
+                                <FormControl variant="standard">
+                                        <Input id="input-with-icon-adornment"
+                                            css={placeholderFontSize}
+                                            label="email" 
+                                            variant="outlined" 
+                                            value={email}
+                                            disabled={true}
+                                            type="text" 
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                <Mail />
+                                                </InputAdornment>
+                                            } />
+                                    </FormControl>
+
+                                    <FormControl variant="standard">
+                                            <Input id="input-with-icon-adornment" 
+                                                label="name" 
+                                                variant="outlined" 
+                                                type="text"
+                                                value={name}
+                                                disabled={true}
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                    <Badge />
+                                                    </InputAdornment>
+                                                } />
+                                            {errorMessage.name && <Alert css={errorCss} severity="error">{errorMessage.name}</Alert>}
+                                    </FormControl>
+
+```
+
+</br>
+
+- 이처럼 이메일과 이름을 들고와서 바꾸지 못하게 disabled를 걸어준다.
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
+
+    const OAuth2register = useMutation(async () => {
+        if (signUp.password !== signUp.confirmPassword) {
+            setErrorMessages({confirmPassword: "비밀번호가 일치하지 않습니다."});
+            return;
+        }
+        const data = {
+            ...signUp, ...address
+        }
+
+        const option = {
+            headers: {
+                registerToken: `Bearer ${registerToken}`,
+                "Content-Type": "application/json"
+            }
+        }
+        try {
+            await axios.post("http://localhost:8080/auth/oauth2/signup", JSON.stringify(data), option)
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: ""})
+            alert("회원가입 완료")
+            window.location.replace("/login")
+        }catch(error) {
+            console.log(error)
+            setErrorMessages({password: "", confirmPassword: "", name: "", gender: "", birthday: "", phoneNumber: "", zonecode: "", address: "", detailAddress: "",...error.response.data.errorData})
+        }
+    });
+
+```
+
+</br>
+
+- 요청 데이터에 추가된 것은 provider 하나밖에 없다.
+
+- 일반 회원가입 양식이랑 똑같은 것을 확인할 수 있다. 서버에 임시 토큰을 헤더로 보내서 OAuth2로 들어온 건지 확인을 할 것이다.
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class OAuth2Controller {
+
+	private final JwtTokenProvider jwtTokenProvider;
+	private final OAuth2Service oAuth2Service;
+	
+	
+	
+	@PostMapping("/oauth2/signup")
+	@ValidAspect
+	public ResponseEntity<?> signup(
+			@RequestHeader(value="registerToken") String registerToken,
+			@Valid
+			@RequestBody OAuth2SignUpReqDto oAuth2SignUpReqDto,
+			BindingResult bindingResult) {
+		boolean validated = jwtTokenProvider.validateToken(jwtTokenProvider.getToken(registerToken));
+		
+		if(!validated) {
+			// 토큰이 유효하지 않음.
+			return ResponseEntity.badRequest().body("회원가입 요청 시간이 초과하였습니다.");
+		}
+		return ResponseEntity.ok().body(oAuth2Service.oauth2signUp(oAuth2SignUpReqDto));
+	}
+ }
+
+```
+
+</br>
+
+- 토큰 인증하는 함수를 호출해서 임시 토큰을 넣어준 다음 인증을 한다. 토큰이 유효하지 않을 경우 badRequest로 처리했다.
+
+- OAuth2 인증이 되면 Service로 넘어간다.
+
+- Dto는 일반 회원가입 형식이랑 동일한데 provider 변수만 추가를 했다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User>{
+
+	public int oauth2signUp(OAuth2SignUpReqDto oAuth2RegisterReqDto) {
+		userEntity = oAuth2RegisterReqDto.toUserEntity();
+		userRepository.signUpUser(userEntity);
+		userRepository.saveAuthority(
+				Authority.builder()
+				.userId(userEntity.getUserId())
+				.roleId(1)
+				.build()
+			);
+		
+		Address addressEntity = oAuth2RegisterReqDto.toAddressEntity();
+		addressEntity.setUserId(userEntity.getUserId());
+		return userRepository.saveAddress(addressEntity);
+	}
+}
+
+```
+
+</br>
+
+- 일반 회원가입이랑 동일하게 작성했다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface UserRepository {
+	public int saveAddress(Address address);
+	public int signUpUser(User user);
+}
+
+```
+
+</br>
+
+- Repository도 마찬가지
+
+---
+
+</br></br>
+
+**Sql**
+
+```sql
+
+	<insert id="signUpUser"
+		parameterType="com.webproject.crowdfunding.entity.User"
+		useGeneratedKeys="true"
+		keyProperty="userId">
+		insert into user_tb
+		values(0, #{email}, #{password}, #{name}, #{birthday}, #{gender}, #{provider}, #{phoneNumber})
+	</insert>
+	
+	<insert id="saveAuthority" parameterType="com.webproject.crowdfunding.entity.Authority">
+		insert into authority_tb
+		values
+			(0, #{userId}, #{roleId})
+	</insert>
+
+```
+
+</br>
+
+- values에 provider가 들어가있는 걸 확인할 수 있다. provider는 null일 수 있기 때문에 table을 만들 때 provider는 not null 체크를 하지 않았다.
+
+---
+
+**Database**
+
+
+![OAuth2 회원가입](https://github.com/iuejeong/-AWS-_Java_study_202212_euihyun/assets/121987405/bd118735-2490-4615-85bb-18a7ba5358d0)
+
+</br>
+
+- 이렇게 provider가 있는 것과 없는 것을 확인할 수 있다.
+
+---
+
+</div>
+</details>
+
+<details>
+<summary>OAuth2 계정 통합</summary>
+<div markdown="1">
+
+
+
+</div>
+</details>
