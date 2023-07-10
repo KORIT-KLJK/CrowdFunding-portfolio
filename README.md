@@ -7099,6 +7099,8 @@ const OAuth2Login = () => {
 
 </br>
 
+## FrontEnd
+
 ```javascript
 
     const [ searchParams, setSearchParams ] = useSearchParams();
@@ -7113,35 +7115,35 @@ const OAuth2Login = () => {
 
 ```html
 
-                                <FormControl variant="standard">
-                                        <Input id="input-with-icon-adornment"
-                                            css={placeholderFontSize}
-                                            label="email" 
-                                            variant="outlined" 
-                                            value={email}
-                                            disabled={true}
-                                            type="text" 
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                <Mail />
-                                                </InputAdornment>
-                                            } />
-                                    </FormControl>
+	<FormControl variant="standard">
+	    <Input id="input-with-icon-adornment"
+	        css={placeholderFontSize}
+	        label="email" 
+	        variant="outlined" 
+	        value={email}
+	        disabled={true}
+	        type="text" 
+	        startAdornment={
+		    <InputAdornment position="start">
+		    <Mail />
+		    </InputAdornment>
+	    } />
+	</FormControl>
 
-                                    <FormControl variant="standard">
-                                            <Input id="input-with-icon-adornment" 
-                                                label="name" 
-                                                variant="outlined" 
-                                                type="text"
-                                                value={name}
-                                                disabled={true}
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                    <Badge />
-                                                    </InputAdornment>
-                                                } />
-                                            {errorMessage.name && <Alert css={errorCss} severity="error">{errorMessage.name}</Alert>}
-                                    </FormControl>
+	<FormControl variant="standard">
+	    <Input id="input-with-icon-adornment" 
+		label="name" 
+		variant="outlined" 
+		type="text"
+		value={name}
+		disabled={true}
+		startAdornment={
+		    <InputAdornment position="start">
+		    <Badge />
+		    </InputAdornment>
+		} />
+	    {errorMessage.name && <Alert css={errorCss} severity="error">{errorMessage.name}</Alert>}
+	</FormControl>
 
 ```
 
@@ -7341,7 +7343,7 @@ public interface UserRepository {
 ### OAuth2 Google, Kakao 계정 통합 화면 구현 영상 및 코드 리뷰
 
 <details>
-<summary>OAuth2 계정 통합</summary>
+<summary>OAuth2 계정 통합 영상</summary>
 <div markdown="1">
   
 ![OAuth2 계정 통합 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/478e6782-37a1-4e0b-b352-fcbd70c0b817)
@@ -7350,17 +7352,195 @@ public interface UserRepository {
 </div>
 </details>
 
-</br>
-
-### OAuth2 회원가입, 로그인, 계정 통합 코드 리뷰
-
-
-
 <details>
-<summary>OAuth2 계정 통합</summary>
+<summary>OAuth2 계정 통합 코드 리뷰</summary>
 <div markdown="1">
 
+## FrontEnd
 
+
+- html 코드
+
+```html
+
+        <div>
+            <div css={providerMergeContainer}>
+                <h1 css={providerMergeTxt}>{email} 계정을 {provider} 계정과 통합하는 것에 동의하십니까?</h1>
+            </div>
+                <div css={providerMergePasswordContainer}>
+                    <input css={providerMergePasswordInput} type="password" name="password" placeholder='기존 계정의 비밀번호를 입력하세요' onChange={passwordChangeHandle} />
+                    <p css={providerMergeErrorMsg}>{errorMsg}</p>
+                </div>
+                <div css={providerMergeButtonContainer}>
+                    <button css={providerMergeIdentifyButton} onClick={providerMergeSubmitHandle}>동의</button>
+                    <button css={providerMergeCancelButton}onClick={providerMergeCancelHanddle}>취소</button>
+                </div>
+        </div>
+
+```
+
+</br>
+
+- 간단하게 로그인 하려는 계정으로 기존의 비밀번호 일치 여부로 판단을 한다.
+
+---
+
+</br></br>
+
+**요청**
+
+```javascript
+
+    const providerMerge = useMutation(async (mergeData) => {
+        try {
+            const response = await axios.put("http://localhost:8080/auth/oauth2/merge", mergeData);
+            return response;
+        } catch (error) {
+            setErrorMsg(error.response.data);
+            return error;
+        }
+    }, {
+        onSuccess: (response) => {
+            if(response.status === 200) {
+                alert("계정 통합 완료!")
+                window.location.replace("/login")
+            }
+        }
+    });
+
+```
+
+</br>
+
+- 수정이기 때문에 put 요청을 보낸다.
+
+- 데이터로 이메일, 비밀번호, provider를 보낸다. 응답 데이터가 성공이면 alert창과 함께 로그인 페이지로 보낸다.
+
+---
+
+</br></br>
+
+## BackEnd
+
+**Controller**
+
+```java
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class OAuth2Controller {
+
+	private final OAuth2Service oAuth2Service;
+
+	@PutMapping("/oauth2/merge")
+	public ResponseEntity<?> providerMerge(@RequestBody OAuth2ProviderMergeReqDto oAuth2ProviderMergeReqDto) {
+		if(!oAuth2Service.checkPassword(oAuth2ProviderMergeReqDto.getEmail(), oAuth2ProviderMergeReqDto.getPassword())) {
+			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+		}
+		
+		return ResponseEntity.ok(oAuth2Service.oAuth2ProviderMerge(oAuth2ProviderMergeReqDto));
+	}
+}
+
+```
+
+</br>
+
+- Service에서 받아온 정보로 비밀번호가 일치하지 않을 경우 badRequest로 웹페이지에서 비밀번호가 일치하지 않다는 에러 메세지를 띄운다.
+
+- Dto에 있는 이메일, 비밀번호, provider를 넘긴다.
+
+---
+
+</br></br>
+
+**Service**
+
+```java
+
+@Service
+@RequiredArgsConstructor
+public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User>{
+	
+	private final UserRepository userRepository;
+	private User userEntity;
+
+	public boolean checkPassword(String email, String password) {
+		userEntity = userRepository.findUserByEmail(email);
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		
+		return passwordEncoder.matches(password, userEntity.getPassword());
+	}
+	
+	public int oAuth2ProviderMerge(OAuth2ProviderMergeReqDto oAuth2ProviderMergeReqDto) { 
+		userEntity = userRepository.findUserByEmail(oAuth2ProviderMergeReqDto.getEmail());
+		
+		String provider = oAuth2ProviderMergeReqDto.getProvider();
+		if(StringUtils.hasText(userEntity.getProvider())) {
+			userEntity.setProvider(userEntity.getProvider() + "," + provider);
+		}else {
+			userEntity.setProvider(provider);
+		}
+		
+		return userRepository.updateProvider(userEntity);
+	}
+}
+
+```
+
+</br>
+
+- 데이터베이스에 요청으로 보낸 이메일을 보내서 유저가 맞는지 확인한 후, 웹페이지에서 입력한 비밀번호와 데이터베이스에서 꺼내온 비밀번호가 일치하는지 확인해서 true false 값을 반환한다.
+
+- 마찬가지로 데이터베이스에서 유저를 확인하고, provider를 넣어서 Repository로 보내준다. ,를 찍는 이유는 google, kakao, naver등 여러가지가 들어올 수 있기 때문에 넣어줬다.
+
+---
+
+</br></br>
+
+**Repository**
+
+```java
+
+@Mapper
+public interface UserRepository {
+	public int updateProvider(User user);
+}
+
+```
+
+</br>
+
+- Service에서 받은 수정할 provider가 들어간 User 객체를 넣어준다.
+
+---
+
+</br></br>
+
+**Sql**
+
+```sql
+
+<update id="updateProvider" parameterType="com.webproject.crowdfunding.entity.User">
+	update user_tb
+	set
+		provider = #{provider}
+	where
+		user_id = #{userId}
+</update>
+
+```
+
+</br>
+
+- 해당 userId로 유저를 찾아 provider를 수정하고 있다.
+
+- OAuth2 회원가입 코드 리뷰에 있는 데이터베이스 사진처럼 provider가 여럿 나열된 것을 확인할 수 있다.
+
+---
 
 </div>
 </details>
+
+</br>
