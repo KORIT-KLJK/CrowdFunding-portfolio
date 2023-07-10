@@ -6656,10 +6656,10 @@ public interface AdminRepository {
 
 <br/>
 
-### **OAuth2 회원가입 및 로그인 화면 구현 영상**
+### OAuth2 회원가입 및 로그인 화면 구현 영상 및 코드 리뷰
 
 <details>
-<summary>OAuth2 회원가입 및 로그인</summary>
+<summary>OAuth2 회원가입 및 로그인 영상</summary>
 <div markdown="1">
   
 ![OAuth2 회원가입 및 로그인 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/c2bebc58-65d9-4b68-adba-dc939e1d0883)
@@ -6667,26 +6667,8 @@ public interface AdminRepository {
 </div>
 </details>
 
-<br/>
-
-### **OAuth2 Google, Kakao 계정 통합 화면 구현 영상**
-
 <details>
-<summary>OAuth2 계정 통합</summary>
-<div markdown="1">
-  
-![OAuth2 계정 통합 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/478e6782-37a1-4e0b-b352-fcbd70c0b817)
-
-
-</div>
-</details>
-
-</br>
-
-### OAuth2 회원가입, 로그인, 계정 통합 코드 리뷰
-
-<details>
-<summary>OAuth2 회원가입 및 로그인 코드 리뷰</summary>
+<summary>OAuth2 로그인 코드 리뷰</summary>
 <div markdown="1">
 
 </br>
@@ -7108,7 +7090,7 @@ const OAuth2Login = () => {
 </details>
 
 <details>
-<summary>OAuth2 회원가입</summary>
+<summary>OAuth2 회원가입 코드 리뷰</summary>
 <div markdown="1">
   
 </br>
@@ -7353,6 +7335,26 @@ public interface UserRepository {
 
 </div>
 </details>
+
+<br/>
+
+### OAuth2 Google, Kakao 계정 통합 화면 구현 영상 및 코드 리뷰
+
+<details>
+<summary>OAuth2 계정 통합</summary>
+<div markdown="1">
+  
+![OAuth2 계정 통합 - Clipchamp로 제작](https://github.com/KORIT-KLJK/CrowdFunding-portfolio/assets/121987405/478e6782-37a1-4e0b-b352-fcbd70c0b817)
+
+
+</div>
+</details>
+
+</br>
+
+### OAuth2 회원가입, 로그인, 계정 통합 코드 리뷰
+
+
 
 <details>
 <summary>OAuth2 계정 통합</summary>
